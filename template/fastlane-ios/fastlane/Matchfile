@@ -1,0 +1,5 @@
+git_url("{{ios_match_git_url}}")
+
+storage_mode("git")
+
+app_identifier(["{{ios_app_identifier}}"])

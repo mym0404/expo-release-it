@@ -4,7 +4,8 @@
   "type": "module",
   "version": "1.0.0",
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "dev": "bun run build && bun build/index.js init"
   },
   "devDependencies": {
     "@types/bun": "latest",
@@ -16,5 +17,6 @@
     "commander": "^13.1.0",
     "fs-extra": "^11.3.0",
     "semver": "^7.7.1"
-  }
+  },
+  "packageManager": "bun@1.2.4"
 }

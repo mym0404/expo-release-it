@@ -13,6 +13,9 @@ export const OptionHolder: {
     ios_app_store_connect_api_key_issuer_id: string;
     ios_xcode_project_target: string;
     android_package_name: string;
+    android_keystore_store_password: string;
+    android_keystore_key_alias: string;
+    android_keystore_key_password: string;
   };
   iosBundleIdentifier: string;
   androidPackageName: string;

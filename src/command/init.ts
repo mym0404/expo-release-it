@@ -43,26 +43,32 @@ async function promptInputs() {
     await input({
       message: 'IOS Bundle Identifier',
       required: true,
+      default: isDev ? 'ios_app_identifier' : undefined,
     });
 
   OptionHolder.templateValuePlaceholderMap.ios_app_store_connect_team_id = await input({
     message: 'IOS App Store Connect Team Id',
+    default: isDev ? 'ios_app_store_connect_team_id' : undefined,
   });
 
   OptionHolder.templateValuePlaceholderMap.ios_developer_team_id = await input({
     message: 'IOS Developer Portal Team Id',
+    default: isDev ? 'ios_developer_team_id' : undefined,
   });
 
   OptionHolder.templateValuePlaceholderMap.ios_match_git_url = await input({
     message: 'IOS Match Key Storage Github URL',
+    default: isDev ? 'ios_match_git_url' : undefined,
   });
 
   OptionHolder.templateValuePlaceholderMap.ios_app_store_connect_api_key_id = await input({
     message: 'IOS App Store Connect Api Key Id',
+    default: isDev ? 'ios_app_store_connect_api_key_id' : undefined,
   });
 
   OptionHolder.templateValuePlaceholderMap.ios_app_store_connect_api_key_issuer_id = await input({
     message: 'IOS App Store Connect Api Key Issuer Id',
+    default: isDev ? 'ios_app_store_connect_api_key_issuer_id' : undefined,
   });
 
   OptionHolder.templateValuePlaceholderMap.ios_xcode_project_target = await input({
@@ -74,7 +80,20 @@ async function promptInputs() {
   OptionHolder.androidPackageName = OptionHolder.templateValuePlaceholderMap.android_package_name =
     await input({
       message: 'Android Package Name',
+      default: isDev ? 'android_package_name' : undefined,
     });
+  OptionHolder.templateValuePlaceholderMap.android_keystore_store_password = await input({
+    message: 'Android Keystore Store Password',
+    default: isDev ? 'android_keystore_store_password' : undefined,
+  });
+  OptionHolder.templateValuePlaceholderMap.android_keystore_key_alias = await input({
+    message: 'Android Keystore Key Alias',
+    default: isDev ? 'android_keystore_key_alias' : undefined,
+  });
+  OptionHolder.templateValuePlaceholderMap.android_keystore_key_password = await input({
+    message: 'Android Keystore Key Password',
+    default: isDev ? 'android_keystore_key_password' : undefined,
+  });
 }
 
 async function copyTemplates() {

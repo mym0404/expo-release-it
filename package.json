@@ -23,7 +23,11 @@
     "@types/bun": "latest",
     "@types/fs-extra": "^11.0.4",
     "prettier": "3.5.3",
-    "typescript": "^5.8.3",
-    "release-it": "^19.0.1"
-  }
+    "release-it": "^19.0.1",
+    "typescript": "^5.8.3"
+  },
+  "workspaces": [
+    "example"
+  ],
+  "packageManager": "yarn@4.9.1"
 }

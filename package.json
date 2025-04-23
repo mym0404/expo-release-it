@@ -2,7 +2,7 @@
   "name": "expo-local-cicd-zx-script",
   "module": "src/index.ts",
   "type": "module",
-  "version": "0.0.1-alpha01",
+  "version": "0.0.1",
   "license": "MIT",
   "scripts": {
     "build": "tsc",

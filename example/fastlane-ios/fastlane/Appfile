@@ -1,4 +1,0 @@
-app_identifier("a") # The bundle identifier of your app
-
-itc_team_id("a") # App Store Connect Team ID
-team_id("a") # Developer Portal Team ID

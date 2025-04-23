@@ -1,5 +1,0 @@
-git_url("a")
-
-storage_mode("git")
-
-app_identifier(["a"])

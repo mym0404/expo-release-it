@@ -3,15 +3,11 @@
   "module": "src/index.ts",
   "type": "module",
   "version": "0.0.1-alpha01",
+  "license": "MIT",
   "scripts": {
     "build": "tsc",
-    "dev": "bun run build && NODE_ENV=development NODE_OPTIONS=--trace-warnings bun build/index.js init"
-  },
-  "devDependencies": {
-    "@types/bun": "latest",
-    "@types/fs-extra": "^11.0.4",
-    "prettier": "3.5.3",
-    "typescript": "^5.8.3"
+    "dev": "bun run build && NODE_ENV=development bun build/index.js init",
+    "release": "release-it"
   },
   "dependencies": {
     "@inquirer/prompts": "^7.4.1",
@@ -23,5 +19,11 @@
     "semver": "^7.7.1",
     "url": "^0.11.4"
   },
-  "packageManager": "bun@1.2.10"
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@types/fs-extra": "^11.0.4",
+    "prettier": "3.5.3",
+    "typescript": "^5.8.3",
+    "release-it": "^19.0.1"
+  }
 }

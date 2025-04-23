@@ -5142,9 +5142,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"expo-local-cicd-zx-script@workspace:.":
+"expo-local-build@workspace:.":
   version: 0.0.0-use.local
-  resolution: "expo-local-cicd-zx-script@workspace:."
+  resolution: "expo-local-build@workspace:."
   dependencies:
     "@inquirer/prompts": "npm:^7.4.1"
     "@mj-studio/js-util": "npm:^1.1.20"

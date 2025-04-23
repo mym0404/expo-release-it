@@ -84,7 +84,6 @@ async function injectPlaceHolders() {
     let content = await fs.readFile(filePath, { encoding: 'utf-8' });
     for (const [key, value] of Object.entries(OptionHolder.templateValuePlaceholderMap)) {
       content = content.replaceAll(`{{${key}}}`, value);
-      log.success(`{{${key}}}`, value);
       await fs.writeFile(filePath, content, { encoding: 'utf-8' });
     }
   });

@@ -1,4 +1,4 @@
-git_url("{{ios_match_git_url}}")
+git_url("a")
 
 storage_mode("git")
 

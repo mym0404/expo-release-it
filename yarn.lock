@@ -5159,6 +5159,12 @@ __metadata:
     semver: "npm:^7.7.1"
     typescript: "npm:^5.8.3"
     url: "npm:^0.11.4"
+    zx: "npm:^8.5.3"
+  bin:
+    bump: ./bin/bump-version.mjs
+    init: ./build/index.js
+    release: ./bin/release-binary.mjs
+    submit: ./bin/submit-review.mjs
   languageName: unknown
   linkType: soft
 
@@ -11677,5 +11683,14 @@ __metadata:
   version: 2.1.1
   resolution: "yoctocolors@npm:2.1.1"
   checksum: 10c0/85903f7fa96f1c70badee94789fade709f9d83dab2ec92753d612d84fcea6d34c772337a9f8914c6bed2f5fc03a428ac5d893e76fab636da5f1236ab725486d0
+  languageName: node
+  linkType: hard
+
+"zx@npm:^8.5.3":
+  version: 8.5.3
+  resolution: "zx@npm:8.5.3"
+  bin:
+    zx: build/cli.js
+  checksum: 10c0/7c267ef220ca045c9cde16b5dde0bf32e46005ec608458ecfc684a3249c3d60dd3aa3a48fc1d9d844d2c5e42716acd896050dc7acfa1d670a79ec3a7f08a54ab
   languageName: node
   linkType: hard

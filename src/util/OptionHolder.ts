@@ -29,7 +29,7 @@ export const OptionHolder: {
     templateDir: path.resolve(fileURLToPath(import.meta.url), '../../../template'),
   },
   templateValuePlaceholderMap: {} as any,
-  templateDirNames: ['fastlane-android', 'fastlane-ios', 'key', 'script'],
+  templateDirNames: ['fastlane-android', 'fastlane-ios', 'key'],
   iosBundleIdentifier: '',
   androidPackageName: '',
   rootDir: '',

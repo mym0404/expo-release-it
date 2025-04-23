@@ -27,14 +27,6 @@ function remove(path) {
   }
 }
 
-function addLine(str, added, backward = false) {
-  if (backward) {
-    return added + '\n' + str;
-  } else {
-    return str + '\n' + added;
-  }
-}
-
 function print(...args) {
   echo(chalk.blue(`[${_printTag}]`, ...args));
 }

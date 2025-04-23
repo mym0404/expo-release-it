@@ -2,7 +2,7 @@
   "name": "expo-local-cicd-zx-script",
   "module": "src/index.ts",
   "type": "module",
-  "version": "1.0.0",
+  "version": "0.0.1-alpha01",
   "scripts": {
     "build": "tsc",
     "dev": "bun run build && NODE_ENV=development NODE_OPTIONS=--trace-warnings bun build/index.js init"

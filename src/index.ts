@@ -12,7 +12,6 @@ program
 program
   .command('init')
   .description('Initialize CLI utilities')
-  .option('-r --rootDir <rootDir>', 'root directory of react native project(path of package.json)')
   .action(async (options) => {
     await init({ options });
   });

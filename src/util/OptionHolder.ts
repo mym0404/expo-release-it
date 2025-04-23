@@ -4,6 +4,7 @@ import * as path from 'node:path';
 
 export type ProgramOptions = {
   rootDir?: string;
+  outDir?: string;
 };
 
 export const OptionHolder: {
@@ -16,7 +17,6 @@ export const OptionHolder: {
     ios_app_store_connect_api_key_id: string;
     ios_app_store_connect_api_key_issuer_id: string;
     ios_xcode_project_target: string;
-
     android_package_name: string;
   };
   iosBundleIdentifier: string;
@@ -33,4 +33,5 @@ export const OptionHolder: {
   iosBundleIdentifier: '',
   androidPackageName: '',
   rootDir: '',
+  outDir: '',
 };

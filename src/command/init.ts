@@ -22,9 +22,26 @@ function constructOptionHolder(options: ProgramOptions) {
   // merge options
   Object.assign(OptionHolder, options);
   OptionHolder.rootDir = path.resolve(options?.rootDir ?? process.cwd());
+  OptionHolder.outDir = path.resolve(
+    options?.outDir ?? path.resolve(OptionHolder.rootDir, 'expo-local-build'),
+  );
 }
 
 async function promptInputs() {
+  /* path */
+  OptionHolder.rootDir = await input({
+    message: 'react native project root directory path',
+    default: '.',
+    validate: (value) => {
+      const p = path.resolve(value, 'package.json');
+      return fs.existsSync(p);
+    },
+  });
+  OptionHolder.outDir = await input({
+    message: 'output path',
+    default: 'expo-local-build',
+  });
+
   /* ios */
   OptionHolder.iosBundleIdentifier = OptionHolder.templateValuePlaceholderMap.ios_app_identifier =
     await input({
@@ -71,7 +88,7 @@ async function copyTemplates() {
 
   async function copyDirRecursively(dir: string) {
     const sourceDirPath = path.join(OptionHolder.cli.templateDir, dir);
-    const destDirPath = path.join(OptionHolder.rootDir, dir);
+    const destDirPath = path.join(OptionHolder.rootDir, 'expo-local-build', dir);
     if (fs.existsSync(destDirPath)) {
       await fs.remove(destDirPath);
     }

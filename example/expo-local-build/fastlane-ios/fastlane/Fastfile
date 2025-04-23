@@ -3,8 +3,8 @@ default_platform(:ios)
 platform :ios do
   lane :common do
     api_key = app_store_connect_api_key(
-      key_id: "a",
-      issuer_id: "a",
+      key_id: "e",
+      issuer_id: "f",
       key_filepath: "../key/ios_testflight_upload_api_key.p8",
     )
     Actions.lane_context[:API_KEY] = api_key
@@ -17,26 +17,26 @@ platform :ios do
       type: "appstore",
       app_identifier: "a",
       verbose: false,
-      team_id: "a"
+      team_id: "c"
     )
 
     update_code_signing_settings(
       use_automatic_signing: false,
-      path: "a.xcodeproj",
+      path: "g.xcodeproj",
       team_id: ENV["sigh_a_appstore_team-id"],
       code_sign_identity: "Apple Distribution"
     )
 
     update_project_provisioning(
-      xcodeproj: "a.xcodeproj",
+      xcodeproj: "g.xcodeproj",
       profile: ENV["sigh_a_appstore_profile-path"],
-      target_filter: "a",
+      target_filter: "g",
       build_configuration: "Release",
       code_signing_identity: "Apple Distribution"
     )
 
     build_app(
-      scheme: "a",
+      scheme: "g",
       silent: true,
       output_directory: "output",
       output_name: "output.ipa",

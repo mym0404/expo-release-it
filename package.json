@@ -2,7 +2,7 @@
   "name": "expo-local-build",
   "module": "src/index.ts",
   "type": "module",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "license": "MIT",
   "scripts": {
     "build": "tsc",
@@ -36,6 +36,11 @@
     "release": "./bin/release-binary.mjs",
     "submit": "./bin/submit-review.mjs"
   },
-  "files": ["build", "package.json", "bin", "template"],
+  "files": [
+    "build",
+    "package.json",
+    "bin",
+    "template"
+  ],
   "packageManager": "yarn@4.9.1"
 }

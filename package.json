@@ -36,5 +36,6 @@
     "release": "./bin/release-binary.mjs",
     "submit": "./bin/submit-review.mjs"
   },
+  "files": ["build", "package.json", "bin", "template"],
   "packageManager": "yarn@4.9.1"
 }

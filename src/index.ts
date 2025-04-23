@@ -11,7 +11,7 @@ program.name('expo-local-cicd')
 program.command('init')
   .description('Initialize CLI utilities')
   .option('-r --rootDir <rootDir>', 'root directory of react native project(path of package.json)')
-  .action(async (name, options, command) => {
+  .action(async (options) => {
     await init({options})
   })
 

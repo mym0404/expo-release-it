@@ -3,8 +3,8 @@ default_platform(:ios)
 platform :ios do
   lane :common do
     api_key = app_store_connect_api_key(
-      key_id: "e",
-      issuer_id: "f",
+      key_id: "ios_app_store_connect_api_key_id",
+      issuer_id: "ios_app_store_connect_api_key_issuer_id",
       key_filepath: "../key/ios_testflight_upload_api_key.p8",
     )
     Actions.lane_context[:API_KEY] = api_key
@@ -15,28 +15,28 @@ platform :ios do
     setup_ci
     match(
       type: "appstore",
-      app_identifier: "a",
+      app_identifier: "ios_app_identifier",
       verbose: false,
-      team_id: "c"
+      team_id: "ios_developer_team_id"
     )
 
     update_code_signing_settings(
       use_automatic_signing: false,
-      path: "g.xcodeproj",
-      team_id: ENV["sigh_a_appstore_team-id"],
+      path: "app.xcodeproj",
+      team_id: ENV["sigh_ios_app_identifier_appstore_team-id"],
       code_sign_identity: "Apple Distribution"
     )
 
     update_project_provisioning(
-      xcodeproj: "g.xcodeproj",
-      profile: ENV["sigh_a_appstore_profile-path"],
-      target_filter: "g",
+      xcodeproj: "app.xcodeproj",
+      profile: ENV["sigh_ios_app_identifier_appstore_profile-path"],
+      target_filter: "app",
       build_configuration: "Release",
       code_signing_identity: "Apple Distribution"
     )
 
     build_app(
-      scheme: "g",
+      scheme: "app",
       silent: true,
       output_directory: "output",
       output_name: "output.ipa",
@@ -45,7 +45,7 @@ platform :ios do
       codesigning_identity: "Apple Distribution",
       export_options: {
         provisioningProfiles: {
-          "a" => "match AppStore a"
+          "ios_app_identifier" => "match AppStore ios_app_identifier"
         }
       }
     )
@@ -53,7 +53,7 @@ platform :ios do
     upload_to_testflight(
       api_key: lane_context[:API_KEY],
       app_version: options[:version_name],
-      app_identifier: "a",
+      app_identifier: "ios_app_identifier",
       app_platform: "ios",
       ipa: "output/output.ipa",
       skip_submission: true,

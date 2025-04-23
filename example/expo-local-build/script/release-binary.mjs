@@ -7,55 +7,13 @@ import { spinner } from 'zx';
 
 import { ReleaseScriptUtil, VERSION_CODE, VERSION_NAME } from './common/release-util.mjs';
 
-const join = path.join;
 const resolve = path.resolve;
 const filename = path.basename(__filename);
 const cwd = () => process.cwd();
-const exit = process.exit;
 const _printTag = '🦄' || filename;
 
 function exist(path) {
   return fs.existsSync(path);
-}
-
-function isDir(path) {
-  return exist(path) && fs.lstatSync(path).isDirectory();
-}
-
-function isFile(path) {
-  return exist(path) && fs.lstatSync(path).isFile();
-}
-
-async function iterateDir(path, fn) {
-  if (!isDir(path)) {
-    return;
-  }
-
-  for (const file of fs.readdirSync(path)) {
-    await fn(file);
-  }
-}
-
-function read(path) {
-  return fs.readFileSync(path, { encoding: 'utf8' });
-}
-
-// you should require when possible(optimized in js)
-function readJsonSlow(path) {
-  return fs.readJSONSync(path);
-}
-
-function write(p, content) {
-  const dir = path.dirname(p);
-  if (!exist(dir)) {
-    fs.mkdirSync(dir, { recursive: true });
-  }
-
-  return fs.writeFileSync(p, content);
-}
-
-function writeJson(path, json) {
-  return write(path, JSON.stringify(json, null, 2));
 }
 
 function remove(path) {

@@ -4,11 +4,9 @@
 import fs from 'fs-extra';
 import { spinner } from 'zx';
 
-const join = path.join;
 const resolve = path.resolve;
 const filename = path.basename(__filename);
 const cwd = () => process.cwd();
-const exit = process.exit;
 const _printTag = '' || filename;
 
 function exist(path) {
@@ -17,10 +15,6 @@ function exist(path) {
 
 function isDir(path) {
   return exist(path) && fs.lstatSync(path).isDirectory();
-}
-
-function isFile(path) {
-  return exist(path) && fs.lstatSync(path).isFile();
 }
 
 async function iterateDir(path, fn) {
@@ -37,11 +31,6 @@ function read(path) {
   return fs.readFileSync(path, { encoding: 'utf8' });
 }
 
-// you should require when possible(optimized in js)
-function readJsonSlow(path) {
-  return fs.readJSONSync(path);
-}
-
 function write(p, content) {
   const dir = path.dirname(p);
   if (!exist(dir)) {
@@ -49,10 +38,6 @@ function write(p, content) {
   }
 
   return fs.writeFileSync(p, content);
-}
-
-function writeJson(path, json) {
-  return write(path, JSON.stringify(json, null, 2));
 }
 
 function remove(path) {
@@ -67,37 +52,9 @@ function remove(path) {
   }
 }
 
-function addLine(str, added, backward = false) {
-  if (backward) {
-    return added + '\n' + str;
-  } else {
-    return str + '\n' + added;
-  }
-}
-
-function addLineToFile(path, added, backward = false) {
-  return write(path, addLine(read(path), added, backward));
-}
-
-function print(...args) {
-  echo(chalk.blue(`[${_printTag}]`, ...args));
-}
-
 function printSuccess(...args) {
   echo(chalk.bold.bgBlue(`[${_printTag}]`, ...args));
 }
-
-function printError(...args) {
-  echo(chalk.bold.bgRed(`[${_printTag}]`, ...args));
-}
-
-function asrt(condition, ...args) {
-  if (!condition) {
-    echo(chalk.bold.bgRed(`[${_printTag}]`, ...args));
-    exit(1);
-  }
-}
-
 // endregion
 
 const projectRoot = cwd();

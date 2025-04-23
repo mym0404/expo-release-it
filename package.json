@@ -5,7 +5,7 @@
   "version": "1.0.0",
   "scripts": {
     "build": "tsc",
-    "dev": "bun run build && bun build/index.js init --rootDir example"
+    "dev": "bun run build && NODE_ENV=development bun build/index.js init"
   },
   "devDependencies": {
     "@types/bun": "latest",

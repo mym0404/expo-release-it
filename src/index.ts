@@ -9,11 +9,6 @@ program
   .description('generate CLI script to Build & Submit local Expo project')
   .version(OptionHolder.cli.version);
 
-program
-  .command('init')
-  .description('Initialize CLI utilities')
-  .action(async (options) => {
-    await init({ options });
-  });
+program.command('init').description('Initialize CLI utilities').action(init);
 
 program.parse();

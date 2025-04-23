@@ -2,11 +2,6 @@ import pkgJson from '../../package.json';
 import { fileURLToPath } from 'url';
 import * as path from 'node:path';
 
-export type ProgramOptions = {
-  rootDir?: string;
-  outDir?: string;
-};
-
 export const OptionHolder: {
   cli: { version: string; rootDir: string; templateDir: string };
   templateValuePlaceholderMap: {
@@ -22,14 +17,16 @@ export const OptionHolder: {
   iosBundleIdentifier: string;
   androidPackageName: string;
   templateDirNames: string[];
-} & Required<ProgramOptions> = {
+  rootDir: string;
+  outDir: string;
+} = {
   cli: {
     version: pkgJson.version,
     rootDir: path.resolve(fileURLToPath(import.meta.url), '../../..'),
     templateDir: path.resolve(fileURLToPath(import.meta.url), '../../../template'),
   },
   templateValuePlaceholderMap: {} as any,
-  templateDirNames: ['fastlane-android', 'fastlane-ios', 'key', 'expo-local-build-scripts'],
+  templateDirNames: ['fastlane-android', 'fastlane-ios', 'key', 'script'],
   iosBundleIdentifier: '',
   androidPackageName: '',
   rootDir: '',

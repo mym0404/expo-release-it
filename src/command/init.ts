@@ -1,46 +1,42 @@
-import { OptionHolder, type ProgramOptions } from '../util/OptionHolder';
+import { OptionHolder } from '../util/OptionHolder';
 import { log } from '../util/Log';
 import chalk from 'chalk';
 import * as path from 'node:path';
-import { formatJson } from '@mj-studio/js-util';
 import fs from 'fs-extra';
 import { input } from '@inquirer/prompts';
 import { iterateAllFilesInGeneratedTemplate } from '../util/FileUtil';
+import { isDev } from '../util/EnvUtil';
 
-export async function init({ options }: { options: ProgramOptions }) {
-  constructOptionHolder(options);
-  log.dim(formatJson(OptionHolder));
-  log.info(`${chalk.inverse('expo-local-build')} get started`);
-  log.info(`root directory: ${chalk.bgWhite(OptionHolder.rootDir)}`);
+export async function init() {
+  log.info(`${chalk.inverse('expo-local-build')}`);
 
   await promptInputs();
   await copyTemplates();
   await injectPlaceHolders();
 }
 
-function constructOptionHolder(options: ProgramOptions) {
-  // merge options
-  Object.assign(OptionHolder, options);
-  OptionHolder.rootDir = path.resolve(options?.rootDir ?? process.cwd());
-  OptionHolder.outDir = path.resolve(
-    options?.outDir ?? path.resolve(OptionHolder.rootDir, 'expo-local-build'),
-  );
-}
-
 async function promptInputs() {
   /* path */
-  OptionHolder.rootDir = await input({
-    message: 'react native project root directory path',
-    default: '.',
-    validate: (value) => {
-      const p = path.resolve(value, 'package.json');
-      return fs.existsSync(p);
-    },
-  });
-  OptionHolder.outDir = await input({
-    message: 'output path',
-    default: 'expo-local-build',
-  });
+  OptionHolder.rootDir = path.resolve(
+    await input({
+      message: 'react native project root directory path',
+      default: isDev ? 'example' : '.',
+      validate: (value) => {
+        const p = path.resolve(value, 'package.json');
+        if (!fs.existsSync(p)) {
+          return "package.json hasn\'t been detected. provider valid project root.";
+        }
+        return true;
+      },
+    }),
+  );
+  OptionHolder.outDir = path.join(
+    OptionHolder.rootDir,
+    await input({
+      message: 'output path',
+      default: 'expo-local-build',
+    }),
+  );
 
   /* ios */
   OptionHolder.iosBundleIdentifier = OptionHolder.templateValuePlaceholderMap.ios_app_identifier =
@@ -88,7 +84,7 @@ async function copyTemplates() {
 
   async function copyDirRecursively(dir: string) {
     const sourceDirPath = path.join(OptionHolder.cli.templateDir, dir);
-    const destDirPath = path.join(OptionHolder.rootDir, 'expo-local-build', dir);
+    const destDirPath = path.join(OptionHolder.outDir, dir);
     if (fs.existsSync(destDirPath)) {
       await fs.remove(destDirPath);
     }

@@ -15,6 +15,7 @@
     "@inquirer/prompts": "^7.4.1",
     "chalk": "^5.4.1",
     "commander": "^13.1.0",
+    "execa": "^9.5.2",
     "fs-extra": "^11.3.0",
     "semver": "^7.7.1"
   },

@@ -3,8 +3,8 @@ default_platform(:ios)
 platform :ios do
   lane :common do
     api_key = app_store_connect_api_key(
-      key_id: "{{ios_app_store_connect_api_key_id}}",
-      issuer_id: "{{ios_app_store_connect_api_key_issuer_id}}",
+      key_id: "{{ios_app_store_connect_key_id}}",
+      issuer_id: "{{ios_app_store_connect_key_issuer_id}}",
       key_filepath: "../key/ios_testflight_upload_api_key.p8",
     )
     Actions.lane_context[:API_KEY] = api_key
@@ -15,28 +15,28 @@ platform :ios do
     setup_ci
     match(
       type: "appstore",
-      app_identifier: "{{ios_app_identifier}}",
+      app_identifier: options[:package_name],
       verbose: false,
       team_id: "{{ios_developer_team_id}}"
     )
 
     update_code_signing_settings(
       use_automatic_signing: false,
-      path: "{{ios_xcode_project_schema}}.xcodeproj",
-      team_id: ENV["sigh_{{ios_app_identifier}}_appstore_team-id"],
+      path: "app.xcodeproj",
+      team_id: ENV["sigh_a_appstore_team-id"],
       code_sign_identity: "Apple Distribution"
     )
 
     update_project_provisioning(
-      xcodeproj: "{{ios_xcode_project_schema}}.xcodeproj",
-      profile: ENV["sigh_{{ios_app_identifier}}_appstore_profile-path"],
-      target_filter: "{{ios_xcode_project_schema}}",
+      xcodeproj: "app.xcodeproj",
+      profile: ENV["sigh_a_appstore_profile-path"],
+      target_filter: "app",
       build_configuration: "Release",
       code_signing_identity: "Apple Distribution"
     )
 
     build_app(
-      scheme: "{{ios_xcode_project_schema}}",
+      scheme: "app",
       silent: true,
       output_directory: "output",
       output_name: "output.ipa",
@@ -45,7 +45,7 @@ platform :ios do
       codesigning_identity: "Apple Distribution",
       export_options: {
         provisioningProfiles: {
-          "{{ios_xcode_project_schema}}" => "match AppStore {{ios_xcode_project_schema}}"
+          "a" => "match AppStore a"
         }
       }
     )
@@ -53,7 +53,7 @@ platform :ios do
     upload_to_testflight(
       api_key: lane_context[:API_KEY],
       app_version: options[:version_name],
-      app_identifier: "{{ios_xcode_project_schema}}",
+      app_identifier: "a",
       app_platform: "ios",
       ipa: "output/output.ipa",
       skip_submission: true,

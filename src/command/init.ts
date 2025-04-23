@@ -1,20 +1,21 @@
-import {OptionHolder, type ProgramOptions} from "../util/OptionHolder";
-import {log} from "../util/Log";
-import chalk from "chalk";
-import * as path from "node:path";
-import {formatJson} from "@mj-studio/js-util";
-import fs from "fs-extra";
+import { OptionHolder, type ProgramOptions } from '../util/OptionHolder';
+import { log } from '../util/Log';
+import chalk from 'chalk';
+import * as path from 'node:path';
+import { formatJson } from '@mj-studio/js-util';
+import fs from 'fs-extra';
+import { input } from '@inquirer/prompts';
+import { iterateAllFilesInGeneratedTemplate } from '../util/FileUtil';
 
-export async function init({options}: { options: ProgramOptions }) {
+export async function init({ options }: { options: ProgramOptions }) {
   constructOptionHolder(options);
-  log.dim(formatJson(OptionHolder))
+  log.dim(formatJson(OptionHolder));
   log.info(`${chalk.inverse('expo-local-build')} get started`);
   log.info(`root directory: ${chalk.bgWhite(OptionHolder.rootDir)}`);
 
-  // OptionHolder.iosBundleIdentifier = await input({message: 'IOS Bundle Identifier', required: true})
-  // OptionHolder.androidPackageName = await input({message: 'Android Bundle Identifer'})
-
+  await promptInputs();
   await copyTemplates();
+  await injectPlaceHolders();
 }
 
 function constructOptionHolder(options: ProgramOptions) {
@@ -23,10 +24,31 @@ function constructOptionHolder(options: ProgramOptions) {
   OptionHolder.rootDir = path.resolve(options?.rootDir ?? process.cwd());
 }
 
-async function copyTemplates() {
-  const dirs = ['fastlane-android', 'fastlane-ios', 'key'];
+async function promptInputs() {
+  /* ios */
+  OptionHolder.iosBundleIdentifier = OptionHolder.templateValuePlaceholderMap.ios_app_identifier =
+    await input({
+      message: 'IOS Bundle Identifier',
+      required: true,
+    });
 
-  for (const dir of dirs) {
+  OptionHolder.templateValuePlaceholderMap.ios_app_store_connect_team_id = await input({
+    message: 'IOS App Store Connect Team Id',
+  });
+
+  OptionHolder.templateValuePlaceholderMap.ios_developer_team_id = await input({
+    message: 'IOS Developer Membership Team Id',
+  });
+
+  /* android */
+  OptionHolder.androidPackageName = OptionHolder.templateValuePlaceholderMap.android_package_name =
+    await input({
+      message: 'Android Package Name',
+    });
+}
+
+async function copyTemplates() {
+  for (const dir of OptionHolder.templateDirNames) {
     await copyDirRecursively(dir);
   }
 
@@ -38,4 +60,15 @@ async function copyTemplates() {
     }
     await fs.copy(sourceDirPath, destDirPath);
   }
+}
+
+async function injectPlaceHolders() {
+  await iterateAllFilesInGeneratedTemplate(async (filePath: string) => {
+    let content = await fs.readFile(filePath, { encoding: 'utf-8' });
+    for (const [key, value] of Object.entries(OptionHolder.templateValuePlaceholderMap)) {
+      content = content.replaceAll(`{{${key}}}`, value);
+      log.success(`{{${key}}}`, value);
+      await fs.writeFile(filePath, content, { encoding: 'utf-8' });
+    }
+  });
 }

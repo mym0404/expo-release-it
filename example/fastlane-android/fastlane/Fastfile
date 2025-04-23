@@ -2,12 +2,12 @@ default_platform(:android)
 
 platform :android do
   before_all do
-    ENV['SUPPLY_UPLOAD_MAX_RETRIES']='3'
+    ENV['SUPPLY_UPLOAD_MAX_RETRIES']='1'
   end
   lane :deploy do |options|
     supply(
     	root_url: "https://androidpublisher.googleapis.com/",
-    	package_name: "{{android_package_name}}",
+    	package_name: options[:package_name],
     	version_name: options[:version_name],
     	version_code: options[:version_code].to_i,
     	track: "internal",
@@ -22,7 +22,7 @@ platform :android do
   lane :submit_playstore_review do |options|
     supply(
     	root_url: "https://androidpublisher.googleapis.com/",
-    	package_name: "{{android_package_name}}",
+    	package_name: options[:package_name],
     	skip_upload_apk: true,
     	skip_upload_aab: true,
     	version_name: options[:version_name],

@@ -37,7 +37,24 @@ async function promptInputs() {
   });
 
   OptionHolder.templateValuePlaceholderMap.ios_developer_team_id = await input({
-    message: 'IOS Developer Membership Team Id',
+    message: 'IOS Developer Portal Team Id',
+  });
+
+  OptionHolder.templateValuePlaceholderMap.ios_match_git_url = await input({
+    message: 'IOS Match Key Storage Github URL',
+  });
+
+  OptionHolder.templateValuePlaceholderMap.ios_app_store_connect_api_key_id = await input({
+    message: 'IOS App Store Connect Api Key Id',
+  });
+
+  OptionHolder.templateValuePlaceholderMap.ios_app_store_connect_api_key_issuer_id = await input({
+    message: 'IOS App Store Connect Api Key Issuer Id',
+  });
+
+  OptionHolder.templateValuePlaceholderMap.ios_xcode_project_target = await input({
+    message: 'IOS Xcode Target Name',
+    default: 'app',
   });
 
   /* android */

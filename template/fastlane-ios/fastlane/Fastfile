@@ -22,21 +22,21 @@ platform :ios do
 
     update_code_signing_settings(
       use_automatic_signing: false,
-      path: "{{ios_xcode_project_schema}}.xcodeproj",
+      path: "{{ios_xcode_project_target}}.xcodeproj",
       team_id: ENV["sigh_{{ios_app_identifier}}_appstore_team-id"],
       code_sign_identity: "Apple Distribution"
     )
 
     update_project_provisioning(
-      xcodeproj: "{{ios_xcode_project_schema}}.xcodeproj",
+      xcodeproj: "{{ios_xcode_project_target}}.xcodeproj",
       profile: ENV["sigh_{{ios_app_identifier}}_appstore_profile-path"],
-      target_filter: "{{ios_xcode_project_schema}}",
+      target_filter: "{{ios_xcode_project_target}}",
       build_configuration: "Release",
       code_signing_identity: "Apple Distribution"
     )
 
     build_app(
-      scheme: "{{ios_xcode_project_schema}}",
+      scheme: "{{ios_xcode_project_target}}",
       silent: true,
       output_directory: "output",
       output_name: "output.ipa",
@@ -45,7 +45,7 @@ platform :ios do
       codesigning_identity: "Apple Distribution",
       export_options: {
         provisioningProfiles: {
-          "{{ios_xcode_project_schema}}" => "match AppStore {{ios_xcode_project_schema}}"
+          "{{ios_app_identifier}}" => "match AppStore {{ios_app_identifier}}"
         }
       }
     )
@@ -53,7 +53,7 @@ platform :ios do
     upload_to_testflight(
       api_key: lane_context[:API_KEY],
       app_version: options[:version_name],
-      app_identifier: "{{ios_xcode_project_schema}}",
+      app_identifier: "{{ios_app_identifier}}",
       app_platform: "ios",
       ipa: "output/output.ipa",
       skip_submission: true,

@@ -1,5 +1,5 @@
 {
-  "name": "expo-local-cicd-zx-script",
+  "name": "expo-local-build",
   "module": "src/index.ts",
   "type": "module",
   "version": "0.0.2",

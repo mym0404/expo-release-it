@@ -1,2 +1,7 @@
-# expo-local-cicd-zx-script
-Local build &amp; submit script with Fastlane, Match, ZX
+# expo-local-build
+
+Construct environment for Build & Submit Expo CNG Project locally.
+
+# Placeholers
+
+

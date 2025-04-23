@@ -1,17 +1,19 @@
 import {Command} from "commander";
 
-import pkgJson from "../package.json";
 import {init} from "./command/init";
+import {OptionHolder, type ProgramOptions} from "./util/OptionHolder";
 
 const program = new Command()
 program.name('expo-local-cicd')
   .description('generate CLI script to Build & Submit local Expo project')
-  .version(pkgJson.version)
+  .version(OptionHolder.cli.version)
 
 program.command('init')
   .description('Initialize CLI utilities')
-  .action((name, options, command) => {
-    init()
+  .option('-r --rootDir <rootDir>', 'root directory of react native project(path of package.json)')
+  .action(async (name, options, command) => {
+    await init({options})
   })
 
 program.parse()
+

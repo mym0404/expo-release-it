@@ -19,5 +19,5 @@
     "fs-extra": "^11.3.0",
     "semver": "^7.7.1"
   },
-  "packageManager": "bun@1.2.4"
+  "packageManager": "bun@1.2.10"
 }

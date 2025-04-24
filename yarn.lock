@@ -5153,7 +5153,6 @@ __metadata:
     "@types/semver": "npm:^7.7.0"
     chalk: "npm:^5.4.1"
     commander: "npm:^13.1.0"
-    expo: "npm:~52.0.46"
     fs-extra: "npm:^11.3.0"
     prettier: "npm:3.5.3"
     react: "npm:18.3.1"

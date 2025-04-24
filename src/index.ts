@@ -1,4 +1,4 @@
-import { Command, Option } from 'commander';
+import { Command } from 'commander';
 
 import { init } from './command/init';
 import { OptionHolder } from './util/OptionHolder';
@@ -27,9 +27,9 @@ program
 program
   .command('bump')
   .description('Bump binary release patch version with modifying app.json')
-  .addOption(
-    new Option('-i --increment <type>', 'increment type').choices(['major', 'minor', 'patch']),
-  )
+  // .addOption(
+  //   new Option('-i --increment <type>', 'increment type').choices(['major', 'minor', 'patch']),
+  // )
   .action(async (options) => {
     await bump({ options });
   });

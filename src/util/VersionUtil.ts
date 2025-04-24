@@ -4,7 +4,7 @@ import * as path from 'path';
 import { throwError } from './throwError';
 import semver from 'semver';
 
-export async function parseBinaryVersion() {
+export async function parseBinaryVersions() {
   const files = await fs.readdir(OptionHolder.rootDir);
 
   const jsConfigFiles = ['app.config.ts', 'app.config.js', 'app.config.cjs', 'app.config.mjs'];
@@ -28,8 +28,8 @@ export async function parseBinaryVersion() {
     const filePath = path.resolve(OptionHolder.rootDir, filename);
     const content = await fs.readFile(filePath, { encoding: 'utf-8' });
 
-    const VERSION_NAME = /const VERSION_NAME = '(.*?)';?/.exec(content)?.[1];
-    const VERSION_CODE = /const VERSION_CODE = (.*?);?/.exec(content)?.[1];
+    const VERSION_NAME = /const VERSION_NAME = '(.*?)';/.exec(content)?.[1];
+    const VERSION_CODE = /const VERSION_CODE = (.*?);/.exec(content)?.[1];
 
     if (!VERSION_NAME) {
       throwError('cannot parse version name');
@@ -72,5 +72,59 @@ export async function parseBinaryVersion() {
 
     OptionHolder.versionName = versionName;
     OptionHolder.versionCode = iosVersionCode;
+  }
+}
+
+export async function injectBinaryVersions({
+  versionCode,
+  versionName,
+}: {
+  versionName: string;
+  versionCode: string;
+}) {
+  const files = await fs.readdir(OptionHolder.rootDir);
+
+  const jsConfigFiles = ['app.config.ts', 'app.config.js', 'app.config.cjs', 'app.config.mjs'];
+  const jsonConfigFile = 'app.json';
+
+  for (const jsConfigFile of jsConfigFiles) {
+    if (files.includes(jsConfigFile)) {
+      await injectToJsConfigFile(jsConfigFile);
+      return;
+    }
+  }
+
+  if (files.includes(jsonConfigFile)) {
+    await injectToJsonConfigFile(jsonConfigFile);
+    return;
+  }
+
+  throwError('expo config file not found');
+
+  async function injectToJsConfigFile(filename: string) {
+    const filePath = path.resolve(OptionHolder.rootDir, filename);
+    let content = await fs.readFile(filePath, { encoding: 'utf-8' });
+
+    content = content.replace(
+      /const VERSION_NAME = '(.*?)';/,
+      `const VERSION_NAME = '${versionName}';`,
+    );
+    content = content.replace(
+      /const VERSION_CODE = (.*?);/,
+      `const VERSION_CODE = ${versionCode};`,
+    );
+
+    await fs.writeFile(filePath, content, { encoding: 'utf-8' });
+  }
+
+  async function injectToJsonConfigFile(filename: string) {
+    const filePath = path.resolve(OptionHolder.rootDir, filename);
+    const json = JSON.parse(await fs.readFile(filePath, { encoding: 'utf-8' }));
+
+    json.expo.version = versionName;
+    json.expo.ios.buildNumber = versionCode;
+    json.expo.android.versionCode = +versionCode;
+
+    await fs.writeFile(filePath, JSON.stringify(json, null, 2), { encoding: 'utf-8' });
   }
 }

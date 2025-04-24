@@ -2,11 +2,19 @@ import { parseBinaryVersion } from '../util/parseBinaryVersion';
 import { promptCommonInputs } from '../util/promptCommonInputs';
 import { execa } from 'execa';
 import { throwError } from '../util/throwError';
+import { log } from '../util/Log';
+import { OptionHolder } from '../util/OptionHolder';
+import semver from 'semver';
 
 export async function bump() {
   await preCheck();
   await promptCommonInputs();
   await parseBinaryVersion();
+
+  log.info(`current version: ${OptionHolder.versionName}(${OptionHolder.versionCode})`);
+  const nextVersionName = semver.inc(OptionHolder.versionName, 'patch');
+  const nextVersionCode = Number(OptionHolder.versionCode) + 1;
+  log.info(`next version: ${nextVersionName}(${nextVersionCode})`);
 }
 
 async function preCheck() {

@@ -6,7 +6,12 @@ import { log } from '../util/Log';
 import { OptionHolder } from '../util/OptionHolder';
 import semver from 'semver';
 
-export async function bump() {
+export type BumpOptions = {
+  increment?: 'major' | 'minor' | 'patch';
+};
+
+export async function bump({ options }: { options: BumpOptions }) {
+  console.log(options);
   await preCheck();
   await promptCommonInputs();
   await parseBinaryVersion();

@@ -1,13 +1,12 @@
 import { OptionHolder } from '../util/OptionHolder';
 import { logger } from '../util/logger';
 import chalk from 'chalk';
-import * as path from 'node:path';
 import { input } from '@inquirer/prompts';
 import { iterateAllFilesInGeneratedTemplate } from '../util/iterateAllFilesInGeneratedTemplate';
 import { isDev } from '../util/EnvUtil';
 import { parseBinaryVersions } from '../util/VersionUtil';
 import { promptCommonInputs } from '../util/promptCommonInputs';
-import { exist, remove, copy, read, write } from '../util/FileUtil';
+import { exist, remove, copy, read, write, join } from '../util/FileUtil';
 
 export async function init() {
   logger.info(`${chalk.inverse('expo-local-build')}`);
@@ -21,7 +20,7 @@ export async function init() {
 
 async function promptInputs() {
   /* path */
-  OptionHolder.outDir = path.join(
+  OptionHolder.outDir = join(
     OptionHolder.rootDir,
     await input({
       message: 'output path',
@@ -93,8 +92,8 @@ async function copyTemplates() {
   }
 
   async function copyDirRecursively(dir: string) {
-    const sourceDirPath = path.join(OptionHolder.cli.templateDir, dir);
-    const destDirPath = path.join(OptionHolder.outDir, dir);
+    const sourceDirPath = join(OptionHolder.cli.templateDir, dir);
+    const destDirPath = join(OptionHolder.outDir, dir);
     if (exist(destDirPath)) {
       remove(destDirPath);
     }
@@ -107,7 +106,7 @@ async function injectPlaceHolders() {
     let content = read(filePath);
     for (const [key, value] of Object.entries(OptionHolder.templateValuePlaceholderMap)) {
       content = content.replaceAll(`{{${key}}}`, value);
-      await write(filePath, content);
+      write(filePath, content);
     }
   });
 }

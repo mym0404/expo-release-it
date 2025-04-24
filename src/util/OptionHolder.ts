@@ -1,6 +1,6 @@
 import pkgJson from '../../package.json';
 import { fileURLToPath } from 'url';
-import * as path from 'node:path';
+import { resolve } from './FileUtil';
 
 export const OptionHolder: {
   cli: { version: string; rootDir: string; templateDir: string };
@@ -27,8 +27,8 @@ export const OptionHolder: {
 } = {
   cli: {
     version: pkgJson.version,
-    rootDir: path.resolve(fileURLToPath(import.meta.url), '../../..'),
-    templateDir: path.resolve(fileURLToPath(import.meta.url), '../../../template'),
+    rootDir: resolve(fileURLToPath(import.meta.url), '../../..'),
+    templateDir: resolve(fileURLToPath(import.meta.url), '../../../template'),
   },
   templateValuePlaceholderMap: {} as any,
   templateDirNames: ['fastlane-android', 'fastlane-ios', 'key'],

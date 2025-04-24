@@ -57,3 +57,13 @@ export function remove(path: string) {
     return fs.rmSync(path, { force: true });
   }
 }
+
+export async function iterateDir(path: string, fn: (file: string) => Promise<void> | void) {
+  if (!isDir(path)) {
+    return;
+  }
+
+  for (const file of fs.readdirSync(path)) {
+    await fn(file);
+  }
+}

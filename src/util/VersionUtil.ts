@@ -1,8 +1,7 @@
 import { OptionHolder } from './OptionHolder';
-import * as path from 'path';
 import { throwError } from './throwError';
 import semver from 'semver';
-import { readdir, read, readJsonSlow, write, writeJson } from './FileUtil';
+import { readdir, read, readJsonSlow, write, writeJson, resolve } from './FileUtil';
 
 export async function parseBinaryVersions() {
   const files = readdir(OptionHolder.rootDir);
@@ -25,7 +24,7 @@ export async function parseBinaryVersions() {
   throwError('expo config file not found');
 
   async function parseFromJsConfigFile(filename: string) {
-    const filePath = path.resolve(OptionHolder.rootDir, filename);
+    const filePath = resolve(OptionHolder.rootDir, filename);
     const content = read(filePath);
 
     const VERSION_NAME = /const VERSION_NAME = '(.*?)';/.exec(content)?.[1];
@@ -47,7 +46,7 @@ export async function parseBinaryVersions() {
   }
 
   async function parseFromJsonConfigFile(filename: string) {
-    const filePath = path.resolve(OptionHolder.rootDir, filename);
+    const filePath = resolve(OptionHolder.rootDir, filename);
     const json = readJsonSlow(filePath);
 
     const versionName = json.expo?.version + '';
@@ -102,7 +101,7 @@ export async function injectBinaryVersions({
   throwError('expo config file not found');
 
   async function injectToJsConfigFile(filename: string) {
-    const filePath = path.resolve(OptionHolder.rootDir, filename);
+    const filePath = resolve(OptionHolder.rootDir, filename);
     let content = read(filePath);
 
     content = content.replace(
@@ -118,7 +117,7 @@ export async function injectBinaryVersions({
   }
 
   async function injectToJsonConfigFile(filename: string) {
-    const filePath = path.resolve(OptionHolder.rootDir, filename);
+    const filePath = resolve(OptionHolder.rootDir, filename);
     const json = readJsonSlow(filePath);
 
     json.expo.version = versionName;

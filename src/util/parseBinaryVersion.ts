@@ -38,7 +38,7 @@ export async function parseBinaryVersion() {
       throwError('cannot parse version code');
     }
 
-    if (semver.valid(VERSION_NAME)) {
+    if (!semver.valid(VERSION_NAME)) {
       throwError('VERSION_NAME is not a valid semver format');
     }
 
@@ -66,7 +66,7 @@ export async function parseBinaryVersion() {
       throwError('app.json expo.ios.buildNumber is not equal with expo.android.versionCode');
     }
 
-    if (semver.valid(versionName)) {
+    if (!semver.valid(versionName)) {
       throwError('VERSION_NAME is not a valid semver format');
     }
 

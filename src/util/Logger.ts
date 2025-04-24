@@ -1,6 +1,6 @@
 import chalk from 'chalk';
 
-export const log = {
+export const logger = {
   success: (...msg: any[]) => console.log(chalk.green(`✔ ${msg.join(', ')}`)),
   error: (...msg: any[]) => console.log(chalk.red(`✖ ${msg.join(', ')}`)),
   warn: (...msg: any[]) => console.log(chalk.yellow(`⚠ ${msg.join(', ')}`)),

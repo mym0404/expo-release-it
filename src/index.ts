@@ -2,7 +2,7 @@ import { Command } from 'commander';
 
 import { init } from './command/init';
 import { OptionHolder } from './util/OptionHolder';
-import { log } from './util/Log';
+import { logger } from './util/Logger';
 import { bump } from './command/bump';
 import { release } from './command/release';
 import { submit } from './command/submit';
@@ -20,7 +20,7 @@ program
     try {
       await init();
     } catch (e: any) {
-      log.error(e);
+      logger.error(e);
     }
   });
 

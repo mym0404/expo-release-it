@@ -1,5 +1,5 @@
 import { OptionHolder } from '../util/OptionHolder';
-import { log } from '../util/Log';
+import { logger } from '../util/Logger';
 import chalk from 'chalk';
 import * as path from 'node:path';
 import fs from 'fs-extra';
@@ -10,7 +10,7 @@ import { parseBinaryVersions } from '../util/VersionUtil';
 import { promptCommonInputs } from '../util/promptCommonInputs';
 
 export async function init() {
-  log.info(`${chalk.inverse('expo-local-build')}`);
+  logger.info(`${chalk.inverse('expo-local-build')}`);
 
   await promptCommonInputs();
   await parseBinaryVersions();

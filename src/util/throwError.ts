@@ -1,10 +1,10 @@
-import { log } from './Log';
+import { logger } from './Logger';
 
 export function throwError(message: string, e?: any): never {
   if (e) {
-    log.error(message, e);
+    logger.error(message, e);
   } else {
-    log.error(message);
+    logger.error(message);
   }
   process.exit(1);
 }

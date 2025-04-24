@@ -2,23 +2,22 @@ import { parseBinaryVersions, injectBinaryVersions } from '../util/VersionUtil';
 import { promptCommonInputs } from '../util/promptCommonInputs';
 import { execa } from 'execa';
 import { throwError } from '../util/throwError';
-import { log } from '../util/Log';
+import { logger } from '../util/Logger';
 import { OptionHolder } from '../util/OptionHolder';
 import semver from 'semver';
 import { isDev } from '../util/EnvUtil';
 
 export type BumpOptions = {};
 
-export async function bump({ options }: { options: BumpOptions }) {
-  console.log(options);
+export async function bump({}: { options: BumpOptions }) {
   await preCheck();
   await promptCommonInputs();
   await parseBinaryVersions();
 
-  log.info(`current version: ${OptionHolder.versionName}(${OptionHolder.versionCode})`);
+  logger.info(`current version: ${OptionHolder.versionName}(${OptionHolder.versionCode})`);
   const nextVersionName = semver.inc(OptionHolder.versionName, 'patch')!;
   const nextVersionCode = Number(OptionHolder.versionCode) + 1 + '';
-  log.info(`next version: ${nextVersionName}(${nextVersionCode})`);
+  logger.info(`next version: ${nextVersionName}(${nextVersionCode})`);
 
   await injectBinaryVersions({ versionName: nextVersionName, versionCode: nextVersionCode });
 }

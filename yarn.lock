@@ -5115,29 +5115,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"expo-local-build@workspace:.":
-  version: 0.0.0-use.local
-  resolution: "expo-local-build@workspace:."
-  dependencies:
-    "@inquirer/prompts": "npm:^7.4.1"
-    "@mj-studio/js-util": "npm:^1.1.20"
-    "@types/bun": "npm:latest"
-    "@types/fs-extra": "npm:^11.0.4"
-    "@types/semver": "npm:^7.7.0"
-    chalk: "npm:^5.4.1"
-    commander: "npm:^13.1.0"
-    fs-extra: "npm:^11.3.0"
-    prettier: "npm:3.5.3"
-    release-it: "npm:^19.0.1"
-    semver: "npm:^7.7.1"
-    typescript: "npm:^5.8.3"
-    url: "npm:^0.11.4"
-    zx: "npm:^8.5.3"
-  bin:
-    expo-local-build: ./build/index.js
-  languageName: unknown
-  linkType: soft
-
 "expo-modules-autolinking@npm:2.0.8":
   version: 2.0.8
   resolution: "expo-modules-autolinking@npm:2.0.8"
@@ -5164,6 +5141,32 @@ __metadata:
   checksum: 10c0/1f0ca6902baf0bfabad2442b08ee44099bd3675a4f57eda76316416c2518667bd1e72cddc1c3b8c3ff1464b318a2814ff0a63036a5d7405d508f65fcacce19da
   languageName: node
   linkType: hard
+
+"expo-release-it@workspace:.":
+  version: 0.0.0-use.local
+  resolution: "expo-release-it@workspace:."
+  dependencies:
+    "@inquirer/prompts": "npm:^7.4.1"
+    "@mj-studio/js-util": "npm:^1.1.20"
+    "@types/bun": "npm:latest"
+    "@types/fs-extra": "npm:^11.0.4"
+    "@types/semver": "npm:^7.7.0"
+    chalk: "npm:^5.4.1"
+    commander: "npm:^13.1.0"
+    expo: "npm:~52.0.46"
+    fs-extra: "npm:^11.3.0"
+    prettier: "npm:3.5.3"
+    react: "npm:18.3.1"
+    react-native: "npm:0.76.9"
+    release-it: "npm:^19.0.1"
+    semver: "npm:^7.7.1"
+    typescript: "npm:^5.8.3"
+    url: "npm:^0.11.4"
+    zx: "npm:^8.5.3"
+  bin:
+    expo-release-it: ./build/index.js
+  languageName: unknown
+  linkType: soft
 
 "expo-router@npm:~4.0.20":
   version: 4.0.20

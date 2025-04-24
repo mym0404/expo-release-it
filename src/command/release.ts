@@ -1,8 +1,8 @@
 import { logger } from '../util/logger';
-import { parseBinaryVersions } from '../util/VersionUtil';
-import { promptCommonInputs } from '../util/promptCommonInputs';
 import { select } from '@inquirer/prompts';
 import { formatJson } from '@mj-studio/js-util';
+import { prepareAndroid } from '../util/prepareAndroid';
+import { setup } from '../util/setup';
 
 export type ReleaseOptions = {
   platform: 'ios' | 'android';
@@ -14,8 +14,7 @@ const releaseOptions: ReleaseOptions = {
 };
 
 export async function release() {
-  await promptCommonInputs();
-  await parseBinaryVersions();
+  await setup();
   await promptInputs();
 
   logger.info(formatJson(releaseOptions));
@@ -45,4 +44,6 @@ async function promptInputs() {
 }
 
 async function releaseIos() {}
-async function releaseAndroid() {}
+async function releaseAndroid() {
+  await prepareAndroid();
+}

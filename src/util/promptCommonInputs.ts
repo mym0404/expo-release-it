@@ -1,7 +1,7 @@
 import { OptionHolder } from './OptionHolder';
 import { input } from '@inquirer/prompts';
 import { isDev } from './EnvUtil';
-import { exist, resolve } from './FileUtil';
+import { exist, resolve, join } from './FileUtil';
 
 export async function promptCommonInputs() {
   OptionHolder.rootDir = resolve(
@@ -17,4 +17,14 @@ export async function promptCommonInputs() {
       },
     }),
   );
+
+  OptionHolder.outDir = join(
+    OptionHolder.rootDir,
+    await input({
+      message: 'output path',
+      default: 'expo-local-build',
+    }),
+  );
+
+  OptionHolder.keyholderFilePath = resolve(OptionHolder.outDir, 'keyholder.json');
 }

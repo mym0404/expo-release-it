@@ -13,6 +13,8 @@ export const OptionHolder: {
     ios_app_store_connect_api_key_issuer_id: string;
     ios_xcode_project_target: string;
     android_package_name: string;
+  };
+  keyholderFileValueMap: {
     android_keystore_store_password: string;
     android_keystore_key_alias: string;
     android_keystore_key_password: string;
@@ -22,6 +24,7 @@ export const OptionHolder: {
   templateDirNames: string[];
   rootDir: string;
   outDir: string;
+  keyholderFilePath: string;
   versionName: string;
   versionCode: string;
 } = {
@@ -31,11 +34,13 @@ export const OptionHolder: {
     templateDir: resolve(fileURLToPath(import.meta.url), '../../../template'),
   },
   templateValuePlaceholderMap: {} as any,
+  keyholderFileValueMap: {} as any,
   templateDirNames: ['fastlane-android', 'fastlane-ios', 'key'],
   iosBundleIdentifier: '',
   androidPackageName: '',
   rootDir: '',
   outDir: '',
+  keyholderFilePath: '',
   versionName: '',
   versionCode: '',
 };

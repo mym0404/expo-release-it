@@ -1,7 +1,5 @@
-import { parseBinaryVersions } from '../util/VersionUtil';
-import { promptCommonInputs } from '../util/promptCommonInputs';
+import { setup } from '../util/setup';
 
 export async function submit() {
-  await promptCommonInputs();
-  await parseBinaryVersions();
+  await setup();
 }

@@ -6,7 +6,7 @@ import { iterateAllFilesInGeneratedTemplate } from '../util/iterateAllFilesInGen
 import { isDev } from '../util/EnvUtil';
 import { parseBinaryVersions } from '../util/VersionUtil';
 import { promptCommonInputs } from '../util/promptCommonInputs';
-import { exist, remove, copy, read, write, join } from '../util/FileUtil';
+import { exist, remove, copy, read, write, join, writeJson } from '../util/FileUtil';
 
 export async function init() {
   logger.info(`${chalk.inverse('expo-local-build')}`);
@@ -16,18 +16,11 @@ export async function init() {
   await promptInputs();
   await copyTemplates();
   await injectPlaceHolders();
+
+  logger.success('expo-local-build init success');
 }
 
 async function promptInputs() {
-  /* path */
-  OptionHolder.outDir = join(
-    OptionHolder.rootDir,
-    await input({
-      message: 'output path',
-      default: 'expo-local-build',
-    }),
-  );
-
   /* ios */
   OptionHolder.iosBundleIdentifier = OptionHolder.templateValuePlaceholderMap.ios_app_identifier =
     await input({
@@ -72,18 +65,20 @@ async function promptInputs() {
       message: 'Android Package Name',
       default: isDev ? 'android_package_name' : undefined,
     });
-  OptionHolder.templateValuePlaceholderMap.android_keystore_store_password = await input({
+  OptionHolder.keyholderFileValueMap.android_keystore_store_password = await input({
     message: 'Android Keystore Store Password',
     default: isDev ? 'android_keystore_store_password' : undefined,
   });
-  OptionHolder.templateValuePlaceholderMap.android_keystore_key_alias = await input({
+  OptionHolder.keyholderFileValueMap.android_keystore_key_alias = await input({
     message: 'Android Keystore Key Alias',
     default: isDev ? 'android_keystore_key_alias' : undefined,
   });
-  OptionHolder.templateValuePlaceholderMap.android_keystore_key_password = await input({
+  OptionHolder.keyholderFileValueMap.android_keystore_key_password = await input({
     message: 'Android Keystore Key Password',
     default: isDev ? 'android_keystore_key_password' : undefined,
   });
+
+  writeJson(OptionHolder.keyholderFilePath, OptionHolder.keyholderFileValueMap);
 }
 
 async function copyTemplates() {

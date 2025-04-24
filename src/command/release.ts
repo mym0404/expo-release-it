@@ -23,7 +23,9 @@ export async function release() {
   await setup();
   await promptInputs();
 
+  logger.info('Build & Upload Started');
   logger.info(`Version: ${OptionHolder.versionName}(${OptionHolder.versionCode})`);
+
   if (releaseOptions.platform === 'ios') {
     await releaseIos();
     logger.success(`iOS Release Success ${chalk.bold.inverse(calculateElapsed(startTime))}`);

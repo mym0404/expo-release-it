@@ -50,64 +50,11 @@ const yarn = !!argv['yarn'] || clear;
 const pod = !!argv['pod'] || clear;
 
 async function main() {
-  print(
-    `Options: platform: ${platform}, yarn ${yarn === true}, pod: ${pod === true}, clear: ${clear === true}`,
-  );
-  await ReleaseScriptUtil.init();
-  print(`Versions: ${VERSION_NAME}(${VERSION_CODE})`);
-  try {
-    if (platform !== 'android' && platform !== 'ios') {
-      throw new Error('platform should be android or ios');
-    }
-    await onInit();
-
-    if (platform === 'android') {
-      await doAndroid();
-    }
-    if (platform === 'ios') {
-      await doIos();
-    }
-  } catch (e) {
-    printError(e);
-  } finally {
-    await onDeinit();
+  if (platform === 'android') {
+    await doAndroid();
   }
-
-  async function onInit() {
-    cd(projectRoot);
-    if (clear) {
-      if (platform === 'android') {
-        await $`rm -rf android.tmp`;
-      } else {
-        await $`rm -rf ios.tmp`;
-      }
-    }
-    if (yarn) {
-      await spinner('Install Yarn', () => $`yarn`);
-      printSuccess('Install Yarn');
-    }
-    if (clear) {
-      if (exist('android') && platform === 'android') {
-        await $`mv android android.tmp`;
-      }
-      if (exist('ios') && platform === 'ios') {
-        await $`mv ios ios.tmp`;
-      }
-    }
-  }
-  async function onDeinit() {
-    print('Deinit');
-    cd(projectRoot);
-    if (clear) {
-      if (exist('android.tmp') && platform === 'android') {
-        await $`rm -rf android`;
-        await $`mv android.tmp android`;
-      }
-      if (exist('ios.tmp') && platform === 'ios') {
-        await $`rm -rf ios`;
-        await $`mv ios.tmp ios`;
-      }
-    }
+  if (platform === 'ios') {
+    await doIos();
   }
 
   async function doAndroid() {

@@ -5,7 +5,7 @@ import { prepareIos } from '../util/prepareIos';
 import { logger } from '../util/logger';
 import { OptionHolder } from '../util/OptionHolder';
 import { spinner, $ } from 'zx';
-import { resolve } from '../util/FileUtil';
+import { resolve, remove } from '../util/FileUtil';
 import chalk from 'chalk';
 import { calculateElapsed } from '../util/calculateElapsed';
 
@@ -53,7 +53,34 @@ async function promptInputs() {
 }
 
 async function releaseIos() {
+  const iosDir = resolve(OptionHolder.rootDir, 'ios');
+  const $$ = $({
+    verbose: false,
+    cwd: iosDir,
+    env: {
+      MATCH_PASSWORD: OptionHolder.keyholderFileValueMap.ios_match_password,
+    },
+  });
   await prepareIos();
+  await fastlane();
+
+  async function fastlane() {
+    await spinner('Bundler Install', () => $$`bundle install`);
+    logger.success('Bundler Install');
+
+    if (releaseOptions.pod) {
+      await spinner('Pod Install', () => $$`bundle exec pod install`);
+      logger.success('Pod Install');
+    }
+    remove(resolve(iosDir, '.xcode.env.local'));
+
+    await spinner(
+      'Fastlane',
+      () =>
+        $$`bundle exec fastlane release version_name:${OptionHolder.versionName} version_code:${OptionHolder.versionCode}`,
+    );
+    logger.success('Deploy to App Store Connect Test Flight');
+  }
 }
 async function releaseAndroid() {
   const $$ = $({

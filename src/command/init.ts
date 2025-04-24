@@ -45,6 +45,11 @@ async function promptInputs() {
     default: isDev ? 'ios_match_git_url' : undefined,
   });
 
+  OptionHolder.keyholderFileValueMap.ios_match_password = await input({
+    message: 'IOS Match Password',
+    default: isDev ? 'ios_match_password' : undefined,
+  });
+
   OptionHolder.templateValuePlaceholderMap.ios_app_store_connect_api_key_id = await input({
     message: 'IOS App Store Connect Api Key Id',
     default: isDev ? 'ios_app_store_connect_api_key_id' : undefined,

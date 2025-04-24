@@ -19,6 +19,7 @@ export const OptionHolder: {
     android_keystore_store_password: string;
     android_keystore_key_alias: string;
     android_keystore_key_password: string;
+    ios_match_password: string;
   };
   iosBundleIdentifier: string;
   androidPackageName: string;

@@ -6,7 +6,7 @@
   "license": "MIT",
   "scripts": {
     "build": "tsc",
-    "dev": "bun run build && NODE_ENV=development bun build/index.js init",
+    "dev": "bun run build && NODE_ENV=development bun build/index.js",
     "release": "release-it"
   },
   "dependencies": {

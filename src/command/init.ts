@@ -7,10 +7,12 @@ import { input } from '@inquirer/prompts';
 import { iterateAllFilesInGeneratedTemplate } from '../util/FileUtil';
 import { isDev } from '../util/EnvUtil';
 import { parseBinaryVersion } from '../util/parseBinaryVersion';
+import { promptCommonInputs } from '../util/promptCommonInputs';
 
 export async function init() {
   log.info(`${chalk.inverse('expo-local-build')}`);
 
+  await promptCommonInputs();
   await parseBinaryVersion();
   await promptInputs();
   await copyTemplates();
@@ -19,19 +21,6 @@ export async function init() {
 
 async function promptInputs() {
   /* path */
-  OptionHolder.rootDir = path.resolve(
-    await input({
-      message: 'react native project root directory path',
-      default: isDev ? 'example' : '.',
-      validate: (value) => {
-        const p = path.resolve(value, 'package.json');
-        if (!fs.existsSync(p)) {
-          return "package.json hasn\'t been detected. provider valid project root.";
-        }
-        return true;
-      },
-    }),
-  );
   OptionHolder.outDir = path.join(
     OptionHolder.rootDir,
     await input({

@@ -2,6 +2,8 @@ import { select } from '@inquirer/prompts';
 import { prepareAndroid } from '../util/prepareAndroid';
 import { setup } from '../util/setup';
 import { prepareIos } from '../util/prepareIos';
+import { logger } from '../util/logger';
+import { OptionHolder } from '../util/OptionHolder';
 
 export type ReleaseOptions = {
   platform: 'ios' | 'android';
@@ -16,6 +18,7 @@ export async function release() {
   await setup();
   await promptInputs();
 
+  logger.info(`version: ${OptionHolder.versionName}(${OptionHolder.versionCode})`);
   if (releaseOptions.platform === 'ios') {
     await releaseIos();
   } else {

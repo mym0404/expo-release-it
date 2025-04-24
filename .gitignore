@@ -10,3 +10,5 @@ example/expo-local-build
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
+
+.DS_Store

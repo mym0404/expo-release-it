@@ -2949,6 +2949,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/semver@npm:^7.7.0":
+  version: 7.7.0
+  resolution: "@types/semver@npm:7.7.0"
+  checksum: 10c0/6b5f65f647474338abbd6ee91a6bbab434662ddb8fe39464edcbcfc96484d388baad9eb506dff217b6fc1727a88894930eb1f308617161ac0f376fe06be4e1ee
+  languageName: node
+  linkType: hard
+
 "@types/stack-utils@npm:^2.0.0":
   version: 2.0.3
   resolution: "@types/stack-utils@npm:2.0.3"
@@ -5150,6 +5157,7 @@ __metadata:
     "@mj-studio/js-util": "npm:^1.1.20"
     "@types/bun": "npm:latest"
     "@types/fs-extra": "npm:^11.0.4"
+    "@types/semver": "npm:^7.7.0"
     chalk: "npm:^5.4.1"
     commander: "npm:^13.1.0"
     execa: "npm:^9.5.2"

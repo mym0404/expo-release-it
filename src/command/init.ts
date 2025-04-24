@@ -6,10 +6,12 @@ import fs from 'fs-extra';
 import { input } from '@inquirer/prompts';
 import { iterateAllFilesInGeneratedTemplate } from '../util/FileUtil';
 import { isDev } from '../util/EnvUtil';
+import { parseBinaryVersion } from '../util/parseBinaryVersion';
 
 export async function init() {
   log.info(`${chalk.inverse('expo-local-build')}`);
 
+  await parseBinaryVersion();
   await promptInputs();
   await copyTemplates();
   await injectPlaceHolders();

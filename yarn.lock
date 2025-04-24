@@ -5161,10 +5161,7 @@ __metadata:
     url: "npm:^0.11.4"
     zx: "npm:^8.5.3"
   bin:
-    bump: ./bin/bump-version.mjs
-    init: ./build/index.js
-    release: ./bin/release-binary.mjs
-    submit: ./bin/submit-review.mjs
+    expo-local-build: ./build/index.js
   languageName: unknown
   linkType: soft
 

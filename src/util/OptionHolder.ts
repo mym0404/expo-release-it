@@ -22,6 +22,8 @@ export const OptionHolder: {
   templateDirNames: string[];
   rootDir: string;
   outDir: string;
+  versionName: string;
+  versionCode: string;
 } = {
   cli: {
     version: pkgJson.version,
@@ -34,4 +36,6 @@ export const OptionHolder: {
   androidPackageName: '',
   rootDir: '',
   outDir: '',
+  versionName: '',
+  versionCode: '',
 };

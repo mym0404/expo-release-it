@@ -5,7 +5,7 @@ import { logger } from './logger';
 
 export async function prepareIos() {
   const iosDir = resolve(OptionHolder.rootDir, 'ios');
-  const fastlaneSrcDir = resolve(OptionHolder.rootDir, 'fastlane-ios');
+  const fastlaneSrcDir = resolve(OptionHolder.outDir, 'fastlane-ios');
   const fastlaneDestDir = resolve(OptionHolder.rootDir, 'ios', 'fastlane');
 
   await spinner(

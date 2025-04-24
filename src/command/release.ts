@@ -18,7 +18,7 @@ export async function release() {
   await setup();
   await promptInputs();
 
-  logger.info(`version: ${OptionHolder.versionName}(${OptionHolder.versionCode})`);
+  logger.info(`Version: ${OptionHolder.versionName}(${OptionHolder.versionCode})`);
   if (releaseOptions.platform === 'ios') {
     await releaseIos();
   } else {

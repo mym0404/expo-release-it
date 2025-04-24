@@ -5,7 +5,7 @@ import { logger } from './logger';
 
 export async function prepareAndroid() {
   const androidDir = resolve(OptionHolder.rootDir, 'android');
-  const fastlaneSrcDir = resolve(OptionHolder.rootDir, 'fastlane-android');
+  const fastlaneSrcDir = resolve(OptionHolder.outDir, 'fastlane-android');
   const fastlaneDestDir = resolve(OptionHolder.rootDir, 'android', 'fastlane');
 
   await spinner(

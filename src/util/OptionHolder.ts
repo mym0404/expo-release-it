@@ -13,6 +13,7 @@ export const OptionHolder: {
     ios_app_store_connect_api_key_issuer_id: string;
     ios_xcode_project_target: string;
     android_package_name: string;
+    key_dir_relative_path: string;
   };
   keyholderFileValueMap: {
     android_keystore_store_password: string;
@@ -24,6 +25,7 @@ export const OptionHolder: {
   templateDirNames: string[];
   rootDir: string;
   outDir: string;
+  keyDir: string;
   keyholderFilePath: string;
   versionName: string;
   versionCode: string;
@@ -40,6 +42,7 @@ export const OptionHolder: {
   androidPackageName: '',
   rootDir: '',
   outDir: '',
+  keyDir: '',
   keyholderFilePath: '',
   versionName: '',
   versionCode: '',

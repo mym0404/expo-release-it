@@ -7,6 +7,7 @@ import { isDev } from '../util/EnvUtil';
 import { parseBinaryVersions } from '../util/VersionUtil';
 import { promptCommonInputs } from '../util/promptCommonInputs';
 import { exist, remove, copy, read, write, join, writeJson } from '../util/FileUtil';
+import { path } from 'zx';
 
 export async function init() {
   logger.info(`${chalk.inverse('expo-local-build')}`);
@@ -101,7 +102,12 @@ async function injectPlaceHolders() {
     let content = read(filePath);
     for (const [key, value] of Object.entries(OptionHolder.templateValuePlaceholderMap)) {
       content = content.replaceAll(`{{${key}}}`, value);
-      write(filePath, content);
     }
+    // dynamic replace
+    content = content.replaceAll(
+      '{{key_dir_relative_path}}',
+      path.relative(filePath, OptionHolder.keyDir),
+    );
+    write(filePath, content);
   });
 }

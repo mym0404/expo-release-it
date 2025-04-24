@@ -1,11 +1,11 @@
 import { parseBinaryVersions, injectBinaryVersions } from '../util/VersionUtil';
 import { promptCommonInputs } from '../util/promptCommonInputs';
-import { execa } from 'execa';
 import { throwError } from '../util/throwError';
-import { logger } from '../util/Logger';
+import { logger } from '../util/logger';
 import { OptionHolder } from '../util/OptionHolder';
 import semver from 'semver';
 import { isDev } from '../util/EnvUtil';
+import { $ } from 'zx';
 
 export type BumpOptions = {};
 
@@ -27,7 +27,7 @@ async function preCheck() {
   try {
     let hasChange = false;
     try {
-      await execa`git diff --quiet HEAD`;
+      await $`git diff --quiet HEAD`;
     } catch (_) {
       hasChange = true;
     }

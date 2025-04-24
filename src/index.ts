@@ -2,7 +2,7 @@ import { Command } from 'commander';
 
 import { init } from './command/init';
 import { OptionHolder } from './util/OptionHolder';
-import { logger } from './util/Logger';
+import { logger } from './util/logger';
 import { bump } from './command/bump';
 import { release } from './command/release';
 import { submit } from './command/submit';

@@ -1,11 +1,11 @@
-import fs from 'fs-extra';
 import { OptionHolder } from './OptionHolder';
 import * as path from 'path';
 import { throwError } from './throwError';
 import semver from 'semver';
+import { readdir, read, readJsonSlow, write, writeJson } from './FileUtil';
 
 export async function parseBinaryVersions() {
-  const files = await fs.readdir(OptionHolder.rootDir);
+  const files = readdir(OptionHolder.rootDir);
 
   const jsConfigFiles = ['app.config.ts', 'app.config.js', 'app.config.cjs', 'app.config.mjs'];
   const jsonConfigFile = 'app.json';
@@ -26,7 +26,7 @@ export async function parseBinaryVersions() {
 
   async function parseFromJsConfigFile(filename: string) {
     const filePath = path.resolve(OptionHolder.rootDir, filename);
-    const content = await fs.readFile(filePath, { encoding: 'utf-8' });
+    const content = read(filePath);
 
     const VERSION_NAME = /const VERSION_NAME = '(.*?)';/.exec(content)?.[1];
     const VERSION_CODE = /const VERSION_CODE = (.*?);/.exec(content)?.[1];
@@ -48,7 +48,7 @@ export async function parseBinaryVersions() {
 
   async function parseFromJsonConfigFile(filename: string) {
     const filePath = path.resolve(OptionHolder.rootDir, filename);
-    const json = JSON.parse(await fs.readFile(filePath, { encoding: 'utf-8' }));
+    const json = readJsonSlow(filePath);
 
     const versionName = json.expo?.version + '';
     const iosVersionCode = json.expo?.ios?.buildNumber + '';
@@ -82,7 +82,7 @@ export async function injectBinaryVersions({
   versionName: string;
   versionCode: string;
 }) {
-  const files = await fs.readdir(OptionHolder.rootDir);
+  const files = readdir(OptionHolder.rootDir);
 
   const jsConfigFiles = ['app.config.ts', 'app.config.js', 'app.config.cjs', 'app.config.mjs'];
   const jsonConfigFile = 'app.json';
@@ -103,7 +103,7 @@ export async function injectBinaryVersions({
 
   async function injectToJsConfigFile(filename: string) {
     const filePath = path.resolve(OptionHolder.rootDir, filename);
-    let content = await fs.readFile(filePath, { encoding: 'utf-8' });
+    let content = read(filePath);
 
     content = content.replace(
       /const VERSION_NAME = '(.*?)';/,
@@ -114,17 +114,17 @@ export async function injectBinaryVersions({
       `const VERSION_CODE = ${versionCode};`,
     );
 
-    await fs.writeFile(filePath, content, { encoding: 'utf-8' });
+    write(filePath, content);
   }
 
   async function injectToJsonConfigFile(filename: string) {
     const filePath = path.resolve(OptionHolder.rootDir, filename);
-    const json = JSON.parse(await fs.readFile(filePath, { encoding: 'utf-8' }));
+    const json = readJsonSlow(filePath);
 
     json.expo.version = versionName;
     json.expo.ios.buildNumber = versionCode;
     json.expo.android.versionCode = +versionCode;
 
-    await fs.writeFile(filePath, JSON.stringify(json, null, 2), { encoding: 'utf-8' });
+    writeJson(filePath, json);
   }
 }

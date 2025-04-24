@@ -1,4 +1,4 @@
-import { logger } from './Logger';
+import { logger } from './logger';
 
 export function throwError(message: string, e?: any): never {
   if (e) {

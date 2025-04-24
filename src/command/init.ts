@@ -1,13 +1,13 @@
 import { OptionHolder } from '../util/OptionHolder';
-import { logger } from '../util/Logger';
+import { logger } from '../util/logger';
 import chalk from 'chalk';
 import * as path from 'node:path';
-import fs from 'fs-extra';
 import { input } from '@inquirer/prompts';
-import { iterateAllFilesInGeneratedTemplate } from '../util/FileUtil';
+import { iterateAllFilesInGeneratedTemplate } from '../util/iterateAllFilesInGeneratedTemplate';
 import { isDev } from '../util/EnvUtil';
 import { parseBinaryVersions } from '../util/VersionUtil';
 import { promptCommonInputs } from '../util/promptCommonInputs';
+import { exist, remove, copy, read, write } from '../util/FileUtil';
 
 export async function init() {
   logger.info(`${chalk.inverse('expo-local-build')}`);
@@ -95,19 +95,19 @@ async function copyTemplates() {
   async function copyDirRecursively(dir: string) {
     const sourceDirPath = path.join(OptionHolder.cli.templateDir, dir);
     const destDirPath = path.join(OptionHolder.outDir, dir);
-    if (fs.existsSync(destDirPath)) {
-      await fs.remove(destDirPath);
+    if (exist(destDirPath)) {
+      remove(destDirPath);
     }
-    await fs.copy(sourceDirPath, destDirPath);
+    copy(sourceDirPath, destDirPath);
   }
 }
 
 async function injectPlaceHolders() {
   await iterateAllFilesInGeneratedTemplate(async (filePath: string) => {
-    let content = await fs.readFile(filePath, { encoding: 'utf-8' });
+    let content = read(filePath);
     for (const [key, value] of Object.entries(OptionHolder.templateValuePlaceholderMap)) {
       content = content.replaceAll(`{{${key}}}`, value);
-      await fs.writeFile(filePath, content, { encoding: 'utf-8' });
+      await write(filePath, content);
     }
   });
 }

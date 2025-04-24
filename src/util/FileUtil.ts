@@ -1,24 +1,59 @@
-import path from 'node:path';
-import { OptionHolder } from './OptionHolder';
 import fs from 'fs-extra';
+import * as path from 'path';
 
-export async function iterateAllFilesInGeneratedTemplate(
-  callback: (filePath: string) => Promise<void>,
-) {
-  for (const dir of OptionHolder.templateDirNames) {
-    await go(path.join(OptionHolder.outDir, dir));
+export const join = path.join;
+export const resolve = path.resolve;
+export const filename = path.basename(__filename);
+
+export function exist(path: string) {
+  return fs.existsSync(path);
+}
+
+export function isDir(path: string) {
+  return exist(path) && fs.lstatSync(path).isDirectory();
+}
+
+export function isFile(path: string) {
+  return exist(path) && fs.lstatSync(path).isFile();
+}
+
+export function read(path: string) {
+  return fs.readFileSync(path, { encoding: 'utf8' });
+}
+
+export function readdir(path: string) {
+  return fs.readdirSync(path);
+}
+
+// you should require when possible(optimized in js)
+export function readJsonSlow(path: string) {
+  return fs.readJSONSync(path);
+}
+
+export function write(p: string, content: string) {
+  const dir = path.dirname(p);
+  if (!exist(dir)) {
+    fs.mkdirSync(dir, { recursive: true });
   }
 
-  async function go(dirPath: string) {
-    const paths = (await fs.readdir(dirPath)).map((f) => path.join(dirPath, f));
+  return fs.writeFileSync(p, content);
+}
+export function copy(src: string, dest: string) {
+  fs.copySync(src, dest);
+}
 
-    for (const p of paths) {
-      const stat = await fs.stat(p);
-      if (stat.isFile()) {
-        await callback(p);
-      } else if (stat.isDirectory()) {
-        await go(p);
-      }
-    }
+export function writeJson(path: string, json: any) {
+  return write(path, JSON.stringify(json, null, 2));
+}
+
+export function remove(path: string) {
+  if (!exist(path)) {
+    return;
+  }
+
+  if (fs.lstatSync(path).isDirectory()) {
+    return fs.rmSync(path, { force: true, recursive: true });
+  } else {
+    return fs.rmSync(path, { force: true });
   }
 }

@@ -2,7 +2,7 @@ import { OptionHolder } from './OptionHolder';
 import path from 'node:path';
 import { input } from '@inquirer/prompts';
 import { isDev } from './EnvUtil';
-import fs from 'fs-extra';
+import { exist } from './FileUtil';
 
 export async function promptCommonInputs() {
   OptionHolder.rootDir = path.resolve(
@@ -11,7 +11,7 @@ export async function promptCommonInputs() {
       default: isDev ? 'example' : '.',
       validate: (value) => {
         const p = path.resolve(value, 'package.json');
-        if (!fs.existsSync(p)) {
+        if (!exist(p)) {
           return "package.json hasn\'t been detected. provider valid project root.";
         }
         return true;

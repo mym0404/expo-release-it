@@ -1,8 +1,7 @@
-import { logger } from '../util/logger';
 import { select } from '@inquirer/prompts';
-import { formatJson } from '@mj-studio/js-util';
 import { prepareAndroid } from '../util/prepareAndroid';
 import { setup } from '../util/setup';
+import { prepareIos } from '../util/prepareIos';
 
 export type ReleaseOptions = {
   platform: 'ios' | 'android';
@@ -16,8 +15,6 @@ const releaseOptions: ReleaseOptions = {
 export async function release() {
   await setup();
   await promptInputs();
-
-  logger.info(formatJson(releaseOptions));
 
   if (releaseOptions.platform === 'ios') {
     await releaseIos();
@@ -34,16 +31,20 @@ async function promptInputs() {
       { name: 'android', value: 'android', description: 'Release android' },
     ],
   });
-  releaseOptions.pod = await select({
-    message: 'Install Cocoapods',
-    choices: [
-      { name: 'yes', value: true, description: 'Install pods before release' },
-      { name: 'no', value: false, description: 'Skip pods install' },
-    ],
-  });
+  if (releaseOptions.platform === 'ios') {
+    releaseOptions.pod = await select({
+      message: 'Install Cocoapods',
+      choices: [
+        { name: 'yes', value: true, description: 'Install pods before release' },
+        { name: 'no', value: false, description: 'Skip pods install' },
+      ],
+    });
+  }
 }
 
-async function releaseIos() {}
+async function releaseIos() {
+  await prepareIos();
+}
 async function releaseAndroid() {
   await prepareAndroid();
 }

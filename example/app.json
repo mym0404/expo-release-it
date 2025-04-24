@@ -10,14 +10,16 @@
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "buildNumber": "2"
+      "buildNumber": "2",
+      "bundleIdentifier": "com.navysw.example"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "versionCode": 2
+      "versionCode": 2,
+      "package": "com.navysw.example"
     },
     "web": {
       "bundler": "metro",

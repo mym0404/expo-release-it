@@ -30,12 +30,7 @@
   "workspaces": [
     "example"
   ],
-  "bin": {
-    "bump": "./bin/bump-version.mjs",
-    "init": "./build/index.js",
-    "release": "./bin/release-binary.mjs",
-    "submit": "./bin/submit-review.mjs"
-  },
+  "bin": "./build/index.js",
   "files": [
     "build",
     "package.json",

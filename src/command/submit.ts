@@ -9,11 +9,7 @@ import { remove, resolve } from '../util/FileUtil';
 import { prepareIos } from '../util/setup/prepareIos';
 import { InqueryInputs } from '../util/input/InqueryInputs';
 
-export type SubmitOptions = {
-  platform: 'ios' | 'android';
-};
-
-export async function submit({ options }: { options: SubmitOptions }) {
+export async function submit({ options }: { options: any }) {
   Object.assign(OptionHolder.input, options);
   const startTime = Date.now();
   await setup();

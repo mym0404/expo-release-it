@@ -10,13 +10,7 @@ import { calculateElapsed } from '../util/calculateElapsed';
 import { isWin } from '../util/EnvUtil';
 import { InqueryInputs } from '../util/input/InqueryInputs';
 
-export type BuildOptions = {
-  platform: 'ios' | 'android';
-  androidOutput: 'apk' | 'aab';
-  pod: boolean;
-};
-
-export async function build({ options }: { options: BuildOptions }) {
+export async function build({ options }: { options: any }) {
   Object.assign(OptionHolder.input, options);
   const startTime = Date.now();
   await setup();

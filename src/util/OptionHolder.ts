@@ -1,10 +1,5 @@
 import pkgJson from '../../package.json';
 import { resolve } from './FileUtil';
-import type { BuildOptions } from '../command/build';
-import type { InitOptions } from '../command/init';
-import type { BumpOptions } from '../command/bump';
-import type { SubmitOptions } from '../command/submit';
-import type { UploadOptions } from '../command/upload';
 import { fileURLToPath } from 'url';
 
 /**
@@ -21,7 +16,12 @@ export const OptionHolder: {
     // cli template source directory
     templateDir: string;
   };
-  input: InitOptions & BumpOptions & BuildOptions & UploadOptions & SubmitOptions;
+  input: {
+    platform: 'android' | 'ios';
+    uploadMetadata: boolean;
+    androidOutput: 'apk' | 'aab';
+    pod: boolean;
+  };
   keyholderMap: {
     ios_app_identifier: string;
     ios_app_store_connect_team_id: string;

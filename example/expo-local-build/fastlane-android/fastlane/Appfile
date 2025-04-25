@@ -1,0 +1,2 @@
+json_key_file("../key/android_play_console_service_account.json")
+package_name("android_package_name")

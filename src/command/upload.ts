@@ -10,13 +10,7 @@ import { calculateElapsed } from '../util/calculateElapsed';
 import { InqueryInputs } from '../util/input/InqueryInputs';
 import { throwError } from '../util/throwError';
 
-export type UploadOptions = {
-  platform: 'ios' | 'android';
-  uploadMetadata: boolean;
-  androidOutput: 'apk' | 'aab';
-};
-
-export async function upload({ options }: { options: UploadOptions }) {
+export async function upload({ options }: { options: any }) {
   Object.assign(OptionHolder.input, options);
   const startTime = Date.now();
   await setup();

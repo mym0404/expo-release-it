@@ -7,9 +7,7 @@ import { parseBinaryVersions } from '../util/VersionUtil';
 import { promptCommonInputs } from '../util/setup/promptCommonInputs';
 import { copy, join, writeJson } from '../util/FileUtil';
 
-export type InitOptions = {};
-
-export async function init({ options }: { options: InitOptions }) {
+export async function init({ options }: { options: any }) {
   Object.assign(OptionHolder.input, options);
 
   logger.info(`${chalk.inverse('expo-release-it')} Initialization Get Started`);

@@ -7,9 +7,7 @@ import { isDev } from '../util/EnvUtil';
 import { $ } from 'zx';
 import { setup } from '../util/setup/setup';
 
-export type BumpOptions = {};
-
-export async function bump({ options }: { options: BumpOptions }) {
+export async function bump({ options }: { options: any }) {
   Object.assign(OptionHolder.input, options);
   await preCheck();
   await setup();

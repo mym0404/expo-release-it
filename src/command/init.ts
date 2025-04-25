@@ -113,7 +113,7 @@ async function injectPlaceHolders() {
     for (const [key, value] of Object.entries(OptionHolder.templateValuePlaceholderMap)) {
       content = content.replaceAll(`{{${key}}}`, value);
     }
-    // dynamic replace
+    // dynamic replacements
     content = content.replaceAll(
       '{{key_dir_relative_path}}',
       path.relative(filePath, OptionHolder.keyDir),

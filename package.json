@@ -2,7 +2,7 @@
   "name": "expo-release-it",
   "module": "src/index.ts",
   "type": "module",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "license": "MIT",
   "scripts": {
     "build": "tsc",

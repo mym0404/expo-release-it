@@ -9,7 +9,8 @@
     "dev": "bun run build && NODE_ENV=development bun build/index.js",
     "release": "yarn build && release-it",
     "android": "expo run:android",
-    "ios": "expo run:ios"
+    "ios": "expo run:ios",
+    "t": "tsc --noEmit -p ."
   },
   "dependencies": {
     "@inquirer/prompts": "^7.4.1",

@@ -48,8 +48,8 @@ export const OptionHolder: {
 } = {
   cli: {
     version: pkgJson.version,
-    rootDir: resolve(fileURLToPath(import.meta.url), '../../..'),
-    templateDir: resolve(fileURLToPath(import.meta.url), '../../../template'),
+    rootDir: resolve(fileURLToPath(__dirname), '../..'),
+    templateDir: resolve(fileURLToPath(__dirname), '../../template'),
   },
   init: {} as any,
   bump: {} as any,

@@ -1,5 +1,5 @@
-import { spinner, $, path } from 'zx';
-import { resolve, remove, iterateDir, copy, read, write } from '../FileUtil';
+import { spinner, $ } from 'zx';
+import { resolve, remove, iterateDir, copy, read, write, relativePath } from '../FileUtil';
 import { OptionHolder } from '../OptionHolder';
 import { logger } from '../logger';
 
@@ -24,6 +24,7 @@ export async function prepareAndroid() {
   await replaceAndroidSigningConfig();
 
   async function replaceAndroidSigningConfig() {
+    const buildGradleDirPath = resolve(androidDir, 'app');
     const buildGradlePath = resolve(androidDir, 'app', 'build.gradle');
     const {
       android_keystore_store_password,
@@ -36,7 +37,7 @@ export async function prepareAndroid() {
       `
   signingConfigs {
     debug {
-        storeFile file('${path.relative(buildGradlePath, resolve(OptionHolder.outputOfInitDir, 'key', 'android_release_keystore.jks'))}')
+        storeFile file('${relativePath(buildGradleDirPath, resolve(OptionHolder.outputOfInitDir, 'key', 'android_release_keystore.jks'))}')
         storePassword '${android_keystore_store_password}'
         keyAlias '${android_keystore_key_alias}'
         keyPassword '${android_keystore_key_password}'

@@ -6,7 +6,7 @@ import { iterateAllFilesInGeneratedTemplate } from '../util/iterateAllFilesInGen
 import { isDev } from '../util/EnvUtil';
 import { parseBinaryVersions } from '../util/VersionUtil';
 import { promptCommonInputs } from '../util/setup/promptCommonInputs';
-import { exist, remove, copy, read, write, join, writeJson } from '../util/FileUtil';
+import { exist, remove, copy, read, write, join, writeJson, relativePath } from '../util/FileUtil';
 import { path } from 'zx';
 
 export type InitOptions = {};
@@ -109,6 +109,7 @@ async function copyTemplates() {
 
 async function injectPlaceHolders() {
   await iterateAllFilesInGeneratedTemplate(async (filePath: string) => {
+    const dirPath = path.dirname(filePath);
     let content = read(filePath);
     for (const [key, value] of Object.entries(OptionHolder.templateValuePlaceholderMap)) {
       content = content.replaceAll(`{{${key}}}`, value);
@@ -116,7 +117,7 @@ async function injectPlaceHolders() {
     // dynamic replacements
     content = content.replaceAll(
       '{{key_dir_relative_path}}',
-      path.relative(filePath, OptionHolder.keyDir),
+      relativePath(dirPath, OptionHolder.keyDir),
     );
     write(filePath, content);
   });

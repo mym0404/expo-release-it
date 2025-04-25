@@ -1,5 +1,4 @@
 import pkgJson from '../../package.json';
-import { fileURLToPath } from 'url';
 import { resolve } from './FileUtil';
 import type { BuildOptions } from '../command/build';
 import type { InitOptions } from '../command/init';
@@ -48,8 +47,8 @@ export const OptionHolder: {
 } = {
   cli: {
     version: pkgJson.version,
-    rootDir: resolve(fileURLToPath(__dirname), '../..'),
-    templateDir: resolve(fileURLToPath(__dirname), '../../template'),
+    rootDir: resolve(__dirname, '../..'),
+    templateDir: resolve(__dirname, '../../template'),
   },
   init: {} as any,
   bump: {} as any,

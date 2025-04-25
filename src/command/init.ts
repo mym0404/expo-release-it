@@ -99,10 +99,10 @@ async function copyTemplates() {
   async function copyDirRecursively(dir: string) {
     const sourceDirPath = join(OptionHolder.cli.templateDir, dir);
     const destDirPath = join(OptionHolder.outputOfInitDir, dir);
-    if (exist(destDirPath)) {
+    // don't overwirte key
+    if (exist(destDirPath) && dir !== 'key') {
       remove(destDirPath);
     }
-    // don't overwirte key
     copy(sourceDirPath, destDirPath, { overwrite: dir !== 'key' });
   }
 }

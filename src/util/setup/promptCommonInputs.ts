@@ -4,7 +4,7 @@ import { isDev } from '../EnvUtil';
 import { exist, resolve } from '../FileUtil';
 
 export async function promptCommonInputs() {
-  OptionHolder.rootDir = isDev
+  OptionHolder.projectDir = isDev
     ? resolve('example')
     : resolve(
         await input({
@@ -20,7 +20,7 @@ export async function promptCommonInputs() {
         }),
       );
 
-  OptionHolder.outDir = resolve(OptionHolder.rootDir, 'expo-local-build');
-  OptionHolder.keyDir = resolve(OptionHolder.outDir, 'key');
-  OptionHolder.keyholderFilePath = resolve(OptionHolder.outDir, 'keyholder.json');
+  OptionHolder.outputOfInitDir = resolve(OptionHolder.projectDir, 'expo-local-build');
+  OptionHolder.keyDir = resolve(OptionHolder.outputOfInitDir, 'key');
+  OptionHolder.keyholderFilePath = resolve(OptionHolder.outputOfInitDir, 'keyholder.json');
 }

@@ -4,13 +4,13 @@ import { OptionHolder } from '../OptionHolder';
 import { logger } from '../logger';
 
 export async function prepareAndroid() {
-  const androidDir = resolve(OptionHolder.rootDir, 'android');
-  const fastlaneSrcDir = resolve(OptionHolder.outDir, 'fastlane-android');
-  const fastlaneDestDir = resolve(OptionHolder.rootDir, 'android', 'fastlane');
+  const androidDir = resolve(OptionHolder.projectDir, 'android');
+  const fastlaneSrcDir = resolve(OptionHolder.outputOfInitDir, 'fastlane-android');
+  const fastlaneDestDir = resolve(OptionHolder.projectDir, 'android', 'fastlane');
 
   await spinner(
     'Prebuild Android',
-    () => $`cd ${OptionHolder.rootDir} && expo prebuild -p android --no-install`,
+    () => $`cd ${OptionHolder.projectDir} && expo prebuild -p android --no-install`,
   );
 
   remove(fastlaneDestDir);
@@ -36,7 +36,7 @@ export async function prepareAndroid() {
       `
   signingConfigs {
     debug {
-        storeFile file('${path.relative(buildGradlePath, resolve(OptionHolder.outDir, 'key', 'android_release_keystore.jks'))}')
+        storeFile file('${path.relative(buildGradlePath, resolve(OptionHolder.outputOfInitDir, 'key', 'android_release_keystore.jks'))}')
         storePassword '${android_keystore_store_password}'
         keyAlias '${android_keystore_key_alias}'
         keyPassword '${android_keystore_key_password}'

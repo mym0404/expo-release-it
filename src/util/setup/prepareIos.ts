@@ -4,13 +4,13 @@ import { OptionHolder } from '../OptionHolder';
 import { logger } from '../logger';
 
 export async function prepareIos() {
-  const iosDir = resolve(OptionHolder.rootDir, 'ios');
-  const fastlaneSrcDir = resolve(OptionHolder.outDir, 'fastlane-ios');
-  const fastlaneDestDir = resolve(OptionHolder.rootDir, 'ios', 'fastlane');
+  const iosDir = resolve(OptionHolder.projectDir, 'ios');
+  const fastlaneSrcDir = resolve(OptionHolder.outputOfInitDir, 'fastlane-ios');
+  const fastlaneDestDir = resolve(OptionHolder.projectDir, 'ios', 'fastlane');
 
   await spinner(
     'Prebuild iOS',
-    () => $`cd ${OptionHolder.rootDir} && expo prebuild -p ios --no-install`,
+    () => $`cd ${OptionHolder.projectDir} && expo prebuild -p ios --no-install`,
   );
 
   remove(fastlaneDestDir);

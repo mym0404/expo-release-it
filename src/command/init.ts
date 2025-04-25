@@ -98,7 +98,7 @@ async function copyTemplates() {
 
   async function copyDirRecursively(dir: string) {
     const sourceDirPath = join(OptionHolder.cli.templateDir, dir);
-    const destDirPath = join(OptionHolder.outDir, dir);
+    const destDirPath = join(OptionHolder.outputOfInitDir, dir);
     if (exist(destDirPath)) {
       remove(destDirPath);
     }

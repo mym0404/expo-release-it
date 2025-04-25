@@ -12,7 +12,15 @@ import { fileURLToPath } from 'url';
  * Each values can be empty by command and timing.
  */
 export const OptionHolder: {
-  cli: { version: string; rootDir: string; templateDir: string };
+  // cli specific options
+  cli: {
+    // cli version
+    version: string;
+    // cli project root directory
+    rootDir: string;
+    // cli template source directory
+    templateDir: string;
+  };
   init: InitOptions;
   bump: BumpOptions;
   build: BuildOptions;
@@ -39,8 +47,10 @@ export const OptionHolder: {
   iosBundleIdentifier: string;
   androidPackageName: string;
   templateDirNames: string[];
-  rootDir: string;
-  outDir: string;
+  // dest project root directory
+  projectDir: string;
+  // dest project output of init command direcotry
+  outputOfInitDir: string;
   keyDir: string;
   keyholderFilePath: string;
   versionName: string;
@@ -61,8 +71,8 @@ export const OptionHolder: {
   templateDirNames: ['fastlane-android', 'fastlane-ios', 'key'],
   iosBundleIdentifier: '',
   androidPackageName: '',
-  rootDir: '',
-  outDir: '',
+  projectDir: '',
+  outputOfInitDir: '',
   keyDir: '',
   keyholderFilePath: '',
   versionName: '',

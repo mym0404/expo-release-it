@@ -44,7 +44,7 @@ async function promptInputs() {
 }
 
 async function uploadIos() {
-  const iosDir = resolve(OptionHolder.rootDir, 'ios');
+  const iosDir = resolve(OptionHolder.projectDir, 'ios');
   const $$ = $({
     verbose: false,
     cwd: iosDir,
@@ -69,7 +69,7 @@ async function uploadIos() {
 async function uploadAndroid() {
   const $$ = $({
     verbose: false,
-    cwd: resolve(OptionHolder.rootDir, 'android'),
+    cwd: resolve(OptionHolder.projectDir, 'android'),
   });
   await prepareAndroid();
   await fastlane();

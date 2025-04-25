@@ -5,13 +5,14 @@ import { prepareIos } from '../util/setup/prepareIos';
 import { logger } from '../util/logger';
 import { OptionHolder } from '../util/OptionHolder';
 import { spinner, $ } from 'zx';
-import { resolve, remove } from '../util/FileUtil';
+import { resolve, remove, copy, relativePath } from '../util/FileUtil';
 import chalk from 'chalk';
 import { calculateElapsed } from '../util/calculateElapsed';
 import { isWin } from '../util/EnvUtil';
 
 export type BuildOptions = {
   platform: 'ios' | 'android';
+  androidOutput: 'apk' | 'aab';
   pod: boolean;
 };
 
@@ -43,6 +44,8 @@ async function promptInputs() {
       ],
     });
   }
+
+  // android specific options
   if (OptionHolder.build.platform === 'ios') {
     OptionHolder.build.pod = await select({
       message: 'Install Cocoapods',
@@ -52,10 +55,23 @@ async function promptInputs() {
       ],
     });
   }
+
+  // ios specific options
+  if (OptionHolder.build.platform === 'android') {
+    if (!OptionHolder.build.androidOutput) {
+      OptionHolder.build.androidOutput = await select({
+        message: 'Android Output',
+        choices: [
+          { name: 'yes', value: 'aab', description: 'Install pods before release' },
+          { name: 'no', value: 'apk', description: 'Skip pods install' },
+        ],
+      });
+    }
+  }
 }
 
 async function buildIos() {
-  const iosDir = resolve(OptionHolder.rootDir, 'ios');
+  const iosDir = resolve(OptionHolder.projectDir, 'ios');
   const $$ = $({
     verbose: false,
     cwd: iosDir,
@@ -84,15 +100,42 @@ async function buildIos() {
   }
 }
 async function buildAndroid() {
+  const androidDir = resolve(OptionHolder.projectDir, 'android');
   const $$ = $({
     verbose: false,
-    cwd: resolve(OptionHolder.rootDir, 'android'),
+    cwd: androidDir,
   });
   await prepareAndroid();
   await fastlane();
 
   async function fastlane() {
     await spinner('Bundler Install', () => $$`bundle install`);
-    await spinner('Bundle AAB', () => $$`${isWin ? 'gradle.bat' : './gradlew'} app:bundleRelease`);
+    logger.success('Bundler Install');
+
+    let buildOutputDir: string;
+    let outputDir: string;
+
+    if (OptionHolder.build.androidOutput === 'aab') {
+      // aab: app/build/outputs/bundle/release/app-release.aab
+      await spinner(
+        'Bundle AAB',
+        () => $$`${isWin ? 'gradle.bat' : './gradlew'} app:bundleRelease`,
+      );
+      buildOutputDir = resolve(androidDir, 'app', 'build', 'outputs', 'bundle', 'release');
+      outputDir = resolve(OptionHolder.outputOfInitDir, 'output', 'android', 'aab');
+    } else {
+      // apk: app/build/outputs/apk/release/app-release.apk
+      await spinner(
+        'Bundle APK',
+        () => $$`${isWin ? 'gradle.bat' : './gradlew'} app:assembleRelease`,
+      );
+      buildOutputDir = resolve(androidDir, 'app', 'build', 'outputs', 'apk', 'release');
+      outputDir = resolve(OptionHolder.outputOfInitDir, 'output', 'android', 'apk');
+    }
+
+    remove(outputDir);
+    copy(buildOutputDir, outputDir);
+
+    logger.success(`artifact generated: ${relativePath(OptionHolder.projectDir, outputDir)}`);
   }
 }

@@ -12,6 +12,10 @@ export function isDir(path: string) {
   return exist(path) && fs.lstatSync(path).isDirectory();
 }
 
+export function relativePath(from: string, to: string) {
+  return path.relative(from, to);
+}
+
 export function isFile(path: string) {
   return exist(path) && fs.lstatSync(path).isFile();
 }

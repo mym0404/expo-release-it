@@ -5,7 +5,7 @@ export async function iterateAllFilesInGeneratedTemplate(
   callback: (filePath: string) => Promise<void>,
 ) {
   for (const dir of OptionHolder.templateDirNames) {
-    await go(join(OptionHolder.outDir, dir));
+    await go(join(OptionHolder.outputOfInitDir, dir));
   }
 
   async function go(dirPath: string) {

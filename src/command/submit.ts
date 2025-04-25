@@ -1,22 +1,20 @@
-import { setup } from '../util/setup';
+import { setup } from '../util/setup/setup';
 import { select } from '@inquirer/prompts';
 import { logger } from '../util/logger';
 import { OptionHolder } from '../util/OptionHolder';
 import chalk from 'chalk';
 import { calculateElapsed } from '../util/calculateElapsed';
 import { spinner, $ } from 'zx';
-import { prepareAndroid } from '../util/prepareAndroid';
+import { prepareAndroid } from '../util/setup/prepareAndroid';
 import { remove, resolve } from '../util/FileUtil';
-import { prepareIos } from '../util/prepareIos';
+import { prepareIos } from '../util/setup/prepareIos';
 
 export type SubmitOptions = {
   platform: 'ios' | 'android';
 };
-const releaseOptions: SubmitOptions = {
-  platform: 'ios',
-};
 
-export async function submit() {
+export async function submit({ options }: { options: SubmitOptions }) {
+  Object.assign(OptionHolder.submit, options);
   const startTime = Date.now();
   await setup();
   await promptInputs();
@@ -24,7 +22,7 @@ export async function submit() {
   logger.info('Submit Started');
   logger.info(`Version: ${OptionHolder.versionName}(${OptionHolder.versionCode})`);
 
-  if (releaseOptions.platform === 'ios') {
+  if (OptionHolder.submit.platform === 'ios') {
     await submitIos();
     logger.success(`Appstore Review Submitted ${chalk.bold.inverse(calculateElapsed(startTime))}`);
   } else {
@@ -34,13 +32,15 @@ export async function submit() {
 }
 
 async function promptInputs() {
-  releaseOptions.platform = await select({
-    message: 'Platform to release',
-    choices: [
-      { name: 'ios', value: 'ios', description: 'Release ios' },
-      { name: 'android', value: 'android', description: 'Release android' },
-    ],
-  });
+  if (!OptionHolder.submit.platform) {
+    OptionHolder.submit.platform = await select({
+      message: 'Platform to submit',
+      choices: [
+        { name: 'ios', value: 'ios', description: 'Release ios' },
+        { name: 'android', value: 'android', description: 'Release android' },
+      ],
+    });
+  }
 }
 
 async function submitAndroid() {

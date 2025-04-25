@@ -5,11 +5,15 @@ import { input } from '@inquirer/prompts';
 import { iterateAllFilesInGeneratedTemplate } from '../util/iterateAllFilesInGeneratedTemplate';
 import { isDev } from '../util/EnvUtil';
 import { parseBinaryVersions } from '../util/VersionUtil';
-import { promptCommonInputs } from '../util/promptCommonInputs';
+import { promptCommonInputs } from '../util/setup/promptCommonInputs';
 import { exist, remove, copy, read, write, join, writeJson } from '../util/FileUtil';
 import { path } from 'zx';
 
-export async function init() {
+export type InitOptions = {};
+
+export async function init({ options }: { options: InitOptions }) {
+  Object.assign(OptionHolder.init, options);
+
   logger.info(`${chalk.inverse('expo-local-build')}`);
 
   await promptCommonInputs();

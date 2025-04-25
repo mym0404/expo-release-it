@@ -5,11 +5,12 @@ import { OptionHolder } from '../util/OptionHolder';
 import semver from 'semver';
 import { isDev } from '../util/EnvUtil';
 import { $ } from 'zx';
-import { setup } from '../util/setup';
+import { setup } from '../util/setup/setup';
 
 export type BumpOptions = {};
 
-export async function bump({}: { options: BumpOptions }) {
+export async function bump({ options }: { options: BumpOptions }) {
+  Object.assign(OptionHolder.bump, options);
   await preCheck();
   await setup();
 
@@ -19,6 +20,7 @@ export async function bump({}: { options: BumpOptions }) {
   logger.info(`next version: ${nextVersionName}(${nextVersionCode})`);
 
   await injectBinaryVersions({ versionName: nextVersionName, versionCode: nextVersionCode });
+  logger.success('Binary versions have been bumped in expo config file');
 }
 
 async function preCheck() {

@@ -1,50 +1,50 @@
 import { select } from '@inquirer/prompts';
-import { prepareAndroid } from '../util/prepareAndroid';
-import { setup } from '../util/setup';
-import { prepareIos } from '../util/prepareIos';
+import { prepareAndroid } from '../util/setup/prepareAndroid';
+import { setup } from '../util/setup/setup';
+import { prepareIos } from '../util/setup/prepareIos';
 import { logger } from '../util/logger';
 import { OptionHolder } from '../util/OptionHolder';
 import { spinner, $ } from 'zx';
 import { resolve, remove } from '../util/FileUtil';
 import chalk from 'chalk';
 import { calculateElapsed } from '../util/calculateElapsed';
+import { isWin } from '../util/EnvUtil';
 
-export type ReleaseOptions = {
+export type BuildOptions = {
   platform: 'ios' | 'android';
   pod: boolean;
 };
-const releaseOptions: ReleaseOptions = {
-  platform: 'ios',
-  pod: true,
-};
 
-export async function release() {
+export async function build({ options }: { options: BuildOptions }) {
+  Object.assign(OptionHolder.build, options);
   const startTime = Date.now();
   await setup();
   await promptInputs();
 
-  logger.info('Build & Upload Started');
+  logger.info('Build Started');
   logger.info(`Version: ${OptionHolder.versionName}(${OptionHolder.versionCode})`);
 
-  if (releaseOptions.platform === 'ios') {
-    await releaseIos();
-    logger.success(`iOS Release Success ${chalk.bold.inverse(calculateElapsed(startTime))}`);
+  if (OptionHolder.build.platform === 'ios') {
+    await buildIos();
+    logger.success(`iOS Build ${chalk.bold.inverse(calculateElapsed(startTime))}`);
   } else {
-    await releaseAndroid();
-    logger.success(`Android Release Success ${chalk.bold.inverse(calculateElapsed(startTime))}`);
+    await buildAndroid();
+    logger.success(`Android Build ${chalk.bold.inverse(calculateElapsed(startTime))}`);
   }
 }
 
 async function promptInputs() {
-  releaseOptions.platform = await select({
-    message: 'Platform to release',
-    choices: [
-      { name: 'ios', value: 'ios', description: 'Release ios' },
-      { name: 'android', value: 'android', description: 'Release android' },
-    ],
-  });
-  if (releaseOptions.platform === 'ios') {
-    releaseOptions.pod = await select({
+  if (!OptionHolder.build.platform) {
+    OptionHolder.build.platform = await select({
+      message: 'Platform to release',
+      choices: [
+        { name: 'ios', value: 'ios', description: 'Release ios' },
+        { name: 'android', value: 'android', description: 'Release android' },
+      ],
+    });
+  }
+  if (OptionHolder.build.platform === 'ios') {
+    OptionHolder.build.pod = await select({
       message: 'Install Cocoapods',
       choices: [
         { name: 'yes', value: true, description: 'Install pods before release' },
@@ -54,7 +54,7 @@ async function promptInputs() {
   }
 }
 
-async function releaseIos() {
+async function buildIos() {
   const iosDir = resolve(OptionHolder.rootDir, 'ios');
   const $$ = $({
     verbose: false,
@@ -70,7 +70,7 @@ async function releaseIos() {
     await spinner('Bundler Install', () => $$`bundle install`);
     logger.success('Bundler Install');
 
-    if (releaseOptions.pod) {
+    if (OptionHolder.build.pod) {
       await spinner('Pod Install', () => $$`bundle exec pod install`);
       logger.success('Pod Install');
     }
@@ -79,12 +79,11 @@ async function releaseIos() {
     await spinner(
       'Fastlane',
       () =>
-        $$`bundle exec fastlane release version_name:${OptionHolder.versionName} version_code:${OptionHolder.versionCode}`,
+        $$`bundle exec fastlane build version_name:${OptionHolder.versionName} version_code:${OptionHolder.versionCode}`,
     );
-    logger.success('Deploy to App Store Connect Test Flight');
   }
 }
-async function releaseAndroid() {
+async function buildAndroid() {
   const $$ = $({
     verbose: false,
     cwd: resolve(OptionHolder.rootDir, 'android'),
@@ -94,14 +93,6 @@ async function releaseAndroid() {
 
   async function fastlane() {
     await spinner('Bundler Install', () => $$`bundle install`);
-    logger.success('Bundler Install');
-    await spinner('Bundle AAB', () => $$`./gradlew app:bundleRelease`);
-    logger.success('Bundle AAB');
-    await spinner(
-      'Fastlane Supply',
-      () =>
-        $$`bundle exec fastlane deploy version_name:${OptionHolder.versionName} version_code:${OptionHolder.versionCode}`,
-    );
-    logger.success('Deploy to Play Store Internal Testing Track');
+    await spinner('Bundle AAB', () => $$`${isWin ? 'gradle.bat' : './gradlew'} app:bundleRelease`);
   }
 }

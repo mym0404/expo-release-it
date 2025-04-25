@@ -1,7 +1,7 @@
 import { $, spinner } from 'zx';
-import { remove, resolve, iterateDir, copy } from './FileUtil';
-import { OptionHolder } from './OptionHolder';
-import { logger } from './logger';
+import { remove, resolve, iterateDir, copy } from '../FileUtil';
+import { OptionHolder } from '../OptionHolder';
+import { logger } from '../logger';
 
 export async function prepareIos() {
   const iosDir = resolve(OptionHolder.rootDir, 'ios');

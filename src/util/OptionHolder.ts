@@ -1,9 +1,24 @@
 import pkgJson from '../../package.json';
 import { fileURLToPath } from 'url';
 import { resolve } from './FileUtil';
+import type { BuildOptions } from '../command/build';
+import type { InitOptions } from '../command/init';
+import type { BumpOptions } from '../command/bump';
+import type { SubmitOptions } from '../command/submit';
+import type { UploadOptions } from '../command/upload';
 
+/**
+ * CLI Comprehensive options
+ * Each values can be empty by command and timing.
+ */
 export const OptionHolder: {
   cli: { version: string; rootDir: string; templateDir: string };
+  init: InitOptions;
+  bump: BumpOptions;
+  build: BuildOptions;
+  upload: UploadOptions;
+  submit: SubmitOptions;
+
   templateValuePlaceholderMap: {
     ios_app_identifier: string;
     ios_app_store_connect_team_id: string;
@@ -36,6 +51,11 @@ export const OptionHolder: {
     rootDir: resolve(fileURLToPath(import.meta.url), '../../..'),
     templateDir: resolve(fileURLToPath(import.meta.url), '../../../template'),
   },
+  init: {} as any,
+  bump: {} as any,
+  build: {} as any,
+  upload: {} as any,
+  submit: {} as any,
   templateValuePlaceholderMap: {} as any,
   keyholderFileValueMap: {} as any,
   templateDirNames: ['fastlane-android', 'fastlane-ios', 'key'],

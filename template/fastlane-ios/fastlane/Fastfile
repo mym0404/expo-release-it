@@ -10,7 +10,7 @@ platform :ios do
     Actions.lane_context[:API_KEY] = api_key
   end
 
-  lane :release do |options|
+  lane :build do |options|
     common
     setup_ci
     match(
@@ -49,19 +49,45 @@ platform :ios do
         }
       }
     )
-
-    upload_to_testflight(
-      api_key: lane_context[:API_KEY],
-      app_version: options[:version_name],
-      app_identifier: "{{ios_app_identifier}}",
-      app_platform: "ios",
-      ipa: "output/output.ipa",
-      skip_submission: true,
-      skip_waiting_for_build_processing: true,
-    )
   end
 
-  lane :submit_appstore_review do |options|
+  lane :upload do |options|
+      common
+      setup_ci
+      match(
+        type: "appstore",
+        app_identifier: "{{ios_app_identifier}}",
+        verbose: false,
+        team_id: "{{ios_developer_team_id}}"
+      )
+
+      update_code_signing_settings(
+        use_automatic_signing: false,
+        path: "{{ios_xcode_project_target}}.xcodeproj",
+        team_id: ENV["sigh_{{ios_app_identifier}}_appstore_team-id"],
+        code_sign_identity: "Apple Distribution"
+      )
+
+      update_project_provisioning(
+        xcodeproj: "{{ios_xcode_project_target}}.xcodeproj",
+        profile: ENV["sigh_{{ios_app_identifier}}_appstore_profile-path"],
+        target_filter: "{{ios_xcode_project_target}}",
+        build_configuration: "Release",
+        code_signing_identity: "Apple Distribution"
+      )
+
+      upload_to_testflight(
+        api_key: lane_context[:API_KEY],
+        app_version: options[:version_name],
+        app_identifier: "{{ios_app_identifier}}",
+        app_platform: "ios",
+        ipa: "output/output.ipa",
+        skip_submission: true,
+        skip_waiting_for_build_processing: true,
+      )
+    end
+
+  lane :submit do |options|
     common
     upload_to_app_store(
       api_key: lane_context[:API_KEY],

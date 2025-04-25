@@ -1,7 +1,7 @@
 import { spinner, $, path } from 'zx';
-import { resolve, remove, iterateDir, copy, read, write } from './FileUtil';
-import { OptionHolder } from './OptionHolder';
-import { logger } from './logger';
+import { resolve, remove, iterateDir, copy, read, write } from '../FileUtil';
+import { OptionHolder } from '../OptionHolder';
+import { logger } from '../logger';
 
 export async function prepareAndroid() {
   const androidDir = resolve(OptionHolder.rootDir, 'android');

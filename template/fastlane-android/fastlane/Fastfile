@@ -4,7 +4,7 @@ platform :android do
   before_all do
     ENV['SUPPLY_UPLOAD_MAX_RETRIES']='3'
   end
-  lane :deploy do |options|
+  lane :upload do |options|
     supply(
     	root_url: "https://androidpublisher.googleapis.com/",
     	package_name: "{{android_package_name}}",
@@ -19,7 +19,7 @@ platform :android do
     	skip_upload_screenshots: true
     )
   end
-  lane :submit_playstore_review do |options|
+  lane :submit do |options|
     supply(
     	root_url: "https://androidpublisher.googleapis.com/",
     	package_name: "{{android_package_name}}",

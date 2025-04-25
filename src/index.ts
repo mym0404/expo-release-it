@@ -1,24 +1,29 @@
-import { Command } from 'commander';
+import { Command, Option } from 'commander';
 
 import { init } from './command/init';
 import { OptionHolder } from './util/OptionHolder';
 import { logger } from './util/logger';
 import { bump } from './command/bump';
-import { release } from './command/release';
+import { upload } from './command/upload';
 import { submit } from './command/submit';
+
+const platformOption = new Option('-p --platform <platform>', 'Platform').choices([
+  'android',
+  'ios',
+]);
 
 const program = new Command();
 program
-  .name('expo-local-cicd')
-  .description('generate CLI script to Build & Submit local Expo project')
+  .name('expo-release-it')
+  .description('Build & Upload & Submit locally for Expo project')
   .version(OptionHolder.cli.version);
 
 program
   .command('init')
   .description('Initialize CLI utilities')
-  .action(async () => {
+  .action(async (options) => {
     try {
-      await init();
+      await init({ options });
     } catch (e: any) {
       logger.error(e);
     }
@@ -35,18 +40,27 @@ program
   });
 
 program
-  .command('release')
-  .description('Build binary & upload to internal test track(android) and testflight(ios)')
-  .option('-p --platform <platform>', 'Platform', 'ios')
-  .action(async () => {
-    await release();
+  .command('build')
+  .description('Build binary')
+  .addOption(platformOption)
+  .action(async (options) => {
+    await upload({ options });
+  });
+
+program
+  .command('upload')
+  .description('Upload artifact to play console internal test track(android) and testflight(ios)')
+  .addOption(platformOption)
+  .action(async (options) => {
+    await upload({ options });
   });
 
 program
   .command('submit')
   .description('Submit Google Play Console & App Store Connect Review with latest testing track')
-  .action(async () => {
-    await submit();
+  .addOption(platformOption)
+  .action(async (options) => {
+    await submit({ options });
   });
 
 program.parse();

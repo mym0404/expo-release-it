@@ -18,7 +18,9 @@ export async function init({ options }: { options: any }) {
   await promptInputs();
   await copyTemplates();
 
-  logger.info(`${chalk.inverse('expo-release-it')} Initialization Done`);
+  logger.success(
+    `${chalk.inverse('expo-release-it')} Initialization Done. Check out generated 'expo-release-it' directory.`,
+  );
 }
 
 async function promptInputs() {

@@ -8,6 +8,7 @@ import { resolve } from '../util/FileUtil';
 import chalk from 'chalk';
 import { calculateElapsed } from '../util/calculateElapsed';
 import { InqueryInputs } from '../util/input/InqueryInputs';
+import { throwError } from '../util/throwError';
 
 export type UploadOptions = {
   platform: 'ios' | 'android';
@@ -77,19 +78,23 @@ async function uploadAndroid() {
   async function fastlane() {
     await spinner('Bundler Install', () => $$`bundle install`);
     logger.success('Bundler Install');
-    await spinner(
-      'Fastlane Supply',
-      () =>
-        $$`bundle exec fastlane deploy ${[
-          `version_name:${OptionHolder.versionName}`,
-          `version_code:${OptionHolder.versionCode}`,
-          `package_name:${OptionHolder.androidPackageName}`,
-          `upload_metadata:${OptionHolder.input.uploadMetadata}`,
-          `aab_path:${resolve(OptionHolder.outputOfInitDir, 'output', 'android', 'aab', 'app-release.aab')}`,
-          `apk_path:${resolve(OptionHolder.outputOfInitDir, 'output', 'android', 'apk', 'app-release.apk')}`,
-          `skip_upload_apk:${OptionHolder.input.androidOutput !== 'apk'}`,
-          `skip_upload_aab:${OptionHolder.input.androidOutput !== 'aab'}`,
-        ]}`,
-    );
+    try {
+      await spinner(
+        'Fastlane Supply',
+        () =>
+          $$`bundle exec fastlane upload ${[
+            `version_name:${OptionHolder.versionName}`,
+            `version_code:${OptionHolder.versionCode}`,
+            `package_name:${OptionHolder.androidPackageName}`,
+            `upload_metadata:${OptionHolder.input.uploadMetadata}`,
+            `aab_path:${resolve(OptionHolder.outputOfInitDir, 'output', 'android', 'aab', 'app-release.aab')}`,
+            `apk_path:${resolve(OptionHolder.outputOfInitDir, 'output', 'android', 'apk', 'app-release.apk')}`,
+            `skip_upload_apk:${OptionHolder.input.androidOutput !== 'apk'}`,
+            `skip_upload_aab:${OptionHolder.input.androidOutput !== 'aab'}`,
+          ]}`,
+      );
+    } catch (e) {
+      throwError('Fastlane failed');
+    }
   }
 }

@@ -1,5 +1,4 @@
 import { setup } from '../util/setup/setup';
-import { select } from '@inquirer/prompts';
 import { logger } from '../util/logger';
 import { OptionHolder } from '../util/OptionHolder';
 import chalk from 'chalk';
@@ -8,13 +7,14 @@ import { spinner, $ } from 'zx';
 import { prepareAndroid } from '../util/setup/prepareAndroid';
 import { remove, resolve } from '../util/FileUtil';
 import { prepareIos } from '../util/setup/prepareIos';
+import { InqueryInputs } from '../util/input/InqueryInputs';
 
 export type SubmitOptions = {
   platform: 'ios' | 'android';
 };
 
 export async function submit({ options }: { options: SubmitOptions }) {
-  Object.assign(OptionHolder.submit, options);
+  Object.assign(OptionHolder.input, options);
   const startTime = Date.now();
   await setup();
   await promptInputs();
@@ -22,7 +22,7 @@ export async function submit({ options }: { options: SubmitOptions }) {
   logger.info('Submit Started');
   logger.info(`Version: ${OptionHolder.versionName}(${OptionHolder.versionCode})`);
 
-  if (OptionHolder.submit.platform === 'ios') {
+  if (OptionHolder.input.platform === 'ios') {
     await submitIos();
     logger.success(`Appstore Review Submitted ${chalk.bold.inverse(calculateElapsed(startTime))}`);
   } else {
@@ -32,15 +32,7 @@ export async function submit({ options }: { options: SubmitOptions }) {
 }
 
 async function promptInputs() {
-  if (!OptionHolder.submit.platform) {
-    OptionHolder.submit.platform = await select({
-      message: 'Platform to submit',
-      choices: [
-        { name: 'ios', value: 'ios', description: 'Release ios' },
-        { name: 'android', value: 'android', description: 'Release android' },
-      ],
-    });
-  }
+  await InqueryInputs.platform();
 }
 
 async function submitAndroid() {

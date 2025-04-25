@@ -16,12 +16,12 @@ platform :android do
     	version_code: options[:version_code].to_i,
     	track: "internal",
     	rollout: "1.0",
-    	aab: options[:aab_path],
-    	apk: options[:apk_path],
+    	aab: to_b(options[:skip_upload_aab]) ? nil : options[:aab_path],
+    	apk: to_b(options[:skip_upload_apk]) ? nil : options[:apk_path],
     	skip_upload_metadata: !to_b(options[:upload_metadata]),
     	skip_upload_changelogs: !to_b(options[:upload_metadata]),
     	skip_upload_images: !to_b(options[:upload_metadata]),
-    	skip_upload_screenshots: !to_b(options[:upload_metadata])
+    	skip_upload_screenshots: !to_b(options[:upload_metadata]),
     	skip_upload_aab: to_b(options[:skip_upload_aab]),
     	skip_upload_apk: to_b(options[:skip_upload_apk]),
     )
@@ -39,9 +39,9 @@ platform :android do
     	skip_upload_metadata: !to_b(options[:upload_metadata]),
     	skip_upload_changelogs: !to_b(options[:upload_metadata]),
     	skip_upload_images: !to_b(options[:upload_metadata]),
-    	skip_upload_screenshots: !to_b(options[:upload_metadata])
-       	skip_upload_aab: to_b(options[:skip_upload_aab]),
-       	skip_upload_apk: to_b(options[:skip_upload_apk]),
+    	skip_upload_screenshots: !to_b(options[:upload_metadata]),
+       	skip_upload_aab: true,
+       	skip_upload_apk: true,
     )
   end
 end

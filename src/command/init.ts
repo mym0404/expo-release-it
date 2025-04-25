@@ -10,7 +10,7 @@ import { copy, join, writeJson } from '../util/FileUtil';
 export type InitOptions = {};
 
 export async function init({ options }: { options: InitOptions }) {
-  Object.assign(OptionHolder.init, options);
+  Object.assign(OptionHolder.input, options);
 
   logger.info(`${chalk.inverse('expo-release-it')} Initialization Get Started`);
 

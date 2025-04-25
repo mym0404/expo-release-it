@@ -1,4 +1,3 @@
-import { select } from '@inquirer/prompts';
 import { prepareAndroid } from '../util/setup/prepareAndroid';
 import { setup } from '../util/setup/setup';
 import { prepareIos } from '../util/setup/prepareIos';
@@ -9,7 +8,7 @@ import { resolve, remove, copy, relativePath } from '../util/FileUtil';
 import chalk from 'chalk';
 import { calculateElapsed } from '../util/calculateElapsed';
 import { isWin } from '../util/EnvUtil';
-import { formatJson } from '@mj-studio/js-util';
+import { InqueryInputs } from '../util/input/InqueryInputs';
 
 export type BuildOptions = {
   platform: 'ios' | 'android';
@@ -18,8 +17,7 @@ export type BuildOptions = {
 };
 
 export async function build({ options }: { options: BuildOptions }) {
-  Object.assign(OptionHolder.build, options);
-  logger.dim(formatJson(OptionHolder.build));
+  Object.assign(OptionHolder.input, options);
   const startTime = Date.now();
   await setup();
   await promptInputs();
@@ -27,7 +25,7 @@ export async function build({ options }: { options: BuildOptions }) {
   logger.info('Build Started');
   logger.info(`Version: ${OptionHolder.versionName}(${OptionHolder.versionCode})`);
 
-  if (OptionHolder.build.platform === 'ios') {
+  if (OptionHolder.input.platform === 'ios') {
     await buildIos();
     logger.success(`iOS Build ${chalk.bold.inverse(calculateElapsed(startTime))}`);
   } else {
@@ -37,39 +35,9 @@ export async function build({ options }: { options: BuildOptions }) {
 }
 
 async function promptInputs() {
-  if (!OptionHolder.build.platform) {
-    OptionHolder.build.platform = await select({
-      message: 'Platform to release',
-      choices: [
-        { name: 'ios', value: 'ios', description: 'Release ios' },
-        { name: 'android', value: 'android', description: 'Release android' },
-      ],
-    });
-  }
-
-  // ios
-  if (OptionHolder.build.platform === 'ios') {
-    OptionHolder.build.pod = await select({
-      message: 'Install Cocoapods',
-      choices: [
-        { name: 'yes', value: true, description: 'Install pods before release' },
-        { name: 'no', value: false, description: 'Skip pods install' },
-      ],
-    });
-  }
-
-  // android
-  if (OptionHolder.build.platform === 'android') {
-    if (!OptionHolder.build.androidOutput) {
-      OptionHolder.build.androidOutput = await select({
-        message: 'Android Output',
-        choices: [
-          { name: 'aab', value: 'aab', description: 'Build as App bundle' },
-          { name: 'apk', value: 'apk', description: 'Build as APK' },
-        ],
-      });
-    }
-  }
+  await InqueryInputs.platform();
+  await InqueryInputs.podinstall();
+  await InqueryInputs.androidBuildOutput();
 }
 
 async function buildIos() {
@@ -88,7 +56,7 @@ async function buildIos() {
     await spinner('Bundler Install', () => $$`bundle install`);
     logger.success('Bundler Install');
 
-    if (OptionHolder.build.pod) {
+    if (OptionHolder.input.pod) {
       await spinner('Pod Install', () => $$`bundle exec pod install`);
       logger.success('Pod Install');
     }
@@ -117,7 +85,7 @@ async function buildAndroid() {
     let buildOutputDir: string;
     let outputDir: string;
 
-    if (OptionHolder.build.androidOutput === 'aab') {
+    if (OptionHolder.input.androidOutput === 'aab') {
       // aab: app/build/outputs/bundle/release/app-release.aab
       await spinner(
         'Bundle AAB',

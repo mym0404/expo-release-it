@@ -8,12 +8,16 @@ import { upload } from './command/upload';
 import { submit } from './command/submit';
 import { build } from './command/build';
 
-export const run = () => {
-  const platformOption = new Option('-p --platform <platform>', 'Platform').choices([
-    'android',
-    'ios',
-  ]);
+const platformOption = new Option('-p --platform <platform>', 'Platform').choices([
+  'android',
+  'ios',
+]);
+const androidBuildOutputOption = new Option(
+  '--androidOutput <output>',
+  'Android Build Output',
+).choices(['aab', 'apk']);
 
+export const run = () => {
   const program = new Command();
   program
     .name('expo-release-it')
@@ -45,9 +49,7 @@ export const run = () => {
     .command('build')
     .description('Build binary')
     .addOption(platformOption)
-    .addOption(
-      new Option('--androidOutput <output>', 'Android Build Output').choices(['aab', 'apk']),
-    )
+    .addOption(androidBuildOutputOption)
     .action(async (options) => {
       await build({ options });
     });
@@ -56,6 +58,8 @@ export const run = () => {
     .command('upload')
     .description('Upload artifact to play console internal test track(android) and testflight(ios)')
     .addOption(platformOption)
+    .addOption(androidBuildOutputOption)
+    .option('-m --uploadMetadata', 'Upload store metadatas')
     .action(async (options) => {
       await upload({ options });
     });

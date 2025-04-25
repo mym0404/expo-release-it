@@ -10,7 +10,7 @@ import { setup } from '../util/setup/setup';
 export type BumpOptions = {};
 
 export async function bump({ options }: { options: BumpOptions }) {
-  Object.assign(OptionHolder.bump, options);
+  Object.assign(OptionHolder.input, options);
   await preCheck();
   await setup();
 

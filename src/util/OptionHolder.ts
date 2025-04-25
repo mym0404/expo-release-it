@@ -21,11 +21,7 @@ export const OptionHolder: {
     // cli template source directory
     templateDir: string;
   };
-  init: InitOptions;
-  bump: BumpOptions;
-  build: BuildOptions;
-  upload: UploadOptions;
-  submit: SubmitOptions;
+  input: InitOptions & BumpOptions & BuildOptions & UploadOptions & SubmitOptions;
   keyholderMap: {
     ios_app_identifier: string;
     ios_app_store_connect_team_id: string;
@@ -35,8 +31,6 @@ export const OptionHolder: {
     ios_app_store_connect_api_key_issuer_id: string;
     ios_xcode_project_target: string;
     ios_match_password: string;
-
-    key_dir_relative_path: string;
 
     android_keystore_store_password: string;
     android_keystore_key_alias: string;
@@ -60,11 +54,7 @@ export const OptionHolder: {
     rootDir: resolve(fileURLToPath(import.meta.url), '../..'),
     templateDir: resolve(fileURLToPath(import.meta.url), '../../template'),
   },
-  init: {} as any,
-  bump: {} as any,
-  build: {} as any,
-  upload: {} as any,
-  submit: {} as any,
+  input: {} as any,
   keyholderMap: {} as any,
   templateDirNames: ['key'],
   iosBundleIdentifier: '',

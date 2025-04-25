@@ -24,7 +24,6 @@ export const OptionHolder: {
   };
   keyholderMap: {
     ios_app_identifier: string;
-    ios_app_store_connect_team_id: string;
     ios_developer_team_id: string;
     ios_match_git_url: string;
     ios_app_store_connect_api_key_id: string;

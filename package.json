@@ -5,8 +5,8 @@
   "version": "0.0.11",
   "license": "MIT",
   "scripts": {
-    "build": "tsc",
-    "dev": "bun run build && NODE_ENV=development bun build/index.js",
+    "build": "tsup",
+    "dev": "bun run build && NODE_ENV=development node bin/expo-release-it.mjs",
     "release": "yarn build && release-it",
     "android": "expo run:android",
     "ios": "expo run:ios",
@@ -30,6 +30,8 @@
     "@types/semver": "^7.7.0",
     "prettier": "3.5.3",
     "release-it": "^19.0.1",
+    "tiny-glob": "^0.2.9",
+    "tsup": "^8.4.0",
     "typescript": "^5.8.3"
   },
   "workspaces": [

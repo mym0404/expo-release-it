@@ -1,2 +1,4 @@
 #!/usr/bin/env node
-import '../build/index.js';
+import { run } from '../build/index.js';
+
+run();

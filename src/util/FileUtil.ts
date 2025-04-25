@@ -3,7 +3,6 @@ import * as path from 'path';
 
 export const join = path.join;
 export const resolve = path.resolve;
-export const filename = path.basename(__filename);
 
 export function exist(path: string) {
   return fs.existsSync(path);

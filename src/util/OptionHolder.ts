@@ -5,6 +5,7 @@ import type { InitOptions } from '../command/init';
 import type { BumpOptions } from '../command/bump';
 import type { SubmitOptions } from '../command/submit';
 import type { UploadOptions } from '../command/upload';
+import { fileURLToPath } from 'url';
 
 /**
  * CLI Comprehensive options
@@ -47,8 +48,8 @@ export const OptionHolder: {
 } = {
   cli: {
     version: pkgJson.version,
-    rootDir: resolve(__dirname, '../..'),
-    templateDir: resolve(__dirname, '../../template'),
+    rootDir: resolve(fileURLToPath(import.meta.url), '../..'),
+    templateDir: resolve(fileURLToPath(import.meta.url), '../../template'),
   },
   init: {} as any,
   bump: {} as any,

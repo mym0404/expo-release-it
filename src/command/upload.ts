@@ -9,6 +9,7 @@ import chalk from 'chalk';
 import { calculateElapsed } from '../util/calculateElapsed';
 import { InqueryInputs } from '../util/input/InqueryInputs';
 import { throwError } from '../util/throwError';
+import { getAndroidFastlaneOptions, getIosFastlaneOptions } from '../util/FastlaneOption';
 
 export async function upload({ options }: { options: any }) {
   Object.assign(OptionHolder.input, options);
@@ -31,7 +32,12 @@ export async function upload({ options }: { options: any }) {
 async function promptInputs() {
   await InqueryInputs.platform();
   await InqueryInputs.androidBuildOutput();
-  await InqueryInputs.uploadMetadata();
+  if (OptionHolder.input.platform !== 'ios') {
+    await InqueryInputs.uploadMetadata();
+  }
+  if (OptionHolder.input.platform === 'ios' && OptionHolder.input.uploadMetadata) {
+    logger.warn("ios upload command doesn't support uploading metadatas");
+  }
 }
 
 async function uploadIos() {
@@ -50,15 +56,7 @@ async function uploadIos() {
     await spinner('Bundler Install', () => $$`bundle install`);
     logger.success('Bundler Install');
 
-    await spinner(
-      'Fastlane',
-      () =>
-        $$`bundle exec fastlane upload ${[
-          `version_name:${OptionHolder.versionName}`,
-          `version_code:${OptionHolder.versionCode}`,
-          `package_name:${OptionHolder.iosBundleIdentifier}`,
-        ]}`,
-    );
+    await spinner('Fastlane', () => $$`bundle exec fastlane upload ${getIosFastlaneOptions()}`);
   }
 }
 async function uploadAndroid() {
@@ -74,18 +72,8 @@ async function uploadAndroid() {
     logger.success('Bundler Install');
     try {
       await spinner(
-        'Fastlane Supply',
-        () =>
-          $$`bundle exec fastlane upload ${[
-            `version_name:${OptionHolder.versionName}`,
-            `version_code:${OptionHolder.versionCode}`,
-            `package_name:${OptionHolder.androidPackageName}`,
-            `upload_metadata:${OptionHolder.input.uploadMetadata}`,
-            `aab_path:${resolve(OptionHolder.outputOfInitDir, 'output', 'android', 'aab', 'app-release.aab')}`,
-            `apk_path:${resolve(OptionHolder.outputOfInitDir, 'output', 'android', 'apk', 'app-release.apk')}`,
-            `skip_upload_apk:${OptionHolder.input.androidOutput !== 'apk'}`,
-            `skip_upload_aab:${OptionHolder.input.androidOutput !== 'aab'}`,
-          ]}`,
+        'Fastlane',
+        () => $$`bundle exec fastlane upload ${getAndroidFastlaneOptions()}`,
       );
     } catch (e) {
       throwError('Fastlane failed');

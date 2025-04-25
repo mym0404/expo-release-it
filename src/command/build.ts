@@ -9,6 +9,7 @@ import chalk from 'chalk';
 import { calculateElapsed } from '../util/calculateElapsed';
 import { isWin } from '../util/EnvUtil';
 import { InqueryInputs } from '../util/input/InqueryInputs';
+import { getIosFastlaneOptions } from '../util/FastlaneOption';
 
 export async function build({ options }: { options: any }) {
   Object.assign(OptionHolder.input, options);
@@ -56,11 +57,7 @@ async function buildIos() {
     }
     remove(resolve(iosDir, '.xcode.env.local'));
 
-    await spinner(
-      'Fastlane',
-      () =>
-        $$`bundle exec fastlane build version_name:${OptionHolder.versionName} version_code:${OptionHolder.versionCode}`,
-    );
+    await spinner('Fastlane', () => $$`bundle exec fastlane build ${getIosFastlaneOptions()}`);
   }
 }
 async function buildAndroid() {

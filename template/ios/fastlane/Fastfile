@@ -1,102 +1,81 @@
 default_platform(:ios)
 
+def to_b(str)
+  str == true || str.to_s.downcase == "true"
+end
+
 platform :ios do
-  lane :common do
+  lane :common do |options|
     api_key = app_store_connect_api_key(
-      key_id: "{{ios_app_store_connect_api_key_id}}",
-      issuer_id: "{{ios_app_store_connect_api_key_issuer_id}}",
-      key_filepath: "../key/ios_testflight_upload_api_key.p8",
+      key_id: options[:ios_app_store_connect_api_key_id],
+      issuer_id: options[:ios_app_store_connect_api_key_issuer_id],
+      key_filepath: options[:api_key_filepath],
     )
     Actions.lane_context[:API_KEY] = api_key
-  end
-
-  lane :build do |options|
-    common
     setup_ci
     match(
       type: "appstore",
-      app_identifier: "{{ios_app_identifier}}",
+      app_identifier: options[:ios_app_identifier],
       verbose: false,
-      team_id: "{{ios_developer_team_id}}"
+      team_id: options[:ios_developer_team_id]
     )
 
     update_code_signing_settings(
       use_automatic_signing: false,
-      path: "{{ios_xcode_project_target}}.xcodeproj",
-      team_id: ENV["sigh_{{ios_app_identifier}}_appstore_team-id"],
+      path: "#{options[:ios_xcode_project_target]}.xcodeproj",
+      team_id: ENV["sigh_#{options[:ios_app_identifier]}_appstore_team-id"],
       code_sign_identity: "Apple Distribution"
     )
 
     update_project_provisioning(
-      xcodeproj: "{{ios_xcode_project_target}}.xcodeproj",
-      profile: ENV["sigh_{{ios_app_identifier}}_appstore_profile-path"],
-      target_filter: "{{ios_xcode_project_target}}",
+      xcodeproj: "#{options[:ios_xcode_project_target]}.xcodeproj",
+      profile: ENV["sigh_#{options[:ios_app_identifier]}_appstore_profile-path"],
+      target_filter: options[:ios_xcode_project_target],
       build_configuration: "Release",
       code_signing_identity: "Apple Distribution"
     )
+  end
 
+  lane :build do |options|
+    common(options)
     build_app(
-      scheme: "{{ios_xcode_project_target}}",
+      scheme: options[:ios_xcode_project_target],
       silent: true,
-      output_directory: "output",
-      output_name: "output.ipa",
-      archive_path: "output/archive",
+      output_directory: options[:ipa_dir],
+      output_name: options[:ipa_name],
       export_method: "app-store",
       codesigning_identity: "Apple Distribution",
       export_options: {
         provisioningProfiles: {
-          "{{ios_app_identifier}}" => "match AppStore {{ios_app_identifier}}"
+          options[:ios_app_identifier] => "match AppStore #{options[:ios_app_identifier]}"
         }
       }
     )
   end
 
   lane :upload do |options|
-      common
-      setup_ci
-      match(
-        type: "appstore",
-        app_identifier: "{{ios_app_identifier}}",
-        verbose: false,
-        team_id: "{{ios_developer_team_id}}"
-      )
-
-      update_code_signing_settings(
-        use_automatic_signing: false,
-        path: "{{ios_xcode_project_target}}.xcodeproj",
-        team_id: ENV["sigh_{{ios_app_identifier}}_appstore_team-id"],
-        code_sign_identity: "Apple Distribution"
-      )
-
-      update_project_provisioning(
-        xcodeproj: "{{ios_xcode_project_target}}.xcodeproj",
-        profile: ENV["sigh_{{ios_app_identifier}}_appstore_profile-path"],
-        target_filter: "{{ios_xcode_project_target}}",
-        build_configuration: "Release",
-        code_signing_identity: "Apple Distribution"
-      )
-
-      upload_to_testflight(
-        api_key: lane_context[:API_KEY],
-        app_version: options[:version_name],
-        app_identifier: "{{ios_app_identifier}}",
-        app_platform: "ios",
-        ipa: "output/output.ipa",
-        skip_submission: true,
-        skip_waiting_for_build_processing: true,
-      )
-    end
+    common(options)
+    upload_to_testflight(
+      api_key: lane_context[:API_KEY],
+      app_version: options[:version_name],
+      app_identifier: options[:ios_app_identifier],
+      app_platform: "ios",
+      ipa: options[:ipa_path],
+      skip_submission: true,
+      skip_waiting_for_build_processing: true,
+    )
+  end
 
   lane :submit do |options|
-    common
+    common(options)
     upload_to_app_store(
       api_key: lane_context[:API_KEY],
       app_version: options[:version_name],
       force: true, # Set to true to skip verification of HTML preview
       skip_binary_upload: true,
-      skip_screenshots: false,
-      skip_metadata: false,
       submit_for_review: true,
+      skip_screenshots: !to_b(options[:upload_metadata]),
+      skip_metadata: !to_b(options[:upload_metadata]),
       precheck_include_in_app_purchases: false,
       reject_if_possible: true,
     )

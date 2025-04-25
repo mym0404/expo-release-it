@@ -8,6 +8,7 @@ import { prepareAndroid } from '../util/setup/prepareAndroid';
 import { remove, resolve } from '../util/FileUtil';
 import { prepareIos } from '../util/setup/prepareIos';
 import { InqueryInputs } from '../util/input/InqueryInputs';
+import { getIosFastlaneOptions, getAndroidFastlaneOptions } from '../util/FastlaneOption';
 
 export async function submit({ options }: { options: any }) {
   Object.assign(OptionHolder.input, options);
@@ -29,6 +30,7 @@ export async function submit({ options }: { options: any }) {
 
 async function promptInputs() {
   await InqueryInputs.platform();
+  await InqueryInputs.uploadMetadata();
 }
 
 async function submitAndroid() {
@@ -43,11 +45,7 @@ async function submitAndroid() {
     await spinner('Bundler Install', () => $$`bundle install`);
     logger.success('Bundler Install');
 
-    await spinner(
-      'Fastlane',
-      () =>
-        $$`bundle exec fastlane submit_playstore_review version_name:${OptionHolder.versionName} version_code:${OptionHolder.versionCode}`,
-    );
+    await spinner('Fastlane', () => $$`bundle exec fastlane sumbit ${getIosFastlaneOptions()}`);
   }
 }
 async function submitIos() {
@@ -65,10 +63,6 @@ async function submitIos() {
 
     remove(resolve(iosDir, '.xcode.env.local'));
 
-    await spinner(
-      'Fastlane',
-      () =>
-        $$`bundle exec fastlane submit_appstore_review version_name:${OptionHolder.versionName} version_code:${OptionHolder.versionCode}`,
-    );
+    await spinner('Fastlane', () => $$`bundle exec fastlane submit ${getAndroidFastlaneOptions()}`);
   }
 }

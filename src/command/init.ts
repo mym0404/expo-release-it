@@ -102,7 +102,8 @@ async function copyTemplates() {
     if (exist(destDirPath)) {
       remove(destDirPath);
     }
-    copy(sourceDirPath, destDirPath);
+    // don't overwirte key
+    copy(sourceDirPath, destDirPath, { overwrite: dir !== 'key' });
   }
 }
 

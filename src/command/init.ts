@@ -12,14 +12,14 @@ export type InitOptions = {};
 export async function init({ options }: { options: InitOptions }) {
   Object.assign(OptionHolder.init, options);
 
-  logger.info(`${chalk.inverse('expo-local-build')}`);
+  logger.info(`${chalk.inverse('expo-release-it')} Initialization Get Started`);
 
   await promptCommonInputs();
   await parseBinaryVersions();
   await promptInputs();
   await copyTemplates();
 
-  logger.success('expo-local-build init success');
+  logger.info(`${chalk.inverse('expo-release-it')} Initialization Done`);
 }
 
 async function promptInputs() {

@@ -1,7 +1,7 @@
 build
 node_modules
 .idea
-example/expo-local-build
+example/expo-release-it
 
 .pnp.*
 .yarn/*

@@ -2,6 +2,7 @@ import { spinner, $ } from 'zx';
 import { resolve, remove, iterateDir, copy, read, write, relativePath } from '../FileUtil';
 import { OptionHolder } from '../OptionHolder';
 import { logger } from '../logger';
+import { injectTemplatePlaceHolders } from '../injectTemplatePlaceHolders';
 
 export async function prepareAndroid() {
   const srcDir = resolve(OptionHolder.cli.templateDir, 'android');
@@ -11,16 +12,20 @@ export async function prepareAndroid() {
     'Prebuild Android',
     () => $`cd ${OptionHolder.projectDir} && expo prebuild -p android --no-install`,
   );
+  logger.success('expo prebuild');
 
   await iterateDir(srcDir, async (file) => {
     const filePath = resolve(srcDir, file);
     remove(resolve(destDir, file));
     copy(filePath, resolve(destDir, file));
   });
+  logger.success('Inject Android templates');
 
-  logger.success('Inject Android Fastlane files');
   await replaceAndroidSigningConfig(destDir);
   logger.success('Overwrite Android Release Signing Config');
+
+  await injectTemplatePlaceHolders(resolve(destDir, 'fastlane'));
+  logger.success('Hydrate template placeholders');
 }
 
 async function replaceAndroidSigningConfig(destDir: string) {

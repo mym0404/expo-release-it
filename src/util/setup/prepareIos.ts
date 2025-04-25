@@ -2,24 +2,25 @@ import { $, spinner } from 'zx';
 import { remove, resolve, iterateDir, copy } from '../FileUtil';
 import { OptionHolder } from '../OptionHolder';
 import { logger } from '../logger';
+import { injectTemplatePlaceHolders } from '../injectTemplatePlaceHolders';
 
 export async function prepareIos() {
-  const iosDir = resolve(OptionHolder.projectDir, 'ios');
-  const fastlaneSrcDir = resolve(OptionHolder.outputOfInitDir, 'fastlane-ios');
-  const fastlaneDestDir = resolve(OptionHolder.projectDir, 'ios', 'fastlane');
+  const srcDir = resolve(OptionHolder.cli.templateDir, 'ios');
+  const destDir = resolve(OptionHolder.projectDir, 'ios');
 
   await spinner(
     'Prebuild iOS',
     () => $`cd ${OptionHolder.projectDir} && expo prebuild -p ios --no-install`,
   );
+  logger.success('expo prebuild');
 
-  remove(fastlaneDestDir);
-
-  await iterateDir(fastlaneSrcDir, async (file) => {
-    const filePath = resolve(fastlaneSrcDir, file);
-    remove(resolve(iosDir, file));
-    copy(filePath, resolve(iosDir, file));
+  await iterateDir(srcDir, async (file) => {
+    const filePath = resolve(srcDir, file);
+    remove(resolve(destDir, file));
+    copy(filePath, resolve(destDir, file));
   });
+  logger.success('Inject iOS templates');
 
-  logger.success('Inject iOS Fastlane files');
+  await injectTemplatePlaceHolders(resolve(destDir, 'fastlane'));
+  logger.success('Hydrate template placeholders');
 }

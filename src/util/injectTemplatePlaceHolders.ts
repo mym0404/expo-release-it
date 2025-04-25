@@ -3,8 +3,8 @@ import { path } from 'zx';
 import { read, relativePath, write } from './FileUtil';
 import { OptionHolder } from './OptionHolder';
 
-async function injectPlaceHolders() {
-  await iterateAllFiles('', async (filePath: string) => {
+export async function injectTemplatePlaceHolders(root: string) {
+  await iterateAllFiles(root, async (filePath: string) => {
     const dirPath = path.dirname(filePath);
     let content = read(filePath);
     for (const [key, value] of Object.entries(OptionHolder.keyholderMap)) {

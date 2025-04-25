@@ -35,7 +35,7 @@
   "workspaces": [
     "example"
   ],
-  "bin": "./build/index.js",
+  "bin": "./bin/expo-release-it.cjs",
   "files": [
     "build",
     "package.json",

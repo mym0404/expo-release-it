@@ -1,7 +1,7 @@
 {
   "name": "expo-release-it",
   "module": "src/index.ts",
-  "type": "commonjs",
+  "type": "module",
   "version": "0.0.10",
   "license": "MIT",
   "scripts": {
@@ -35,7 +35,7 @@
   "workspaces": [
     "example"
   ],
-  "bin": "./bin/expo-release-it.cjs",
+  "bin": "./bin/expo-release-it.mjs",
   "files": [
     "build",
     "package.json",

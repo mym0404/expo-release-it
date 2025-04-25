@@ -94,10 +94,10 @@ App Store Connect API Key can be issued in ${chalk.underline.blue('https://appst
 
   OptionHolder.keyholderMap.ios_xcode_project_target = await input({
     message: constructInquirerFormattedMessage({
-      name: '',
-      explanation: ``,
+      name: 'iOS App Target Name',
+      explanation: `A target in Xcode defines a product to build, including app, extension, or framework, with its own settings and build instructions.
+Usually, this is equivalent to {{name}}.xcodeproj in your ios directory`,
       example: 'app',
-      referUrl: '',
     }),
     required: true,
     default: 'app',
@@ -106,40 +106,43 @@ App Store Connect API Key can be issued in ${chalk.underline.blue('https://appst
   /* android */
   OptionHolder.androidPackageName = OptionHolder.keyholderMap.android_package_name = await input({
     message: constructInquirerFormattedMessage({
-      name: '',
-      explanation: ``,
-      example: '',
-      referUrl: '',
+      name: 'Android Package Name',
+      explanation: `The package name for your Android standalone app. You make it up, but it needs to be unique on the Play Store.`,
+      example: 'com.companyname.appname',
+      referUrl: 'https://docs.expo.dev/versions/latest/config/app/#package',
     }),
     required: true,
     default: isDev ? 'android_package_name' : undefined,
   });
   OptionHolder.keyholderMap.android_keystore_store_password = await input({
     message: constructInquirerFormattedMessage({
-      name: '',
-      explanation: ``,
-      example: '',
-      referUrl: '',
+      name: 'Android Keystore Store Password',
+      explanation: `Storage password used in android release keystore
+You can issue your android release keystore following this guide: ${chalk.underline.blue('https://developer.android.com/studio/publish/app-signing.html#generate-key')}
+Or, you can do same thing with CLI: ${chalk.underline.blue('https://gist.github.com/henriquemenezes/70feb8fff20a19a65346e48786bedb8f')}`,
+      referUrl: 'https://developer.android.com/studio/publish/app-signing.html#generate-key',
     }),
     required: true,
     default: isDev ? 'android_keystore_store_password' : undefined,
   });
   OptionHolder.keyholderMap.android_keystore_key_alias = await input({
     message: constructInquirerFormattedMessage({
-      name: '',
-      explanation: ``,
-      example: '',
-      referUrl: '',
+      name: 'Android Keystore Key Alias',
+      explanation: `Key alias used in android release keystore
+You can issue your android release keystore following this guide: ${chalk.underline.blue('https://developer.android.com/studio/publish/app-signing.html#generate-key')}
+Or, you can do same thing with CLI: ${chalk.underline.blue('https://gist.github.com/henriquemenezes/70feb8fff20a19a65346e48786bedb8f')}`,
+      referUrl: 'https://developer.android.com/studio/publish/app-signing.html#generate-key',
     }),
     required: true,
     default: isDev ? 'android_keystore_key_alias' : undefined,
   });
   OptionHolder.keyholderMap.android_keystore_key_password = await input({
     message: constructInquirerFormattedMessage({
-      name: '',
-      explanation: ``,
-      example: '',
-      referUrl: '',
+      name: 'Android Keystore Key Password',
+      explanation: `Key password used in android release keystore
+You can issue your android release keystore following this guide: ${chalk.underline.blue('https://developer.android.com/studio/publish/app-signing.html#generate-key')}
+Or, you can do same thing with CLI: ${chalk.underline.blue('https://gist.github.com/henriquemenezes/70feb8fff20a19a65346e48786bedb8f')}`,
+      referUrl: 'https://developer.android.com/studio/publish/app-signing.html#generate-key',
     }),
     required: true,
     default: isDev ? 'android_keystore_key_password' : undefined,

@@ -74,7 +74,7 @@ export function constructInquirerFormattedMessage({
 }) {
   let ret = `${chalk.bold(name)}`;
   if (explanation) {
-    ret += `\n\n${chalk.italic.blue(explanation)}\n`;
+    ret += `\n\n${chalk.italic.blue(explanation)}`;
   }
   if (example) {
     ret += `\n${chalk.italic(`${chalk.greenBright('example    :')} ${example}`)}`;
@@ -84,7 +84,10 @@ export function constructInquirerFormattedMessage({
   }
 
   if (explanation) {
-    ret += '\n\n';
+    ret += '\n';
+    if (example || referUrl) {
+      ret += '\n';
+    }
   }
 
   return ret;

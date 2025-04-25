@@ -78,7 +78,7 @@ async function buildIos() {
     verbose: false,
     cwd: iosDir,
     env: {
-      MATCH_PASSWORD: OptionHolder.keyholderFileValueMap.ios_match_password,
+      MATCH_PASSWORD: OptionHolder.keyholderMap.ios_match_password,
     },
   });
   await prepareIos();

@@ -1,9 +1,7 @@
 import { OptionHolder } from './OptionHolder';
 import { readdir, isFile, isDir, join } from './FileUtil';
 
-export async function iterateAllFilesInGeneratedTemplate(
-  callback: (filePath: string) => Promise<void>,
-) {
+export async function iterateAllFiles(root: string, callback: (filePath: string) => Promise<void>) {
   for (const dir of OptionHolder.templateDirNames) {
     await go(join(OptionHolder.outputOfInitDir, dir));
   }

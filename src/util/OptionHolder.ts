@@ -26,8 +26,7 @@ export const OptionHolder: {
   build: BuildOptions;
   upload: UploadOptions;
   submit: SubmitOptions;
-
-  templateValuePlaceholderMap: {
+  keyholderMap: {
     ios_app_identifier: string;
     ios_app_store_connect_team_id: string;
     ios_developer_team_id: string;
@@ -35,14 +34,14 @@ export const OptionHolder: {
     ios_app_store_connect_api_key_id: string;
     ios_app_store_connect_api_key_issuer_id: string;
     ios_xcode_project_target: string;
-    android_package_name: string;
+    ios_match_password: string;
+
     key_dir_relative_path: string;
-  };
-  keyholderFileValueMap: {
+
     android_keystore_store_password: string;
     android_keystore_key_alias: string;
     android_keystore_key_password: string;
-    ios_match_password: string;
+    android_package_name: string;
   };
   iosBundleIdentifier: string;
   androidPackageName: string;
@@ -66,9 +65,8 @@ export const OptionHolder: {
   build: {} as any,
   upload: {} as any,
   submit: {} as any,
-  templateValuePlaceholderMap: {} as any,
-  keyholderFileValueMap: {} as any,
-  templateDirNames: ['fastlane-android', 'fastlane-ios', 'key'],
+  keyholderMap: {} as any,
+  templateDirNames: ['key'],
   iosBundleIdentifier: '',
   androidPackageName: '',
   projectDir: '',

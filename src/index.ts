@@ -6,6 +6,7 @@ import { logger } from './util/logger';
 import { bump } from './command/bump';
 import { upload } from './command/upload';
 import { submit } from './command/submit';
+import { build } from './command/build';
 
 export const run = () => {
   const platformOption = new Option('-p --platform <platform>', 'Platform').choices([
@@ -44,8 +45,11 @@ export const run = () => {
     .command('build')
     .description('Build binary')
     .addOption(platformOption)
+    .addOption(
+      new Option('--androidOutput <output>', 'Android Build Output').choices(['aab', 'apk']),
+    )
     .action(async (options) => {
-      await upload({ options });
+      await build({ options });
     });
 
   program

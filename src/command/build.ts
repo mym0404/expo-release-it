@@ -9,6 +9,7 @@ import { resolve, remove, copy, relativePath } from '../util/FileUtil';
 import chalk from 'chalk';
 import { calculateElapsed } from '../util/calculateElapsed';
 import { isWin } from '../util/EnvUtil';
+import { formatJson } from '@mj-studio/js-util';
 
 export type BuildOptions = {
   platform: 'ios' | 'android';
@@ -18,6 +19,7 @@ export type BuildOptions = {
 
 export async function build({ options }: { options: BuildOptions }) {
   Object.assign(OptionHolder.build, options);
+  logger.dim(formatJson(OptionHolder.build));
   const startTime = Date.now();
   await setup();
   await promptInputs();
@@ -45,7 +47,7 @@ async function promptInputs() {
     });
   }
 
-  // android specific options
+  // ios
   if (OptionHolder.build.platform === 'ios') {
     OptionHolder.build.pod = await select({
       message: 'Install Cocoapods',
@@ -56,14 +58,14 @@ async function promptInputs() {
     });
   }
 
-  // ios specific options
+  // android
   if (OptionHolder.build.platform === 'android') {
     if (!OptionHolder.build.androidOutput) {
       OptionHolder.build.androidOutput = await select({
         message: 'Android Output',
         choices: [
-          { name: 'yes', value: 'aab', description: 'Install pods before release' },
-          { name: 'no', value: 'apk', description: 'Skip pods install' },
+          { name: 'aab', value: 'aab', description: 'Build as App bundle' },
+          { name: 'apk', value: 'apk', description: 'Build as APK' },
         ],
       });
     }

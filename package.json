@@ -6,7 +6,7 @@
   "license": "MIT",
   "scripts": {
     "build": "tsup",
-    "dev": "bun run build && NODE_ENV=development node bin/expo-release-it.mjs",
+    "dev": "yarn run build && NODE_ENV=development node bin/expo-release-it.mjs",
     "release": "yarn build && release-it",
     "android": "expo run:android",
     "ios": "expo run:ios",
@@ -17,15 +17,15 @@
     "@mj-studio/js-util": "^1.1.20",
     "chalk": "^5.4.1",
     "commander": "^13.1.0",
+    "execa": "^9.5.2",
     "fs-extra": "^11.3.0",
+    "ora": "^8.2.0",
     "react": "18.3.1",
     "react-native": "0.76.9",
     "semver": "^7.7.1",
-    "url": "^0.11.4",
-    "zx": "^8.5.3"
+    "url": "^0.11.4"
   },
   "devDependencies": {
-    "@types/bun": "latest",
     "@types/fs-extra": "^11.0.4",
     "@types/semver": "^7.7.0",
     "prettier": "3.5.3",

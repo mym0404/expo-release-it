@@ -3,17 +3,17 @@ import { logger } from '../util/logger';
 import chalk from 'chalk';
 import { input } from '@inquirer/prompts';
 import { isDev } from '../util/EnvUtil';
-import { parseBinaryVersions } from '../util/VersionUtil';
-import { promptCommonInputs } from '../util/setup/promptCommonInputs';
+import { parseBinaryVersions } from '../util/setup/VersionUtil';
 import { copy, join, writeJson } from '../util/FileUtil';
 import { constructInquirerFormattedMessage } from '../util/input/InqueryInputs';
+import { setupBasicOptions } from '../util/setup/setup';
 
 export async function init({ options }: { options: any }) {
   Object.assign(OptionHolder.input, options);
 
   logger.info(`${chalk.inverse('expo-release-it')} Initialization Get Started`);
 
-  await promptCommonInputs();
+  await setupBasicOptions();
   await parseBinaryVersions();
   await promptInputs();
   await copyTemplates();

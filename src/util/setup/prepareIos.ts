@@ -1,8 +1,9 @@
-import { $, spinner } from 'zx';
 import { remove, resolve, iterateDir, copy } from '../FileUtil';
 import { OptionHolder } from '../OptionHolder';
 import { logger } from '../logger';
 import { injectTemplatePlaceHolders } from '../injectTemplatePlaceHolders';
+import { spinner } from '../spinner';
+import { S } from './execShellScript';
 
 export async function prepareIos() {
   const srcDir = resolve(OptionHolder.cli.templateDir, 'ios');
@@ -10,7 +11,7 @@ export async function prepareIos() {
 
   await spinner(
     'Prebuild iOS',
-    () => $`cd ${OptionHolder.projectDir} && expo prebuild -p ios --no-install`,
+    S`cd ${OptionHolder.projectDir} && expo prebuild -p ios --no-install`,
   );
   logger.success('expo prebuild');
 

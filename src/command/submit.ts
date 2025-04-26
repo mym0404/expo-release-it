@@ -3,12 +3,13 @@ import { logger } from '../util/logger';
 import { OptionHolder } from '../util/OptionHolder';
 import chalk from 'chalk';
 import { calculateElapsed } from '../util/calculateElapsed';
-import { spinner, $ } from 'zx';
 import { prepareAndroid } from '../util/setup/prepareAndroid';
 import { remove, resolve } from '../util/FileUtil';
 import { prepareIos } from '../util/setup/prepareIos';
 import { InqueryInputs } from '../util/input/InqueryInputs';
 import { getIosFastlaneOptions, getAndroidFastlaneOptions } from '../util/FastlaneOption';
+import { spinner } from '../util/spinner';
+import { S } from '../util/setup/execShellScript';
 
 export async function submit({ options }: { options: any }) {
   Object.assign(OptionHolder.input, options);
@@ -34,35 +35,33 @@ async function promptInputs() {
 }
 
 async function submitAndroid() {
-  const $$ = $({
-    verbose: false,
+  const SS = S({
     cwd: resolve(OptionHolder.projectDir, 'android'),
   });
   await prepareAndroid();
   await fastlane();
 
   async function fastlane() {
-    await spinner('Bundler Install', () => $$`bundle install`);
+    await spinner('Bundler Install', SS`bundle install`);
     logger.success('Bundler Install');
 
-    await spinner('Fastlane', () => $$`bundle exec fastlane sumbit ${getIosFastlaneOptions()}`);
+    await spinner('Fastlane', SS`bundle exec fastlane sumbit ${getIosFastlaneOptions()}`);
   }
 }
 async function submitIos() {
   const iosDir = resolve(OptionHolder.projectDir, 'ios');
-  const $$ = $({
-    verbose: false,
+  const SS = S({
     cwd: iosDir,
   });
   await prepareIos();
   await fastlane();
 
   async function fastlane() {
-    await spinner('Bundler Install', () => $$`bundle install`);
+    await spinner('Bundler Install', SS`bundle install`);
     logger.success('Bundler Install');
 
     remove(resolve(iosDir, '.xcode.env.local'));
 
-    await spinner('Fastlane', () => $$`bundle exec fastlane submit ${getAndroidFastlaneOptions()}`);
+    await spinner('Fastlane', SS`bundle exec fastlane submit ${getAndroidFastlaneOptions()}`);
   }
 }

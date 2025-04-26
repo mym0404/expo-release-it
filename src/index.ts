@@ -2,11 +2,12 @@ import { Command, Option } from 'commander';
 
 import { init } from './command/init';
 import { OptionHolder } from './util/OptionHolder';
-import { logger } from './util/logger';
 import { bump } from './command/bump';
 import { upload } from './command/upload';
 import { submit } from './command/submit';
 import { build } from './command/build';
+import { pull } from './command/pull';
+import { throwError } from './util/throwError';
 
 const platformOption = new Option('-p --platform <platform>', 'Platform').choices([
   'android',
@@ -31,7 +32,7 @@ export const run = () => {
       try {
         await init({ options });
       } catch (e: any) {
-        logger.error(e);
+        throwError('Command Failed');
       }
     });
 
@@ -42,7 +43,11 @@ export const run = () => {
     //   new Option('-i --increment <type>', 'increment type').choices(['major', 'minor', 'patch']),
     // )
     .action(async (options) => {
-      await bump({ options });
+      try {
+        await bump({ options });
+      } catch (e) {
+        throwError('Command Failed');
+      }
     });
 
   program
@@ -51,7 +56,11 @@ export const run = () => {
     .addOption(platformOption)
     .addOption(androidBuildOutputOption)
     .action(async (options) => {
-      await build({ options });
+      try {
+        await build({ options });
+      } catch (e) {
+        throwError('Command Failed');
+      }
     });
 
   program
@@ -61,7 +70,11 @@ export const run = () => {
     .addOption(androidBuildOutputOption)
     .option('-m --uploadMetadata', 'Upload store metadatas')
     .action(async (options) => {
-      await upload({ options });
+      try {
+        await upload({ options });
+      } catch (e) {
+        throwError('Command Failed');
+      }
     });
 
   program
@@ -69,7 +82,23 @@ export const run = () => {
     .description('Submit Google Play Console & App Store Connect Review with latest testing track')
     .addOption(platformOption)
     .action(async (options) => {
-      await submit({ options });
+      try {
+        await submit({ options });
+      } catch (e) {
+        throwError('Command Failed');
+      }
+    });
+
+  program
+    .command('pull')
+    .description('Sync registered metadatas from stores')
+    .addOption(platformOption)
+    .action(async (options) => {
+      try {
+        await pull({ options });
+      } catch (e) {
+        throwError('Command Failed');
+      }
     });
 
   program.parse();

@@ -1,7 +1,7 @@
-import { OptionHolder } from './OptionHolder';
-import { throwError } from './throwError';
+import { OptionHolder } from '../OptionHolder';
+import { throwError } from '../throwError';
 import semver from 'semver';
-import { readdir, read, readJsonSlow, write, writeJson, resolve } from './FileUtil';
+import { readdir, read, readJsonSlow, write, writeJson, resolve } from '../FileUtil';
 
 export async function parseBinaryVersions() {
   const files = readdir(OptionHolder.projectDir);

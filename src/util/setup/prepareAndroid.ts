@@ -1,8 +1,9 @@
-import { spinner, $ } from 'zx';
 import { resolve, remove, iterateDir, copy, read, write, relativePath } from '../FileUtil';
 import { OptionHolder } from '../OptionHolder';
 import { logger } from '../logger';
 import { injectTemplatePlaceHolders } from '../injectTemplatePlaceHolders';
+import { spinner } from '../spinner';
+import { S } from './execShellScript';
 
 export async function prepareAndroid() {
   const srcDir = resolve(OptionHolder.cli.templateDir, 'android');
@@ -10,7 +11,7 @@ export async function prepareAndroid() {
 
   await spinner(
     'Prebuild Android',
-    () => $`cd ${OptionHolder.projectDir} && expo prebuild -p android --no-install`,
+    S`cd ${OptionHolder.projectDir} && expo prebuild -p android --no-install`,
   );
   logger.success('expo prebuild');
 

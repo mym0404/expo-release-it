@@ -45,6 +45,7 @@ export const OptionHolder: {
   outputOfInitDir: string;
   keyDir: string;
   keyholderFilePath: string;
+  tempDir: string;
   versionName: string;
   versionCode: string;
 } = {
@@ -64,4 +65,5 @@ export const OptionHolder: {
   keyholderFilePath: '',
   versionName: '',
   versionCode: '',
+  tempDir: '',
 };

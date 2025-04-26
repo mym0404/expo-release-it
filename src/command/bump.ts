@@ -1,11 +1,11 @@
-import { injectBinaryVersions } from '../util/VersionUtil';
+import { injectBinaryVersions } from '../util/setup/VersionUtil';
 import { throwError } from '../util/throwError';
 import { logger } from '../util/logger';
 import { OptionHolder } from '../util/OptionHolder';
 import semver from 'semver';
 import { isDev } from '../util/EnvUtil';
-import { $ } from 'zx';
 import { setup } from '../util/setup/setup';
+import { S } from '../util/setup/execShellScript';
 
 export async function bump({ options }: { options: any }) {
   Object.assign(OptionHolder.input, options);
@@ -26,7 +26,7 @@ async function preCheck() {
   try {
     let hasChange = false;
     try {
-      await $`git diff --quiet HEAD`;
+      await S`git diff --quiet HEAD`;
     } catch (_) {
       hasChange = true;
     }

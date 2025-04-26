@@ -3,13 +3,14 @@ import { setup } from '../util/setup/setup';
 import { prepareIos } from '../util/setup/prepareIos';
 import { logger } from '../util/logger';
 import { OptionHolder } from '../util/OptionHolder';
-import { spinner, $ } from 'zx';
 import { resolve } from '../util/FileUtil';
 import chalk from 'chalk';
 import { calculateElapsed } from '../util/calculateElapsed';
 import { InqueryInputs } from '../util/input/InqueryInputs';
 import { throwError } from '../util/throwError';
 import { getAndroidFastlaneOptions, getIosFastlaneOptions } from '../util/FastlaneOption';
+import { spinner } from '../util/spinner';
+import { S } from '../util/setup/execShellScript';
 
 export async function upload({ options }: { options: any }) {
   Object.assign(OptionHolder.input, options);
@@ -42,8 +43,7 @@ async function promptInputs() {
 
 async function uploadIos() {
   const iosDir = resolve(OptionHolder.projectDir, 'ios');
-  const $$ = $({
-    verbose: false,
+  const SS = S({
     cwd: iosDir,
     env: {
       MATCH_PASSWORD: OptionHolder.keyholderMap.ios_match_password,
@@ -53,28 +53,24 @@ async function uploadIos() {
   await fastlane();
 
   async function fastlane() {
-    await spinner('Bundler Install', () => $$`bundle install`);
+    await spinner('Bundler Install', SS`bundle install`);
     logger.success('Bundler Install');
 
-    await spinner('Fastlane', () => $$`bundle exec fastlane upload ${getIosFastlaneOptions()}`);
+    await spinner('Fastlane', SS`bundle exec fastlane upload ${getIosFastlaneOptions()}`);
   }
 }
 async function uploadAndroid() {
-  const $$ = $({
-    verbose: false,
+  const SS = S({
     cwd: resolve(OptionHolder.projectDir, 'android'),
   });
   await prepareAndroid();
   await fastlane();
 
   async function fastlane() {
-    await spinner('Bundler Install', () => $$`bundle install`);
+    await spinner('Bundler Install', SS`bundle install`);
     logger.success('Bundler Install');
     try {
-      await spinner(
-        'Fastlane',
-        () => $$`bundle exec fastlane upload ${getAndroidFastlaneOptions()}`,
-      );
+      await spinner('Fastlane', SS`bundle exec fastlane upload ${getAndroidFastlaneOptions()}`);
     } catch (e) {
       throwError('Fastlane failed');
     }

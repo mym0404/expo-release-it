@@ -1,7 +1,7 @@
 import { iterateAllFiles } from './iterateAllFiles';
-import { path } from 'zx';
 import { read, relativePath, write } from './FileUtil';
 import { OptionHolder } from './OptionHolder';
+import * as path from 'node:path';
 
 export async function injectTemplatePlaceHolders(root: string) {
   await iterateAllFiles(root, async (filePath: string) => {

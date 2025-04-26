@@ -3,13 +3,14 @@ import { setup } from '../util/setup/setup';
 import { prepareIos } from '../util/setup/prepareIos';
 import { logger } from '../util/logger';
 import { OptionHolder } from '../util/OptionHolder';
-import { spinner, $ } from 'zx';
 import { resolve, remove, copy, relativePath } from '../util/FileUtil';
 import chalk from 'chalk';
 import { calculateElapsed } from '../util/calculateElapsed';
 import { isWin } from '../util/EnvUtil';
 import { InqueryInputs } from '../util/input/InqueryInputs';
 import { getIosFastlaneOptions } from '../util/FastlaneOption';
+import { spinner } from '../util/spinner';
+import { S } from '../util/setup/execShellScript';
 
 export async function build({ options }: { options: any }) {
   Object.assign(OptionHolder.input, options);
@@ -37,8 +38,7 @@ async function promptInputs() {
 
 async function buildIos() {
   const iosDir = resolve(OptionHolder.projectDir, 'ios');
-  const $$ = $({
-    verbose: false,
+  const SS = S({
     cwd: iosDir,
     env: {
       MATCH_PASSWORD: OptionHolder.keyholderMap.ios_match_password,
@@ -48,29 +48,28 @@ async function buildIos() {
   await fastlane();
 
   async function fastlane() {
-    await spinner('Bundler Install', () => $$`bundle install`);
+    await spinner('Bundler Install', SS`bundle install`);
     logger.success('Bundler Install');
 
     if (OptionHolder.input.pod) {
-      await spinner('Pod Install', () => $$`bundle exec pod install`);
+      await spinner('Pod Install', SS`bundle exec pod install`);
       logger.success('Pod Install');
     }
     remove(resolve(iosDir, '.xcode.env.local'));
 
-    await spinner('Fastlane', () => $$`bundle exec fastlane build ${getIosFastlaneOptions()}`);
+    await spinner('Fastlane', SS`bundle exec fastlane build ${getIosFastlaneOptions()}`);
   }
 }
 async function buildAndroid() {
   const androidDir = resolve(OptionHolder.projectDir, 'android');
-  const $$ = $({
-    verbose: false,
+  const SS = S({
     cwd: androidDir,
   });
   await prepareAndroid();
   await fastlane();
 
   async function fastlane() {
-    await spinner('Bundler Install', () => $$`bundle install`);
+    await spinner('Bundler Install', SS`bundle install`);
     logger.success('Bundler Install');
 
     let buildOutputDir: string;
@@ -78,18 +77,12 @@ async function buildAndroid() {
 
     if (OptionHolder.input.androidOutput === 'aab') {
       // aab: app/build/outputs/bundle/release/app-release.aab
-      await spinner(
-        'Bundle AAB',
-        () => $$`${isWin ? 'gradle.bat' : './gradlew'} app:bundleRelease`,
-      );
+      await spinner('Bundle AAB', SS`${isWin ? 'gradle.bat' : './gradlew'} app:bundleRelease`);
       buildOutputDir = resolve(androidDir, 'app', 'build', 'outputs', 'bundle', 'release');
       outputDir = resolve(OptionHolder.outputOfInitDir, 'output', 'android', 'aab');
     } else {
       // apk: app/build/outputs/apk/release/app-release.apk
-      await spinner(
-        'Bundle APK',
-        () => $$`${isWin ? 'gradle.bat' : './gradlew'} app:assembleRelease`,
-      );
+      await spinner('Bundle APK', SS`${isWin ? 'gradle.bat' : './gradlew'} app:assembleRelease`);
       buildOutputDir = resolve(androidDir, 'app', 'build', 'outputs', 'apk', 'release');
       outputDir = resolve(OptionHolder.outputOfInitDir, 'output', 'android', 'apk');
     }

@@ -26,7 +26,6 @@ async function pullIosMetadata() {
   console.log(iosDir);
   const SS = S({
     cwd: iosDir,
-    stdio: 'inherit',
     env: {
       APP_STORE_CONNECT_API_KEY_PATH: generateAppStoreConnectApiKeyFile(),
     },

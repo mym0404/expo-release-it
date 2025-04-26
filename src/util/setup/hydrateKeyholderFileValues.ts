@@ -1,6 +1,8 @@
 import { OptionHolder } from '../OptionHolder';
-import { readJsonSlow } from '../FileUtil';
+import { readJsonSlow, exist } from '../FileUtil';
 
 export async function hydrateKeyholderFileValues() {
-  Object.assign(OptionHolder.keyholderMap, readJsonSlow(OptionHolder.keyholderFilePath));
+  if (exist(OptionHolder.keyholderFilePath)) {
+    Object.assign(OptionHolder.keyholderMap, readJsonSlow(OptionHolder.keyholderFilePath));
+  }
 }

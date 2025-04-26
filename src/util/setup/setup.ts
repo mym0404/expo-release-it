@@ -6,7 +6,6 @@ import { resolve } from '../FileUtil';
 
 export async function setup() {
   await setupBasicOptions();
-
   await hydrateKeyholderFileValues();
   await parseBinaryVersions();
 }

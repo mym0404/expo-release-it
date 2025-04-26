@@ -2,19 +2,16 @@ import { OptionHolder } from '../util/OptionHolder';
 import { logger } from '../util/logger';
 import chalk from 'chalk';
 import { input } from '@inquirer/prompts';
-import { isDev } from '../util/EnvUtil';
-import { parseBinaryVersions } from '../util/setup/VersionUtil';
 import { copy, join, writeJson } from '../util/FileUtil';
 import { constructInquirerFormattedMessage } from '../util/input/InqueryInputs';
-import { setupBasicOptions } from '../util/setup/setup';
+import { setup } from '../util/setup/setup';
 
 export async function init({ options }: { options: any }) {
   Object.assign(OptionHolder.input, options);
 
   logger.info(`${chalk.inverse('expo-release-it')} Initialization Get Started`);
 
-  await setupBasicOptions();
-  await parseBinaryVersions();
+  await setup();
   await promptInputs();
   await copyTemplates();
 
@@ -34,18 +31,18 @@ This means 'CFBundleIdentifier' in info.plist and 'ios.bundleIdentifier' in expo
       referUrl: 'https://docs.expo.dev/versions/latest/config/app/#bundleidentifier',
     }),
     required: true,
-    default: isDev ? 'ios_app_identifier' : undefined,
+    default: OptionHolder.keyholderMap.ios_app_identifier,
   });
 
   OptionHolder.keyholderMap.ios_developer_team_id = await input({
     message: constructInquirerFormattedMessage({
-      name: 'IOS App Store Connect Team Id',
+      name: 'IOS Developer Team Id',
       explanation: `A unique alphanumeric string that identifies your Apple Developer Team`,
       example: '8A51ABC4H7',
       referUrl: 'https://developer.apple.com/account',
     }),
     required: true,
-    default: isDev ? 'ios_developer_team_id' : undefined,
+    default: OptionHolder.keyholderMap.ios_developer_team_id,
   });
 
   OptionHolder.keyholderMap.ios_match_git_url = await input({
@@ -56,7 +53,7 @@ This means 'CFBundleIdentifier' in info.plist and 'ios.bundleIdentifier' in expo
       referUrl: 'https://docs.fastlane.tools/actions/match/',
     }),
     required: true,
-    default: isDev ? 'ios_match_git_url' : undefined,
+    default: OptionHolder.keyholderMap.ios_match_git_url,
   });
 
   OptionHolder.keyholderMap.ios_match_password = await input({
@@ -67,7 +64,7 @@ This means 'CFBundleIdentifier' in info.plist and 'ios.bundleIdentifier' in expo
       referUrl: 'https://docs.fastlane.tools/actions/match/',
     }),
     required: true,
-    default: isDev ? 'ios_match_password' : undefined,
+    default: OptionHolder.keyholderMap.ios_match_password,
   });
 
   OptionHolder.keyholderMap.ios_app_store_connect_api_key_id = await input({
@@ -79,7 +76,7 @@ App Store Connect API Key can be issued in ${chalk.underline.blue('https://appst
       referUrl: 'https://appstoreconnect.apple.com/access/integrations/api',
     }),
     required: true,
-    default: isDev ? 'ios_app_store_connect_api_key_id' : undefined,
+    default: OptionHolder.keyholderMap.ios_app_store_connect_api_key_id,
   });
 
   OptionHolder.keyholderMap.ios_app_store_connect_api_key_issuer_id = await input({
@@ -91,7 +88,7 @@ App Store Connect API Key can be issued in ${chalk.underline.blue('https://appst
       referUrl: 'https://appstoreconnect.apple.com/access/integrations/api',
     }),
     required: true,
-    default: isDev ? 'ios_app_store_connect_api_key_issuer_id' : undefined,
+    default: OptionHolder.keyholderMap.ios_app_store_connect_api_key_issuer_id,
   });
 
   OptionHolder.keyholderMap.ios_xcode_project_target = await input({
@@ -102,7 +99,7 @@ Usually, this is equivalent to {{name}}.xcodeproj in your ios directory`,
       example: 'app',
     }),
     required: true,
-    default: 'app',
+    default: OptionHolder.keyholderMap.ios_xcode_project_target || 'app',
   });
 
   /* android */
@@ -114,7 +111,7 @@ Usually, this is equivalent to {{name}}.xcodeproj in your ios directory`,
       referUrl: 'https://docs.expo.dev/versions/latest/config/app/#package',
     }),
     required: true,
-    default: isDev ? 'android_package_name' : undefined,
+    default: OptionHolder.keyholderMap.android_package_name,
   });
   OptionHolder.keyholderMap.android_keystore_store_password = await input({
     message: constructInquirerFormattedMessage({
@@ -125,7 +122,7 @@ Or, you can do same thing with CLI: ${chalk.underline.blue('https://gist.github.
       referUrl: 'https://developer.android.com/studio/publish/app-signing.html#generate-key',
     }),
     required: true,
-    default: isDev ? 'android_keystore_store_password' : undefined,
+    default: OptionHolder.keyholderMap.android_keystore_store_password,
   });
   OptionHolder.keyholderMap.android_keystore_key_alias = await input({
     message: constructInquirerFormattedMessage({
@@ -136,7 +133,7 @@ Or, you can do same thing with CLI: ${chalk.underline.blue('https://gist.github.
       referUrl: 'https://developer.android.com/studio/publish/app-signing.html#generate-key',
     }),
     required: true,
-    default: isDev ? 'android_keystore_key_alias' : undefined,
+    default: OptionHolder.keyholderMap.android_keystore_key_alias,
   });
   OptionHolder.keyholderMap.android_keystore_key_password = await input({
     message: constructInquirerFormattedMessage({
@@ -147,7 +144,7 @@ Or, you can do same thing with CLI: ${chalk.underline.blue('https://gist.github.
       referUrl: 'https://developer.android.com/studio/publish/app-signing.html#generate-key',
     }),
     required: true,
-    default: isDev ? 'android_keystore_key_password' : undefined,
+    default: OptionHolder.keyholderMap.android_keystore_key_password,
   });
 
   writeJson(OptionHolder.keyholderFilePath, OptionHolder.keyholderMap);

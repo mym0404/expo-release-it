@@ -44,6 +44,9 @@ export function write(p: string, content: string) {
 export function copy(src: string, dest: string, options?: fs.CopyOptionsSync) {
   fs.copySync(src, dest, options);
 }
+export function move(src: string, dest: string, options?: fs.MoveOptions) {
+  fs.moveSync(src, dest, options);
+}
 
 export function writeJson(path: string, json: any) {
   return write(path, JSON.stringify(json, null, 2));

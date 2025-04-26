@@ -2,15 +2,17 @@ import { remove, resolve, iterateDir, copy } from '../FileUtil';
 import { OptionHolder } from '../OptionHolder';
 import { injectTemplatePlaceHolders } from '../injectTemplatePlaceHolders';
 import { spinner } from '../spinner';
-import { S } from './execShellScript';
+import { exe, yesShell } from './execShellScript';
+import { logger } from '../logger';
 
 export async function prepareIos() {
   const srcDir = resolve(OptionHolder.cli.templateDir, 'ios');
   const destDir = resolve(OptionHolder.projectDir, 'ios');
-
   await spinner(
     'Expo Prebuild',
-    S`cd ${OptionHolder.projectDir} && expo prebuild -p ios --no-install`,
+    yesShell(`expo prebuild -p ios --no-install`, {
+      cwd: OptionHolder.projectDir,
+    }),
   );
 
   await spinner(
@@ -27,5 +29,6 @@ export async function prepareIos() {
     injectTemplatePlaceHolders(resolve(destDir, 'fastlane')),
   );
 
-  await spinner('Bundler Install', S`cd ${destDir} && bundle install`);
+  await exe({ cwd: destDir })`bundle install`;
+  logger.success('Bunder Install - Done');
 }

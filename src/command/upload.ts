@@ -8,7 +8,7 @@ import chalk from 'chalk';
 import { calculateElapsed } from '../util/calculateElapsed';
 import { InqueryInputs } from '../util/input/InqueryInputs';
 import { getAndroidFastlaneOptions, getIosFastlaneOptions } from '../util/FastlaneOption';
-import { S } from '../util/setup/execShellScript';
+import { exe } from '../util/setup/execShellScript';
 
 export async function upload({ options }: { options: any }) {
   Object.assign(OptionHolder.input, options);
@@ -41,27 +41,25 @@ async function promptInputs() {
 
 async function uploadIos() {
   const iosDir = resolve(OptionHolder.projectDir, 'ios');
-  const SS = S({
-    cwd: iosDir,
-    env: {
-      MATCH_PASSWORD: OptionHolder.keyholderMap.ios_match_password,
-    },
-  });
   await prepareIos();
   await fastlane();
 
   async function fastlane() {
-    await SS`bundle exec fastlane upload ${getIosFastlaneOptions()}`;
+    await exe({
+      cwd: iosDir,
+      env: {
+        MATCH_PASSWORD: OptionHolder.keyholderMap.ios_match_password,
+      },
+    })`bundle exec fastlane upload ${getIosFastlaneOptions()}`;
   }
 }
 async function uploadAndroid() {
-  const SS = S({
-    cwd: resolve(OptionHolder.projectDir, 'android'),
-  });
   await prepareAndroid();
   await fastlane();
 
   async function fastlane() {
-    await SS`bundle exec fastlane upload ${getAndroidFastlaneOptions()}`;
+    await exe({
+      cwd: resolve(OptionHolder.projectDir, 'android'),
+    })`bundle exec fastlane upload ${getAndroidFastlaneOptions()}`;
   }
 }

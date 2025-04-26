@@ -2,7 +2,7 @@ import { resolve, remove, iterateDir, copy, read, write, relativePath } from '..
 import { OptionHolder } from '../OptionHolder';
 import { injectTemplatePlaceHolders } from '../injectTemplatePlaceHolders';
 import { spinner } from '../spinner';
-import { S } from './execShellScript';
+import { exe, yesShell } from './execShellScript';
 
 export async function prepareAndroid() {
   const srcDir = resolve(OptionHolder.cli.templateDir, 'android');
@@ -10,7 +10,9 @@ export async function prepareAndroid() {
 
   await spinner(
     'Expo Prebuild',
-    S`cd ${OptionHolder.projectDir} && expo prebuild -p android --no-install`,
+    yesShell(`expo prebuild -p android --no-install`, {
+      cwd: OptionHolder.projectDir,
+    }),
   );
 
   await spinner(
@@ -29,7 +31,7 @@ export async function prepareAndroid() {
     injectTemplatePlaceHolders(resolve(destDir, 'fastlane')),
   );
 
-  await spinner('Bundler Install', S`cd ${destDir} && bundle install`);
+  await spinner('Bundler Install', exe({ cwd: destDir })`bundle install`);
 }
 
 async function replaceAndroidSigningConfig(destDir: string) {

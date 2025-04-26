@@ -10,7 +10,7 @@ import { isWin } from '../util/EnvUtil';
 import { InqueryInputs } from '../util/input/InqueryInputs';
 import { getIosFastlaneOptions } from '../util/FastlaneOption';
 import { spinner } from '../util/spinner';
-import { S } from '../util/setup/execShellScript';
+import { exe } from '../util/setup/execShellScript';
 
 export async function build({ options }: { options: any }) {
   Object.assign(OptionHolder.input, options);
@@ -38,7 +38,7 @@ async function promptInputs() {
 
 async function buildIos() {
   const iosDir = resolve(OptionHolder.projectDir, 'ios');
-  const SS = S({
+  const exeEnv = exe({
     cwd: iosDir,
     env: {
       MATCH_PASSWORD: OptionHolder.keyholderMap.ios_match_password,
@@ -49,16 +49,16 @@ async function buildIos() {
 
   async function fastlane() {
     if (OptionHolder.input.pod) {
-      await spinner('Pod Install', SS`bundle exec pod install`);
+      await spinner('Pod Install', exeEnv`bundle exec pod install`);
     }
     remove(resolve(iosDir, '.xcode.env.local'));
 
-    await SS`bundle exec fastlane build ${getIosFastlaneOptions()}`;
+    await exeEnv`bundle exec fastlane build ${getIosFastlaneOptions()}`;
   }
 }
 async function buildAndroid() {
   const androidDir = resolve(OptionHolder.projectDir, 'android');
-  const SS = S({
+  const exeEnv = exe({
     cwd: androidDir,
   });
   await prepareAndroid();
@@ -70,12 +70,15 @@ async function buildAndroid() {
 
     if (OptionHolder.input.androidOutput === 'aab') {
       // aab: app/build/outputs/bundle/release/app-release.aab
-      await spinner('Bundle AAB', SS`${isWin ? 'gradle.bat' : './gradlew'} app:bundleRelease`);
+      await spinner('Bundle AAB', exeEnv`${isWin ? 'gradle.bat' : './gradlew'} app:bundleRelease`);
       buildOutputDir = resolve(androidDir, 'app', 'build', 'outputs', 'bundle', 'release');
       outputDir = resolve(OptionHolder.outputOfInitDir, 'output', 'android', 'aab');
     } else {
       // apk: app/build/outputs/apk/release/app-release.apk
-      await spinner('Bundle APK', SS`${isWin ? 'gradle.bat' : './gradlew'} app:assembleRelease`);
+      await spinner(
+        'Bundle APK',
+        exeEnv`${isWin ? 'gradle.bat' : './gradlew'} app:assembleRelease`,
+      );
       buildOutputDir = resolve(androidDir, 'app', 'build', 'outputs', 'apk', 'release');
       outputDir = resolve(OptionHolder.outputOfInitDir, 'output', 'android', 'apk');
     }

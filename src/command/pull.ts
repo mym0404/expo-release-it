@@ -1,8 +1,8 @@
 import { OptionHolder } from '../util/OptionHolder';
 import { InqueryInputs } from '../util/input/InqueryInputs';
 import { setup } from '../util/setup/setup';
-import { join, copy } from '../util/FileUtil';
-import { S } from '../util/setup/execShellScript';
+import { join, move } from '../util/FileUtil';
+import { exe } from '../util/setup/execShellScript';
 import { prepareIos } from '../util/setup/prepareIos';
 import { prepareAndroid } from '../util/setup/prepareAndroid';
 import { generateAppStoreConnectApiKeyFile } from '../util/generateAppStoreConnectApiKeyFile';
@@ -26,15 +26,14 @@ async function promptInputs() {
 async function pullIosMetadata() {
   await prepareIos();
   const iosDir = join(OptionHolder.projectDir, 'ios');
-  console.log(iosDir);
-  const SS = S({
+  const exeEnv = exe({
     cwd: iosDir,
     env: {
       MATCH_PASSWORD: OptionHolder.keyholderMap.ios_match_password,
     },
   });
-  await SS`bundle exec fastlane deliver download_metadata --api_key_path ${generateAppStoreConnectApiKeyFile()}`;
-  await SS`bundle exec fastlane deliver download_screenshots --api_key_path ${generateAppStoreConnectApiKeyFile()}`;
+  await exeEnv`bundle exec fastlane deliver download_metadata -f --api_key_path ${generateAppStoreConnectApiKeyFile()}`;
+  await exeEnv`bundle exec fastlane deliver download_screenshots -f --api_key_path ${generateAppStoreConnectApiKeyFile()}`;
 
   const metadataSrcDir = join(iosDir, 'fastlane/metadata');
   const screenshotsSrcDir = join(iosDir, 'fastlane/screenshots');
@@ -42,10 +41,14 @@ async function pullIosMetadata() {
   const metadataDestDir = join(OptionHolder.outputOfInitDir, 'metadata/ios/metadata');
   const screenshotsDestDir = join(OptionHolder.outputOfInitDir, 'metadata/ios/screenshots');
 
-  copy(metadataSrcDir, metadataDestDir);
-  copy(screenshotsSrcDir, screenshotsDestDir);
+  move(metadataSrcDir, metadataDestDir);
+  move(screenshotsSrcDir, screenshotsDestDir);
 }
 
 async function pullAndroidMetadata() {
   await prepareAndroid();
+  const androidDir = join(OptionHolder.projectDir, 'android');
+  await exe({
+    cwd: androidDir,
+  })`bundle exec fastlane supply init`;
 }

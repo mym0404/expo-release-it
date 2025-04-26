@@ -8,7 +8,7 @@ import { remove, resolve } from '../util/FileUtil';
 import { prepareIos } from '../util/setup/prepareIos';
 import { InqueryInputs } from '../util/input/InqueryInputs';
 import { getIosFastlaneOptions, getAndroidFastlaneOptions } from '../util/FastlaneOption';
-import { S } from '../util/setup/execShellScript';
+import { exe } from '../util/setup/execShellScript';
 
 export async function submit({ options }: { options: any }) {
   Object.assign(OptionHolder.input, options);
@@ -34,27 +34,25 @@ async function promptInputs() {
 }
 
 async function submitAndroid() {
-  const SS = S({
-    cwd: resolve(OptionHolder.projectDir, 'android'),
-  });
   await prepareAndroid();
   await fastlane();
 
   async function fastlane() {
-    await SS`bundle exec fastlane sumbit ${getIosFastlaneOptions()}`;
+    await exe({
+      cwd: resolve(OptionHolder.projectDir, 'android'),
+    })`bundle exec fastlane sumbit ${getIosFastlaneOptions()}`;
   }
 }
 async function submitIos() {
   const iosDir = resolve(OptionHolder.projectDir, 'ios');
-  const SS = S({
-    cwd: iosDir,
-  });
   await prepareIos();
   await fastlane();
 
   async function fastlane() {
     remove(resolve(iosDir, '.xcode.env.local'));
 
-    await SS`bundle exec fastlane submit ${getAndroidFastlaneOptions()}`;
+    await exe({
+      cwd: iosDir,
+    })`bundle exec fastlane submit ${getAndroidFastlaneOptions()}`;
   }
 }

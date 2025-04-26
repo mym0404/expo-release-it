@@ -1,11 +1,11 @@
 import { OptionHolder } from '../util/OptionHolder';
 import { InqueryInputs } from '../util/input/InqueryInputs';
 import { setup } from '../util/setup/setup';
-import { join } from '../util/FileUtil';
+import { join, copy } from '../util/FileUtil';
 import { S } from '../util/setup/execShellScript';
-import { getIosFastlaneOptions } from '../util/FastlaneOption';
 import { prepareIos } from '../util/setup/prepareIos';
 import { prepareAndroid } from '../util/setup/prepareAndroid';
+import { generateAppStoreConnectApiKeyFile } from '../util/generateAppStoreConnectApiKeyFile';
 
 export async function pull({ options }: { options: any }) {
   Object.assign(OptionHolder.input, options);
@@ -33,7 +33,17 @@ async function pullIosMetadata() {
       MATCH_PASSWORD: OptionHolder.keyholderMap.ios_match_password,
     },
   });
-  await SS`bundle exec fastlane pull ${getIosFastlaneOptions()}`;
+  await SS`bundle exec fastlane deliver download_metadata --api_key_path ${generateAppStoreConnectApiKeyFile()}`;
+  await SS`bundle exec fastlane deliver download_screenshots --api_key_path ${generateAppStoreConnectApiKeyFile()}`;
+
+  const metadataSrcDir = join(iosDir, 'fastlane/metadata');
+  const screenshotsSrcDir = join(iosDir, 'fastlane/screenshots');
+
+  const metadataDestDir = join(OptionHolder.outputOfInitDir, 'metadata/ios/metadata');
+  const screenshotsDestDir = join(OptionHolder.outputOfInitDir, 'metadata/ios/screenshots');
+
+  copy(metadataSrcDir, metadataDestDir);
+  copy(screenshotsSrcDir, screenshotsDestDir);
 }
 
 async function pullAndroidMetadata() {

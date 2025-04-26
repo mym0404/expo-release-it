@@ -42,7 +42,6 @@ platform :ios do
     common(options)
     deliver(
       api_key: lane_context[:API_KEY],
-      download_metadata: true,
       app_version: options[:version_name],
       force: true, # Set to true to skip verification of HTML preview
       skip_binary_upload: true,

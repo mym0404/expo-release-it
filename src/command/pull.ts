@@ -3,8 +3,7 @@ import { InqueryInputs } from '../util/input/InqueryInputs';
 import { setup } from '../util/setup/setup';
 import { join } from '../util/FileUtil';
 import { S } from '../util/setup/execShellScript';
-import { spinner } from '../util/spinner';
-import { getAndroidFastlaneOptions } from '../util/FastlaneOption';
+import { getIosFastlaneOptions } from '../util/FastlaneOption';
 import { prepareIos } from '../util/setup/prepareIos';
 import { prepareAndroid } from '../util/setup/prepareAndroid';
 
@@ -30,8 +29,11 @@ async function pullIosMetadata() {
   console.log(iosDir);
   const SS = S({
     cwd: iosDir,
+    env: {
+      MATCH_PASSWORD: OptionHolder.keyholderMap.ios_match_password,
+    },
   });
-  await spinner('Fastlane', SS`bundle exec fastlane pull ${getAndroidFastlaneOptions()}`);
+  await SS`bundle exec fastlane pull ${getIosFastlaneOptions()}`;
 }
 
 async function pullAndroidMetadata() {

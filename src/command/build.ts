@@ -53,7 +53,7 @@ async function buildIos() {
     }
     remove(resolve(iosDir, '.xcode.env.local'));
 
-    await spinner('Fastlane', SS`bundle exec fastlane build ${getIosFastlaneOptions()}`);
+    await SS`bundle exec fastlane build ${getIosFastlaneOptions()}`;
   }
 }
 async function buildAndroid() {

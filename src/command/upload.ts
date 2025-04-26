@@ -7,9 +7,7 @@ import { resolve } from '../util/FileUtil';
 import chalk from 'chalk';
 import { calculateElapsed } from '../util/calculateElapsed';
 import { InqueryInputs } from '../util/input/InqueryInputs';
-import { throwError } from '../util/throwError';
 import { getAndroidFastlaneOptions, getIosFastlaneOptions } from '../util/FastlaneOption';
-import { spinner } from '../util/spinner';
 import { S } from '../util/setup/execShellScript';
 
 export async function upload({ options }: { options: any }) {
@@ -53,7 +51,7 @@ async function uploadIos() {
   await fastlane();
 
   async function fastlane() {
-    await spinner('Fastlane', SS`bundle exec fastlane upload ${getIosFastlaneOptions()}`);
+    await SS`bundle exec fastlane upload ${getIosFastlaneOptions()}`;
   }
 }
 async function uploadAndroid() {
@@ -64,10 +62,6 @@ async function uploadAndroid() {
   await fastlane();
 
   async function fastlane() {
-    try {
-      await spinner('Fastlane', SS`bundle exec fastlane upload ${getAndroidFastlaneOptions()}`);
-    } catch (e) {
-      throwError('Fastlane failed');
-    }
+    await SS`bundle exec fastlane upload ${getAndroidFastlaneOptions()}`;
   }
 }

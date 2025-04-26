@@ -48,12 +48,8 @@ async function buildIos() {
   await fastlane();
 
   async function fastlane() {
-    await spinner('Bundler Install', SS`bundle install`);
-    logger.success('Bundler Install');
-
     if (OptionHolder.input.pod) {
       await spinner('Pod Install', SS`bundle exec pod install`);
-      logger.success('Pod Install');
     }
     remove(resolve(iosDir, '.xcode.env.local'));
 
@@ -69,9 +65,6 @@ async function buildAndroid() {
   await fastlane();
 
   async function fastlane() {
-    await spinner('Bundler Install', SS`bundle install`);
-    logger.success('Bundler Install');
-
     let buildOutputDir: string;
     let outputDir: string;
 

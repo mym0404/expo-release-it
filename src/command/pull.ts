@@ -2,8 +2,11 @@ import { OptionHolder } from '../util/OptionHolder';
 import { InqueryInputs } from '../util/input/InqueryInputs';
 import { setup } from '../util/setup/setup';
 import { join } from '../util/FileUtil';
-import { generateAppStoreConnectApiKeyFile } from '../util/generateAppStoreConnectApiKeyFile';
 import { S } from '../util/setup/execShellScript';
+import { spinner } from '../util/spinner';
+import { getAndroidFastlaneOptions } from '../util/FastlaneOption';
+import { prepareIos } from '../util/setup/prepareIos';
+import { prepareAndroid } from '../util/setup/prepareAndroid';
 
 export async function pull({ options }: { options: any }) {
   Object.assign(OptionHolder.input, options);
@@ -22,18 +25,15 @@ async function promptInputs() {
 }
 
 async function pullIosMetadata() {
+  await prepareIos();
   const iosDir = join(OptionHolder.projectDir, 'ios');
   console.log(iosDir);
   const SS = S({
     cwd: iosDir,
-    env: {
-      APP_STORE_CONNECT_API_KEY_PATH: generateAppStoreConnectApiKeyFile(),
-    },
   });
-  await SS`bundle exec fastlane deliver download_metadata ${[
-    `app-identifier ${OptionHolder.iosBundleIdentifier},`,
-    `team_id ${OptionHolder.keyholderMap.ios_developer_team_id}`,
-  ]}`;
+  await spinner('Fastlane', SS`bundle exec fastlane pull ${getAndroidFastlaneOptions()}`);
 }
 
-async function pullAndroidMetadata() {}
+async function pullAndroidMetadata() {
+  await prepareAndroid();
+}

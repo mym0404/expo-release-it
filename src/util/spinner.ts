@@ -1,9 +1,10 @@
 import { oraPromise } from 'ora';
+import chalk from 'chalk';
 
 export async function spinner<T>(text: string, promise: Promise<T>): Promise<T> {
   return oraPromise(promise, {
     text,
-    successText: `${text} 성공`,
-    failText: `${text} 실패`,
+    successText: chalk.green(`${text} - Done`),
+    failText: chalk.red(`${text} - Failed`),
   });
 }

@@ -36,6 +36,22 @@ platform :ios do
     )
   end
 
+  lane :pull do |options|
+    common(options)
+    deliver(
+      api_key: lane_context[:API_KEY],
+      download_metadata: true,
+      app_version: options[:version_name],
+      force: true, # Set to true to skip verification of HTML preview
+      skip_binary_upload: true,
+      submit_for_review: false,
+      skip_screenshots: true,
+      skip_metadata: true,
+      precheck_include_in_app_purchases: false,
+      reject_if_possible: true,
+    )
+  end
+
   lane :build do |options|
     common(options)
     build_app(
@@ -68,7 +84,7 @@ platform :ios do
 
   lane :submit do |options|
     common(options)
-    upload_to_app_store(
+    deliver(
       api_key: lane_context[:API_KEY],
       app_version: options[:version_name],
       force: true, # Set to true to skip verification of HTML preview

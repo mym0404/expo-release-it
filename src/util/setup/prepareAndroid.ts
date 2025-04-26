@@ -1,6 +1,5 @@
 import { resolve, remove, iterateDir, copy, read, write, relativePath } from '../FileUtil';
 import { OptionHolder } from '../OptionHolder';
-import { logger } from '../logger';
 import { injectTemplatePlaceHolders } from '../injectTemplatePlaceHolders';
 import { spinner } from '../spinner';
 import { S } from './execShellScript';
@@ -10,23 +9,27 @@ export async function prepareAndroid() {
   const destDir = resolve(OptionHolder.projectDir, 'android');
 
   await spinner(
-    'Prebuild Android',
+    'Expo Prebuild',
     S`cd ${OptionHolder.projectDir} && expo prebuild -p android --no-install`,
   );
-  logger.success('expo prebuild');
 
-  await iterateDir(srcDir, async (file) => {
-    const filePath = resolve(srcDir, file);
-    remove(resolve(destDir, file));
-    copy(filePath, resolve(destDir, file));
-  });
-  logger.success('Inject Android templates');
+  await spinner(
+    'Inject Templates',
+    iterateDir(srcDir, async (file) => {
+      const filePath = resolve(srcDir, file);
+      remove(resolve(destDir, file));
+      copy(filePath, resolve(destDir, file));
+    }),
+  );
 
-  await replaceAndroidSigningConfig(destDir);
-  logger.success('Overwrite Android Release Signing Config');
+  await spinner('Overwrite Android Release Signing Config', replaceAndroidSigningConfig(destDir));
 
-  await injectTemplatePlaceHolders(resolve(destDir, 'fastlane'));
-  logger.success('Hydrate template placeholders');
+  await spinner(
+    'Hydrate template placeholders',
+    injectTemplatePlaceHolders(resolve(destDir, 'fastlane')),
+  );
+
+  await spinner('Bundler Install', S`cd ${destDir} && bundle install`);
 }
 
 async function replaceAndroidSigningConfig(destDir: string) {

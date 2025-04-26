@@ -53,9 +53,6 @@ async function uploadIos() {
   await fastlane();
 
   async function fastlane() {
-    await spinner('Bundler Install', SS`bundle install`);
-    logger.success('Bundler Install');
-
     await spinner('Fastlane', SS`bundle exec fastlane upload ${getIosFastlaneOptions()}`);
   }
 }
@@ -67,8 +64,6 @@ async function uploadAndroid() {
   await fastlane();
 
   async function fastlane() {
-    await spinner('Bundler Install', SS`bundle install`);
-    logger.success('Bundler Install');
     try {
       await spinner('Fastlane', SS`bundle exec fastlane upload ${getAndroidFastlaneOptions()}`);
     } catch (e) {

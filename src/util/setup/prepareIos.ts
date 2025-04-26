@@ -1,6 +1,5 @@
 import { remove, resolve, iterateDir, copy } from '../FileUtil';
 import { OptionHolder } from '../OptionHolder';
-import { logger } from '../logger';
 import { injectTemplatePlaceHolders } from '../injectTemplatePlaceHolders';
 import { spinner } from '../spinner';
 import { S } from './execShellScript';
@@ -10,18 +9,23 @@ export async function prepareIos() {
   const destDir = resolve(OptionHolder.projectDir, 'ios');
 
   await spinner(
-    'Prebuild iOS',
+    'Expo Prebuild',
     S`cd ${OptionHolder.projectDir} && expo prebuild -p ios --no-install`,
   );
-  logger.success('expo prebuild');
 
-  await iterateDir(srcDir, async (file) => {
-    const filePath = resolve(srcDir, file);
-    remove(resolve(destDir, file));
-    copy(filePath, resolve(destDir, file));
-  });
-  logger.success('Inject iOS templates');
+  await spinner(
+    'Inject templates',
+    iterateDir(srcDir, async (file) => {
+      const filePath = resolve(srcDir, file);
+      remove(resolve(destDir, file));
+      copy(filePath, resolve(destDir, file));
+    }),
+  );
 
-  await injectTemplatePlaceHolders(resolve(destDir, 'fastlane'));
-  logger.success('Hydrate template placeholders');
+  await spinner(
+    'Hydrate template placeholders',
+    injectTemplatePlaceHolders(resolve(destDir, 'fastlane')),
+  );
+
+  await spinner('Bundler Install', S`cd ${destDir} && bundle install`);
 }

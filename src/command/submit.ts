@@ -42,9 +42,6 @@ async function submitAndroid() {
   await fastlane();
 
   async function fastlane() {
-    await spinner('Bundler Install', SS`bundle install`);
-    logger.success('Bundler Install');
-
     await spinner('Fastlane', SS`bundle exec fastlane sumbit ${getIosFastlaneOptions()}`);
   }
 }
@@ -57,9 +54,6 @@ async function submitIos() {
   await fastlane();
 
   async function fastlane() {
-    await spinner('Bundler Install', SS`bundle install`);
-    logger.success('Bundler Install');
-
     remove(resolve(iosDir, '.xcode.env.local'));
 
     await spinner('Fastlane', SS`bundle exec fastlane submit ${getAndroidFastlaneOptions()}`);

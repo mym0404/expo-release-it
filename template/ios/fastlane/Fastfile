@@ -14,8 +14,10 @@ platform :ios do
     Actions.lane_context[:API_KEY] = api_key
     setup_ci
     match(
+      storage_mode: "git",
+      git_url: options[:ios_match_git_url],
       type: "appstore",
-      app_identifier: options[:ios_app_identifier],
+      app_identifier: [options[:ios_app_identifier]],
       verbose: false,
       team_id: options[:ios_developer_team_id]
     )
@@ -23,7 +25,7 @@ platform :ios do
     update_code_signing_settings(
       use_automatic_signing: false,
       path: "#{options[:ios_xcode_project_target]}.xcodeproj",
-      team_id: ENV["sigh_#{options[:ios_app_identifier]}_appstore_team-id"],
+      team_id: options[:ios_developer_team_id],
       code_sign_identity: "Apple Distribution"
     )
 

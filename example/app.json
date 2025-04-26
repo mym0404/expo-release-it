@@ -11,7 +11,7 @@
     "ios": {
       "supportsTablet": true,
       "buildNumber": "2",
-      "bundleIdentifier": "com.navysw.example"
+      "bundleIdentifier": "happy.mjstudio.timing"
     },
     "android": {
       "adaptiveIcon": {
@@ -19,7 +19,7 @@
         "backgroundColor": "#ffffff"
       },
       "versionCode": 2,
-      "package": "com.navysw.example"
+      "package": "happy.mjstudio.timing"
     },
     "web": {
       "bundler": "metro",

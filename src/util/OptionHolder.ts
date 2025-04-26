@@ -36,8 +36,6 @@ export const OptionHolder: {
     android_keystore_key_password: string;
     android_package_name: string;
   };
-  iosBundleIdentifier: string;
-  androidPackageName: string;
   templateDirNames: string[];
   // dest project root directory
   projectDir: string;
@@ -57,8 +55,6 @@ export const OptionHolder: {
   input: {} as any,
   keyholderMap: {} as any,
   templateDirNames: ['key'],
-  iosBundleIdentifier: '',
-  androidPackageName: '',
   projectDir: '',
   outputOfInitDir: '',
   keyDir: '',

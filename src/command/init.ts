@@ -22,7 +22,7 @@ export async function init({ options }: { options: any }) {
 
 async function promptInputs() {
   /* ios */
-  OptionHolder.iosBundleIdentifier = OptionHolder.keyholderMap.ios_app_identifier = await input({
+  OptionHolder.keyholderMap.ios_app_identifier = await input({
     message: constructInquirerFormattedMessage({
       name: 'iOS Bundle Identifier',
       explanation: `The bundle identifier for your iOS standalone app. You make it up, but it needs to be unique on the App Store.
@@ -103,7 +103,7 @@ Usually, this is equivalent to {{name}}.xcodeproj in your ios directory`,
   });
 
   /* android */
-  OptionHolder.androidPackageName = OptionHolder.keyholderMap.android_package_name = await input({
+  OptionHolder.keyholderMap.android_package_name = await input({
     message: constructInquirerFormattedMessage({
       name: 'Android Package Name',
       explanation: `The package name for your Android standalone app. You make it up, but it needs to be unique on the Play Store.`,

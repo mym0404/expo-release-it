@@ -11,7 +11,7 @@ platform :android do
   lane :upload do |options|
     supply(
     	root_url: "https://androidpublisher.googleapis.com/",
-    	package_name: options[:package_name],
+    	package_name: options[:android_package_name],
     	version_name: options[:version_name],
     	version_code: options[:version_code].to_i,
     	track: "internal",
@@ -29,7 +29,7 @@ platform :android do
   lane :submit do |options|
     supply(
     	root_url: "https://androidpublisher.googleapis.com/",
-    	package_name: options[:package_name],
+    	package_name: options[:android_package_name],
     	version_name: options[:version_name],
     	version_code: options[:version_code].to_i,
         track: "internal",

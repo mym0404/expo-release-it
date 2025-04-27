@@ -58,7 +58,7 @@ If not, set up your environment so that `ruby` and `bundler` are available by fo
 `init` command generates sample key files in `expo-release-it/key`.
 
 > [!IMPORTANT]
-You must prepare all required key files in `expo-release-it/key` exactly the same filenames.
+**You must prepare all required key files in `expo-release-it/key` exactly the same filenames.**
 
 ### 2-1 `android_play_console_service_account.json`
 

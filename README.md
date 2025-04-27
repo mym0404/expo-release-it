@@ -55,12 +55,12 @@ If not, set up your environment so that `ruby` and `bundler` are available by fo
 
 ## 2. Prepare Keys & Credentials
 
-`init` command generates sample key files in `expo-release-it/key`.
+`init` command generates sample key files structure in `expo-release-it/key`. They are **noob files** and you must replace file contents.
 
 > [!IMPORTANT]
 **You must prepare all required key files in `expo-release-it/key` exactly the same filenames.**
 
-### 2-1 `android_play_console_service_account.json`
+### `android_play_console_service_account.json`
 
 Google Play Console actions require authentication using Google Service Account.
 
@@ -69,21 +69,25 @@ and prepare `json` file.
 
 - [How to Get Your Google Play JSON Key](https://help.radio.co/en/articles/6232140-how-to-get-your-google-play-json-key)
 
-### 2-2 `android_release.keystore`
+### `android_release.keystore`
 
 Prepare your android release keystore file for **uploading** and **signing** Android build artifacts.
 
-Additional passwords, alias will be prompted during the `init` command.
+Additional passwords, alias will be prompted during the `init` command and be stored in `keyholder.json`.
 
 - [Keystore generation with Android Studio](https://developer.android.com/studio/publish/app-signing.html#generate-key)
 - [Keystore generation with CLI](https://gist.github.com/henriquemenezes/70feb8fff20a19a65346e48786bedb8f)
 
-### 2-3 `ios_app_store_connect_api_key`
+### `ios_app_store_connect_api_key`
 
 App Store Connect actions require authentication using App Store Connect Api Key(.p8) 
 
+Additional `issuer_id`, `key_id` values will be prompted during the `init` command and be stored in `keyholder.json`
 
-## 3. Prepare apps on the stores
+- [Guide](https://www.revenuecat.com/docs/service-credentials/itunesconnect-app-specific-shared-secret/app-store-connect-api-key-configuration)
+- [Apple Docs Guide](https://developer.apple.com/documentation/appstoreconnectapi/creating-api-keys-for-app-store-connect-api)
+
+## 3. Create & Configure app on the stores as much as possible
 
 Create and configure your application in Google Play Console & App Store Connect as many as possible.
 

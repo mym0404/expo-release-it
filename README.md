@@ -162,7 +162,7 @@ Even after running `init`, you can manually edit `keyholder.json`, and all subse
 
 ## bump
 
-**Bump binary release patch version with modifying app.json**
+**Bump binary release patch version with modifying expo config file**
 
 ```shell
 npx expo-release-it bump
@@ -170,13 +170,35 @@ npx expo-release-it bump
 
 ## pull
 
+**Download metadatas from stores**
+
+```shell
+npx expo-release-it pull
+```
+
 ## build
+
+**Build artifacts (apk, aab, ipa)**
+
+```shell
+npx expo-release-it build
+```
 
 ## upload
 
+**Upload artifact to play console internal test track(android) and testflight(ios)**
+
+```shell
+npx expo-release-it upload
+```
+
 ## submit
 
-# Limitation
+**Submit Google Play Console & App Store Connect Review with latest testing track**
+
+```shell
+npx expo-release-it submit
+```
 
 # Troubleshooting
 

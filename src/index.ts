@@ -47,7 +47,7 @@ export const run = () => {
 
   program
     .command('build')
-    .description('Build binary')
+    .description('Build artifacts')
     .addOption(platformOption)
     .addOption(androidBuildOutputOption)
     .action(async (options) => handleError(build({ options })));

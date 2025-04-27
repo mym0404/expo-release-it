@@ -4,9 +4,6 @@
 
 Opinionated Expo CICD workflow CLI for building & uploading & submitting Expo projects on your machine
 
-> [!CAUTION]
-> This project is under development.
-
 # Features
 
 - 🎉 No **EAS**

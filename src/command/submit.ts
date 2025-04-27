@@ -32,16 +32,6 @@ async function promptInputs() {
   await InqueryInputs.uploadMetadata();
 }
 
-async function submitAndroid() {
-  await prepareAndroid();
-  await fastlane();
-
-  async function fastlane() {
-    await exe('bundle', ['exec', 'fastlane', 'submit', ...getIosFastlaneOptions()], {
-      cwd: resolve(OptionHolder.projectDir, 'android'),
-    });
-  }
-}
 async function submitIos() {
   const iosDir = resolve(OptionHolder.projectDir, 'ios');
   await prepareIos();
@@ -50,8 +40,22 @@ async function submitIos() {
   async function fastlane() {
     remove(resolve(iosDir, '.xcode.env.local'));
 
-    await exe('bundle', ['exec', 'fastlane', 'submit', ...getAndroidFastlaneOptions()], {
+    await exe('bundle', ['exec', 'fastlane', 'submit', ...getIosFastlaneOptions()], {
       cwd: iosDir,
+      env: {
+        MATCH_PASSWORD: OptionHolder.keyholderMap.ios_match_password,
+      },
+    });
+  }
+}
+
+async function submitAndroid() {
+  await prepareAndroid();
+  await fastlane();
+
+  async function fastlane() {
+    await exe('bundle', ['exec', 'fastlane', 'submit', ...getAndroidFastlaneOptions()], {
+      cwd: resolve(OptionHolder.projectDir, 'android'),
     });
   }
 }

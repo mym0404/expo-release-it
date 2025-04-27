@@ -84,7 +84,7 @@ async function handleError(promise: Promise<any>) {
       logger.error(e.message);
       process.exit(e.exitCode ?? 1);
     } else {
-      throwError('Command Failed');
+      throwError(`Command Failed: ${e}`);
     }
   }
 }

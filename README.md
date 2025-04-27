@@ -71,6 +71,7 @@ Google Play Console actions require authentication using Google Service Account.
 You can issue new Google Play Service Account by following Guide
 and prepare `json` file.
 
+- [Fastlane Supply JSON Key Setup Guide](https://docs.fastlane.tools/actions/supply/#setup)
 - [How to Get Your Google Play JSON Key](https://help.radio.co/en/articles/6232140-how-to-get-your-google-play-json-key)
 
 ### `android_release.keystore`
@@ -211,8 +212,8 @@ The downloaded metadatas are stored in `expo-release-it/metadata`.
 
 Check the following out to configure metadatas.
 
-- [Android Metadata Manage Guide](https://docs.fastlane.tools/actions/supply/)
-- [iOS Metadata Manage Guide](https://docs.fastlane.tools/actions/deliver/)
+- [Android Metadata Manage Guide](https://docs.fastlane.tools/actions/supply/#images-and-screenshots)
+- [iOS Metadata Manage Guide](https://docs.fastlane.tools/actions/deliver/#available-language-codes)
 
 
 ## build
@@ -252,6 +253,44 @@ If you need further encryption, you can build middleware in your pipeline that r
 Any suggestions are welcome.
 
 # Troubleshooting
+
+## [iOS - submit] Add information to the :submission_information option...
+
+Add [Complying with Encryption Export Regulartions options](https://developer.apple.com/documentation/security/complying-with-encryption-export-regulations?language=objc) to your expo config file.
+
+Example `app.json`
+
+```json
+{
+  "expo": {
+    "ios": {
+      "config": {
+        "usesNonExemptEncryption": false
+      }
+    }
+  }
+}
+```
+
+## [iOS] failed to load command: fastlane
+
+This means lane of fastlane has been failed. You must check stdout of fastlane action in console.
+
+### invalid curve name
+
+check out if contents of `ios_app_store_connect_api_key.p8` are valid.
+
+## [iOS - submit] The provided entity is missing a required attribute - ...
+
+You have to fill required metadata attributes of iOS in `expo-release-it/metadata/ios`.
+
+You also skip uploading metadatas with opt out the metadata uploading from the cli prompt.
+
+## [android] Google Api Error: Invalid request - Package not found: ...
+
+At first, you have to upload your artifacts manually.
+First, create an internal testing track and then upload your artifacts (AAB or APK files).
+
 
 # Licenses
 

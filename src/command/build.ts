@@ -9,7 +9,6 @@ import { calculateElapsed } from '../util/calculateElapsed';
 import { isWin } from '../util/EnvUtil';
 import { InqueryInputs } from '../util/input/InqueryInputs';
 import { getIosFastlaneOptions } from '../util/FastlaneOption';
-import { spinner } from '../util/spinner';
 import { exe } from '../util/setup/execShellScript';
 
 export async function build({ options }: { options: any }) {
@@ -75,18 +74,14 @@ async function buildAndroid() {
 
     if (OptionHolder.input.androidOutput === 'aab') {
       // aab: app/build/outputs/bundle/release/app-release.aab
-      await spinner(
-        'Bundle AAB',
-        exeEnv(isWin ? 'gradle.bat' : './gradlew', ['app:bundleRelease']),
-      );
+      await exeEnv(isWin ? 'gradle.bat' : './gradlew', ['app:bundleRelease']);
+      logger.done('Bundle AAB');
       buildOutputDir = resolve(androidDir, 'app', 'build', 'outputs', 'bundle', 'release');
       outputDir = resolve(OptionHolder.resourcesDir, 'output', 'android', 'aab');
     } else {
       // apk: app/build/outputs/apk/release/app-release.apk
-      await spinner(
-        'Bundle APK',
-        exeEnv(isWin ? 'gradle.bat' : './gradlew', ['app:assembleRelease']),
-      );
+      await exeEnv(isWin ? 'gradle.bat' : './gradlew', ['app:assembleRelease']);
+      logger.done('Assemble APK');
       buildOutputDir = resolve(androidDir, 'app', 'build', 'outputs', 'apk', 'release');
       outputDir = resolve(OptionHolder.resourcesDir, 'output', 'android', 'apk');
     }

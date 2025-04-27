@@ -26,7 +26,7 @@ export function copyIosMetadata(to: 'resources' | 'native') {
     copy(screenshotsResourcesDir, screenshotsNativeDir);
 
     logger.done(
-      `iOS Metadata moved to ${chalk.inverse(relativePath(OptionHolder.projectDir, nativeDir))}`,
+      `iOS Metadata copyed to ${chalk.inverse(relativePath(OptionHolder.projectDir, nativeDir))}`,
     );
   }
 }
@@ -43,9 +43,9 @@ export function copyAndroidMetadata(to: 'resouces' | 'native') {
       `Android Metadata saved in ${chalk.inverse(relativePath(OptionHolder.projectDir, resourcesDir))}. You can edit inside contents.`,
     );
   } else {
-    copy(nativeDir, resourcesDir);
+    copy(resourcesDir, nativeDir);
     logger.done(
-      `Android Metadata moved to ${chalk.inverse(relativePath(OptionHolder.projectDir, nativeDir))}`,
+      `Android Metadata copyed to ${chalk.inverse(relativePath(OptionHolder.projectDir, nativeDir))}`,
     );
   }
 }

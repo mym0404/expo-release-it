@@ -155,6 +155,8 @@ ios/vendor/bundle
 !*.keystore
 ```
 
+## 6. Run `expo-release-it init`
+
 # Usage
 
 ```shell
@@ -175,6 +177,20 @@ The `init` command asks you for many form fields, and the information is saved i
 
 Even after running `init`, you can manually edit `keyholder.json`, and all subsequent commands will use the updated values.
 
+The resources & output directory structure is the following.
+
+```text
+📁 expo-release-it/
+├── 📁 key/         # key & certificate files
+├── 📁 metadata/    # result of `pull`
+│   ├── 📁 android/  # android store metadatas
+│   └── 📁 ios/      # ios store metadatas
+├── 📁 output/      # result of `build`
+│   ├── 📁 android/  # android build output
+│   └── 📁 ios/      # ios build output
+└── keyholder.json
+```
+
 ## bump
 
 **Bump binary release patch version with modifying expo config file**
@@ -190,6 +206,14 @@ npx expo-release-it bump
 ```shell
 npx expo-release-it pull
 ```
+
+The downloaded metadatas are stored in `expo-release-it/metadata`.
+
+Check the following out to configure metadatas.
+
+- [Android Metadata Manage Guide](https://docs.fastlane.tools/actions/supply/)
+- [iOS Metadata Manage Guide](https://docs.fastlane.tools/actions/deliver/)
+
 
 ## build
 

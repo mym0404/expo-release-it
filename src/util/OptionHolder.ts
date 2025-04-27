@@ -22,6 +22,7 @@ export const OptionHolder: {
     uploadMetadata: boolean;
     androidOutput: 'apk' | 'aab';
     pod: boolean;
+    useLiveVersionIos: boolean;
   };
   keyholderMap: {
     ios_app_identifier: string;

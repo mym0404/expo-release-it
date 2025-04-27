@@ -70,6 +70,7 @@ export const run = () => {
     .command('pull')
     .description('Download metadatas from stores')
     .addOption(platformOption)
+    .option('-l --useLiveVersionIos', 'Download metadatas from live version rather than draft')
     .action(async (options) => handleError(pull({ options })));
 
   program.parse();

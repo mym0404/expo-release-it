@@ -22,6 +22,7 @@ export async function pull({ options }: { options: any }) {
 
 async function promptInputs() {
   await InqueryInputs.platform();
+  await InqueryInputs.useLiveVersionIos();
 }
 
 async function pullIosMetadata() {
@@ -53,6 +54,7 @@ async function pullIosMetadata() {
     '--api_key_path',
     generateAppStoreConnectApiKeyFile(),
     '--use_live_version',
+    OptionHolder.input.useLiveVersionIos + '',
   ]);
 
   copyIosMetadata('resources');

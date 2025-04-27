@@ -74,6 +74,22 @@ export const InqueryInputs = {
       });
     }
   },
+  useLiveVersionIos: async () => {
+    if (
+      !is.boolean(OptionHolder.input.useLiveVersionIos) &&
+      OptionHolder.input.platform === 'ios'
+    ) {
+      OptionHolder.input.useLiveVersionIos = await select({
+        message: constructInquirerFormattedMessage({
+          name: 'Download metadatas from live version rather than draft',
+        }),
+        choices: [
+          { name: 'yes', value: true, description: 'Download from live version' },
+          { name: 'no', value: false, description: 'Download from draft' },
+        ],
+      });
+    }
+  },
 };
 
 export function constructInquirerFormattedMessage({

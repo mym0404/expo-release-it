@@ -8,6 +8,8 @@ import { submit } from './command/submit';
 import { build } from './command/build';
 import { pull } from './command/pull';
 import { throwError } from './util/throwError';
+import { ExecaError } from 'execa';
+import { logger } from './util/logger';
 
 const platformOption = new Option('-p --platform <platform>', 'Platform').choices([
   'android',
@@ -28,40 +30,19 @@ export const run = () => {
   program
     .command('init')
     .description('Initialize CLI utilities')
-    .action(async (options) => {
-      try {
-        await init({ options });
-      } catch (e: any) {
-        throwError('Command Failed');
-      }
-    });
+    .action(async (options) => handleError(init({ options })));
 
   program
     .command('bump')
     .description('Bump binary release patch version with modifying app.json')
-    // .addOption(
-    //   new Option('-i --increment <type>', 'increment type').choices(['major', 'minor', 'patch']),
-    // )
-    .action(async (options) => {
-      try {
-        await bump({ options });
-      } catch (e) {
-        throwError('Command Failed');
-      }
-    });
+    .action(async (options) => handleError(bump({ options })));
 
   program
     .command('build')
     .description('Build binary')
     .addOption(platformOption)
     .addOption(androidBuildOutputOption)
-    .action(async (options) => {
-      try {
-        await build({ options });
-      } catch (e) {
-        throwError('Command Failed', e);
-      }
-    });
+    .action(async (options) => handleError(build({ options })));
 
   program
     .command('upload')
@@ -69,37 +50,33 @@ export const run = () => {
     .addOption(platformOption)
     .addOption(androidBuildOutputOption)
     .option('-m --uploadMetadata', 'Upload store metadatas')
-    .action(async (options) => {
-      try {
-        await upload({ options });
-      } catch (e) {
-        throwError('Command Failed');
-      }
-    });
+    .action(async (options) => handleError(upload({ options })));
 
   program
     .command('submit')
     .description('Submit Google Play Console & App Store Connect Review with latest testing track')
     .addOption(platformOption)
-    .action(async (options) => {
-      try {
-        await submit({ options });
-      } catch (e) {
-        throwError('Command Failed');
-      }
-    });
+    .action(async (options) => handleError(submit({ options })));
 
   program
     .command('pull')
-    .description('Sync registered metadatas from stores')
+    .description('Download metadatas from stores')
     .addOption(platformOption)
-    .action(async (options) => {
-      try {
-        await pull({ options });
-      } catch (e) {
-        throwError('Command Failed');
-      }
-    });
+    .action(async (options) => handleError(pull({ options })));
 
   program.parse();
 };
+
+async function handleError(promise: Promise<any>) {
+  try {
+    return await promise;
+  } catch (e) {
+    if (e instanceof ExecaError) {
+      logger.error(`ExecaError: command: ${e.escapedCommand}`);
+      logger.error(e.message);
+      process.exit(e.exitCode ?? 1);
+    } else {
+      throwError('Command Failed');
+    }
+  }
+}

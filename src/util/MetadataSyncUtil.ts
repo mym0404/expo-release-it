@@ -1,4 +1,4 @@
-import { join, relativePath, copy } from './FileUtil';
+import { join, relativePath, copy, exist } from './FileUtil';
 import { OptionHolder } from './OptionHolder';
 import { logger } from './logger';
 import chalk from 'chalk';
@@ -15,19 +15,31 @@ export function copyIosMetadata(to: 'resources' | 'native') {
   const screenshotsResourcesDir = join(resourcesDir, 'screenshots');
 
   if (to === 'resources') {
-    copy(metadataNativeDir, metadataResourcesDir);
-    copy(screenshotsNativeDir, screenshotsResourcesDir);
+    if (exist(metadataNativeDir) && exist(screenshotsNativeDir)) {
+      copy(metadataNativeDir, metadataResourcesDir);
+      copy(screenshotsNativeDir, screenshotsResourcesDir);
 
-    logger.done(
-      `iOS Metadata saved in ${chalk.inverse(relativePath(OptionHolder.projectDir, resourcesDir))}. You can edit inside contents.`,
-    );
+      logger.done(
+        `iOS Metadata saved in ${chalk.inverse(relativePath(OptionHolder.projectDir, resourcesDir))}. You can edit inside contents.`,
+      );
+    } else {
+      logger.warn(
+        `iOS Metadata not found in ${chalk.inverse(relativePath(OptionHolder.projectDir, nativeDir))}`,
+      );
+    }
   } else {
-    copy(metadataResourcesDir, metadataNativeDir);
-    copy(screenshotsResourcesDir, screenshotsNativeDir);
+    if (exist(metadataResourcesDir) && exist(screenshotsResourcesDir)) {
+      copy(metadataResourcesDir, metadataNativeDir);
+      copy(screenshotsResourcesDir, screenshotsNativeDir);
 
-    logger.done(
-      `iOS Metadata copyed to ${chalk.inverse(relativePath(OptionHolder.projectDir, nativeDir))}`,
-    );
+      logger.done(
+        `iOS Metadata copyed to ${chalk.inverse(relativePath(OptionHolder.projectDir, nativeDir))}`,
+      );
+    } else {
+      logger.warn(
+        `iOS Metadata not found in ${chalk.inverse(relativePath(OptionHolder.projectDir, resourcesDir))}`,
+      );
+    }
   }
 }
 
@@ -38,14 +50,26 @@ export function copyAndroidMetadata(to: 'resouces' | 'native') {
   const resourcesDir = join(OptionHolder.resourcesDir, 'metadata/android');
 
   if (to === 'resouces') {
-    copy(nativeDir, resourcesDir);
-    logger.done(
-      `Android Metadata saved in ${chalk.inverse(relativePath(OptionHolder.projectDir, resourcesDir))}. You can edit inside contents.`,
-    );
+    if (exist(nativeDir)) {
+      copy(nativeDir, resourcesDir);
+      logger.done(
+        `Android Metadata saved in ${chalk.inverse(relativePath(OptionHolder.projectDir, resourcesDir))}. You can edit inside contents.`,
+      );
+    } else {
+      logger.warn(
+        `Android Metadata not found in ${chalk.inverse(relativePath(OptionHolder.projectDir, nativeDir))}`,
+      );
+    }
   } else {
-    copy(resourcesDir, nativeDir);
-    logger.done(
-      `Android Metadata copyed to ${chalk.inverse(relativePath(OptionHolder.projectDir, nativeDir))}`,
-    );
+    if (exist(resourcesDir)) {
+      copy(resourcesDir, nativeDir);
+      logger.done(
+        `Android Metadata copyed to ${chalk.inverse(relativePath(OptionHolder.projectDir, nativeDir))}`,
+      );
+    } else {
+      logger.warn(
+        `Android Metadata not found in ${chalk.inverse(relativePath(OptionHolder.projectDir, resourcesDir))}`,
+      );
+    }
   }
 }

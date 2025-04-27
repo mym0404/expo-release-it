@@ -38,9 +38,9 @@ async function submitAndroid() {
   await fastlane();
 
   async function fastlane() {
-    await exe({
+    await exe('bundle', ['exec', 'fastlane', 'submit', ...getIosFastlaneOptions()], {
       cwd: resolve(OptionHolder.projectDir, 'android'),
-    })`bundle exec fastlane sumbit ${getIosFastlaneOptions()}`;
+    });
   }
 }
 async function submitIos() {
@@ -51,8 +51,8 @@ async function submitIos() {
   async function fastlane() {
     remove(resolve(iosDir, '.xcode.env.local'));
 
-    await exe({
+    await exe('bundle', ['exec', 'fastlane', 'submit', ...getAndroidFastlaneOptions()], {
       cwd: iosDir,
-    })`bundle exec fastlane submit ${getAndroidFastlaneOptions()}`;
+    });
   }
 }

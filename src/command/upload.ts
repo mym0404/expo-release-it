@@ -45,12 +45,12 @@ async function uploadIos() {
   await fastlane();
 
   async function fastlane() {
-    await exe({
+    await exe('bundle', ['exec', 'fastlane', 'upload', ...getIosFastlaneOptions()], {
       cwd: iosDir,
       env: {
         MATCH_PASSWORD: OptionHolder.keyholderMap.ios_match_password,
       },
-    })`bundle exec fastlane upload ${getIosFastlaneOptions()}`;
+    });
   }
 }
 async function uploadAndroid() {
@@ -58,8 +58,8 @@ async function uploadAndroid() {
   await fastlane();
 
   async function fastlane() {
-    await exe({
+    await exe('bundle', ['exec', 'fastlane', 'upload', ...getAndroidFastlaneOptions()], {
       cwd: resolve(OptionHolder.projectDir, 'android'),
-    })`bundle exec fastlane upload ${getAndroidFastlaneOptions()}`;
+    });
   }
 }

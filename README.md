@@ -33,14 +33,18 @@ Therefore, this tool enforces an opinionated versioning, build, and review reque
 However, once you understand this approach, your app deployment process will become significantly faster.
 
 
-# Requirements
+# Structurual Requirements
 
 - Match iOS, Android Binary build version like `1.0.0`
-- All Keys, Credentials(except iOS certificates & provisioning profiles) are stored in VCS
+- All Keys, Credentials(except iOS certificates & provisioning profiles served in github separately) are stored in VCS
 
 # Getting Started
 
+## 1. Ruby, Bundler
 
+`expo-release-it` requires `bundler` of ruby is available in your environment to run `Fastlane` internally.
+
+If it isn't setup your environment as `ruby` and `bundler` are available with [this guide](https://www.ruby-lang.org/en/downloads/) 
 
 # Usage
 

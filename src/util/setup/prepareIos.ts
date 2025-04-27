@@ -29,7 +29,7 @@ export async function prepareIos() {
     injectTemplatePlaceHolders(resolve(destDir, 'fastlane')),
   );
 
-  await exe({ cwd: destDir })`bundle install`;
+  await exe('bundle', ['install'], { cwd: destDir });
   logger.success('Bunder Install - Done');
 
   copyIosMetadata('native');

@@ -4,6 +4,7 @@ import { injectTemplatePlaceHolders } from '../injectTemplatePlaceHolders';
 import { spinner } from '../spinner';
 import { exe, yesShell } from './execShellScript';
 import { logger } from '../logger';
+import { copyAndroidMetadata } from '../MetadataSyncUtil';
 
 export async function prepareAndroid() {
   const srcDir = resolve(OptionHolder.cli.templateDir, 'android');
@@ -32,6 +33,8 @@ export async function prepareAndroid() {
 
   await exe({ cwd: destDir })`bundle install`;
   logger.success('Bunder Install - Done');
+
+  copyAndroidMetadata('native');
 }
 
 async function replaceAndroidSigningConfig(destDir: string) {
@@ -48,7 +51,7 @@ async function replaceAndroidSigningConfig(destDir: string) {
     `
   signingConfigs {
     debug {
-        storeFile file('${relativePath(buildGradleDirPath, resolve(OptionHolder.outputOfInitDir, 'key', 'android_release_keystore.jks'))}')
+        storeFile file('${relativePath(buildGradleDirPath, resolve(OptionHolder.resourcesDir, 'key', 'android_release_keystore.jks'))}')
         storePassword '${android_keystore_store_password}'
         keyAlias '${android_keystore_key_alias}'
         keyPassword '${android_keystore_key_password}'

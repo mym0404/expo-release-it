@@ -57,7 +57,7 @@ async function buildIos() {
     await exeEnv('bundle', ['exec', 'fastlane', 'build', ...getIosFastlaneOptions()]);
 
     logger.success(
-      `artifact generated: ${relativePath(OptionHolder.projectDir, resolve(OptionHolder.outputOfInitDir, 'output', 'ios', 'app.ipa'))}`,
+      `artifact generated: ${relativePath(OptionHolder.projectDir, resolve(OptionHolder.resourcesDir, 'output', 'ios', 'app.ipa'))}`,
     );
   }
 }
@@ -80,7 +80,7 @@ async function buildAndroid() {
         exeEnv(isWin ? 'gradle.bat' : './gradlew', ['app:bundleRelease']),
       );
       buildOutputDir = resolve(androidDir, 'app', 'build', 'outputs', 'bundle', 'release');
-      outputDir = resolve(OptionHolder.outputOfInitDir, 'output', 'android', 'aab');
+      outputDir = resolve(OptionHolder.resourcesDir, 'output', 'android', 'aab');
     } else {
       // apk: app/build/outputs/apk/release/app-release.apk
       await spinner(
@@ -88,7 +88,7 @@ async function buildAndroid() {
         exeEnv(isWin ? 'gradle.bat' : './gradlew', ['app:assembleRelease']),
       );
       buildOutputDir = resolve(androidDir, 'app', 'build', 'outputs', 'apk', 'release');
-      outputDir = resolve(OptionHolder.outputOfInitDir, 'output', 'android', 'apk');
+      outputDir = resolve(OptionHolder.resourcesDir, 'output', 'android', 'apk');
     }
 
     remove(outputDir);

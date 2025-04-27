@@ -1,11 +1,12 @@
 import { OptionHolder } from '../util/OptionHolder';
 import { InqueryInputs } from '../util/input/InqueryInputs';
 import { setup } from '../util/setup/setup';
-import { join, move } from '../util/FileUtil';
+import { join, resolve } from '../util/FileUtil';
 import { exe } from '../util/setup/execShellScript';
 import { prepareIos } from '../util/setup/prepareIos';
 import { prepareAndroid } from '../util/setup/prepareAndroid';
 import { generateAppStoreConnectApiKeyFile } from '../util/generateAppStoreConnectApiKeyFile';
+import { copyIosMetadata, copyAndroidMetadata } from '../util/MetadataSyncUtil';
 
 export async function pull({ options }: { options: any }) {
   Object.assign(OptionHolder.input, options);
@@ -53,19 +54,27 @@ async function pullIosMetadata() {
     generateAppStoreConnectApiKeyFile(),
   ]);
 
-  const metadataSrcDir = join(iosDir, 'fastlane/metadata');
-  const screenshotsSrcDir = join(iosDir, 'fastlane/screenshots');
-
-  const metadataDestDir = join(OptionHolder.outputOfInitDir, 'metadata/ios/metadata');
-  const screenshotsDestDir = join(OptionHolder.outputOfInitDir, 'metadata/ios/screenshots');
-
-  move(metadataSrcDir, metadataDestDir);
-  move(screenshotsSrcDir, screenshotsDestDir);
+  copyIosMetadata('resources');
 }
 
 async function pullAndroidMetadata() {
   await prepareAndroid();
   const androidDir = join(OptionHolder.projectDir, 'android');
 
-  await exe('bundle', ['exec', 'fastlane', 'supply', 'init'], { cwd: androidDir });
+  await exe(
+    'bundle',
+    [
+      'exec',
+      'fastlane',
+      'supply',
+      'init',
+      '--json_key',
+      resolve(OptionHolder.keyDir, 'android_play_console_service_account.json'),
+      '--package_name',
+      OptionHolder.keyholderMap.android_package_name,
+    ],
+    { cwd: androidDir },
+  );
+
+  copyAndroidMetadata('resouces');
 }

@@ -52,6 +52,8 @@ npx expo-release-it (init|bump|build|upload|submit) [options]
 
 ## bump
 
+## pull
+
 ## build
 
 ## upload

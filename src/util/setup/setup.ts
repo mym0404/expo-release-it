@@ -12,8 +12,8 @@ export async function setup() {
 
 export async function setupBasicOptions() {
   OptionHolder.projectDir = isDev ? resolve('example') : resolve('.');
-  OptionHolder.outputOfInitDir = resolve(OptionHolder.projectDir, 'expo-release-it');
-  OptionHolder.keyDir = resolve(OptionHolder.outputOfInitDir, 'key');
-  OptionHolder.keyholderFilePath = resolve(OptionHolder.outputOfInitDir, 'keyholder.json');
-  OptionHolder.tempDir = resolve(OptionHolder.outputOfInitDir, '.temp');
+  OptionHolder.resourcesDir = resolve(OptionHolder.projectDir, 'expo-release-it');
+  OptionHolder.keyDir = resolve(OptionHolder.resourcesDir, 'key');
+  OptionHolder.keyholderFilePath = resolve(OptionHolder.resourcesDir, 'keyholder.json');
+  OptionHolder.tempDir = resolve(OptionHolder.resourcesDir, '.temp');
 }

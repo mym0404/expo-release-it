@@ -4,6 +4,7 @@ import { injectTemplatePlaceHolders } from '../injectTemplatePlaceHolders';
 import { spinner } from '../spinner';
 import { exe, yesShell } from './execShellScript';
 import { logger } from '../logger';
+import { copyIosMetadata } from '../MetadataSyncUtil';
 
 export async function prepareIos() {
   const srcDir = resolve(OptionHolder.cli.templateDir, 'ios');
@@ -30,4 +31,6 @@ export async function prepareIos() {
 
   await exe({ cwd: destDir })`bundle install`;
   logger.success('Bunder Install - Done');
+
+  copyIosMetadata('native');
 }

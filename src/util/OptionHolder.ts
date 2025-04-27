@@ -40,7 +40,7 @@ export const OptionHolder: {
   // dest project root directory
   projectDir: string;
   // dest project output of init command direcotry
-  outputOfInitDir: string;
+  resourcesDir: string;
   keyDir: string;
   keyholderFilePath: string;
   tempDir: string;
@@ -56,7 +56,7 @@ export const OptionHolder: {
   keyholderMap: {} as any,
   templateDirNames: ['key'],
   projectDir: '',
-  outputOfInitDir: '',
+  resourcesDir: '',
   keyDir: '',
   keyholderFilePath: '',
   versionName: '',

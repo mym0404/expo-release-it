@@ -30,7 +30,8 @@ export async function prepareAndroid() {
     injectTemplatePlaceHolders(resolve(destDir, 'fastlane')),
   );
 
-  await spinner('Bundler Install', exe({ cwd: destDir })`bundle install`);
+  await exe({ cwd: destDir })`bundle install`;
+  logger.success('Bunder Install - Done');
 }
 
 async function replaceAndroidSigningConfig(destDir: string) {

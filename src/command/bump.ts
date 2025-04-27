@@ -3,7 +3,6 @@ import { throwError } from '../util/throwError';
 import { logger } from '../util/logger';
 import { OptionHolder } from '../util/OptionHolder';
 import semver from 'semver';
-import { isDev } from '../util/EnvUtil';
 import { setup } from '../util/setup/setup';
 import { exe } from '../util/setup/execShellScript';
 
@@ -22,11 +21,10 @@ export async function bump({ options }: { options: any }) {
 }
 
 async function preCheck() {
-  if (isDev) return;
   try {
     let hasChange = false;
     try {
-      await exe`git diff --quiet HEAD`;
+      await exe('git', ['diff', '--quiet', 'HEAD']);
     } catch (_) {
       hasChange = true;
     }

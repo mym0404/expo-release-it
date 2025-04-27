@@ -32,6 +32,10 @@ Based on years of experience developing with React Native, I encourage a more tr
 
 This approach is much faster, simpler, and, most importantly, allows you to take full advantage of your computer’s fast CPU.
 
+OTA updates are a powerful tool in React Native, but to fully take advantage of them, you need a self-hosted CDN server, a version management console both in the cloud and inside the app, and you have to separately manage binary versions and bundle versions—all of which introduce significant complexity and semantic overhead that often outweigh the benefits of implementing OTA updates. Furthermore, due to a general lack of deep understanding about OTA updates, issues like native library version mismatches can occur frequently, so OTA updates are excluded by default.
+
+I’m also a big fan of OTA updates, and I’ve enjoyed a lot of efficiency when working in larger teams, but it always required setting up many supporting systems in advance.
+
 `expo-release-it` is a CLI tool that encapsulates the know-how I have gained over years of automating build and review processes.  
 Internally, it ports and integrates tools like Fastlane and Match to automate native binary builds and review requests.
 
@@ -95,6 +99,10 @@ You'd have to fill your key & credentials information using `init` command and p
 
 ## 4. Set binary version in expo config file.
 
+You must match `version` and `buildNumber` with `versionCode` for each platform.
+
+The following buildNumber, versionCode format `ABBBCCC` is not mandatory but recommended for readability. 
+
 If your expo config file is `app.json`, then set like the following.
 
 ```json
@@ -102,13 +110,38 @@ If your expo config file is `app.json`, then set like the following.
   "expo": {
     "version": "1.2.3",
     "ios": {
-      "buildNumber": "1",
+      "buildNumber": "1002003",
     },
     "android": {
-      "versionCode": 1,
+      "versionCode": 1002003,
     },
   }
 }
+
+```
+
+If your expo config file is `app.config.(js|ts|mjs|cjs)`, then set like the following.
+
+```typescript
+import type { ExpoConfig, ConfigContext } from 'expo/config';
+// checked with /^const\s+VERSION_NAME\s*?=\s*?['"]([\d\.]*?)['"];?$/
+const VERSION_NAME = '1.2.3'; // VERSION_NAME variable is required.
+
+// checked with /^const\s+VERSION_CODE\s*?=\s*?(\d*?);?$/
+const VERSION_CODE = 1002003; // VERSION_CODE variable is required.
+
+export default ({ config }: ConfigContext): ExpoConfig => {
+  return {
+    ...config,
+    version: VERSION_NAME,
+    ios: {
+      buildNumber: VERSION_CODE + '',
+    },
+    android: {
+      versionCode: VERSION_CODE,
+    },
+  };
+};
 
 ```
 

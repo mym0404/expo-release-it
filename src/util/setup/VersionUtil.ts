@@ -3,6 +3,9 @@ import { throwError } from '../throwError';
 import semver from 'semver';
 import { readdir, read, readJsonSlow, write, writeJson, resolve } from '../FileUtil';
 
+const versionNameRegex = () => /^const\s+VERSION_NAME\s*?=\s*?['"]([\d\.]*?)['"];?$/;
+const versionCodeRegex = () => /^const\s+VERSION_CODE\s*?=\s*?(\d*?);?$/;
+
 export async function parseBinaryVersions() {
   const files = readdir(OptionHolder.projectDir);
 
@@ -27,8 +30,8 @@ export async function parseBinaryVersions() {
     const filePath = resolve(OptionHolder.projectDir, filename);
     const content = read(filePath);
 
-    const VERSION_NAME = /const VERSION_NAME = '(.*?)';/.exec(content)?.[1];
-    const VERSION_CODE = /const VERSION_CODE = (.*?);/.exec(content)?.[1];
+    const VERSION_NAME = versionNameRegex().exec(content)?.[1];
+    const VERSION_CODE = versionCodeRegex().exec(content)?.[1];
 
     if (!VERSION_NAME) {
       throwError('cannot parse version name');
@@ -104,14 +107,8 @@ export async function injectBinaryVersions({
     const filePath = resolve(OptionHolder.projectDir, filename);
     let content = read(filePath);
 
-    content = content.replace(
-      /const VERSION_NAME = '(.*?)';/,
-      `const VERSION_NAME = '${versionName}';`,
-    );
-    content = content.replace(
-      /const VERSION_CODE = (.*?);/,
-      `const VERSION_CODE = ${versionCode};`,
-    );
+    content = content.replace(versionNameRegex(), `const VERSION_NAME = '${versionName}';`);
+    content = content.replace(versionCodeRegex(), `const VERSION_CODE = ${versionCode};`);
 
     write(filePath, content);
   }

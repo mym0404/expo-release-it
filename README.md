@@ -93,6 +93,25 @@ Create and configure your application in Google Play Console & App Store Connect
 
 You'd have to fill your key & credentials information using `init` command and pull store metadatas using `pull` command later.
 
+## 4. Set binary version in expo config file.
+
+If your expo config file is `app.json`, then set like the following.
+
+```json
+{
+  "expo": {
+    "version": "1.2.3",
+    "ios": {
+      "buildNumber": "1",
+    },
+    "android": {
+      "versionCode": 1,
+    },
+  }
+}
+
+```
+
 # Usage
 
 ```shell
@@ -114,6 +133,8 @@ The `init` command asks you for many form fields, and the information is saved i
 Even after running `init`, you can manually edit `keyholder.json`, and all subsequent commands will use the updated values.
 
 ## bump
+
+**Bump binary release patch version with modifying app.json**
 
 ## pull
 

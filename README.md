@@ -292,11 +292,14 @@ You have to fill all necessary metadata to submit app for the reivew.
 
 Check yourself if app can be submitted manually at the app store connect yourself first.
 
-## [android] Google Api Error: Invalid request - Package not found: ...
+## [Android] Google Api Error: Invalid request - Package not found: ...
 
 At first, you have to upload your artifacts manually.
 First, create an internal testing track and then upload your artifacts (AAB or APK files).
 
+## [Android] Google Api Error: Invalid request - Only releases with status draft may be created on draft app.
+
+If you have just created your app and have never released it to production before, please fill out all the required metadata manually, publish the app manually for the first time, and then try again.
 
 # Licenses
 

@@ -28,9 +28,11 @@
     "url": "^0.11.4"
   },
   "devDependencies": {
+    "@commitlint/config-conventional": "^19.8.0",
     "@release-it/conventional-changelog": "^10.0.1",
     "@types/fs-extra": "^11.0.4",
     "@types/semver": "^7.7.0",
+    "lefthook": "^1.11.11",
     "prettier": "3.5.3",
     "release-it": "^19.0.1",
     "tiny-glob": "^0.2.9",
@@ -47,5 +49,10 @@
     "bin",
     "template"
   ],
-  "packageManager": "yarn@4.9.1"
+  "packageManager": "yarn@4.9.1",
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
+  }
 }

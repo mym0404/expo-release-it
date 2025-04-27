@@ -1168,6 +1168,26 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@commitlint/config-conventional@npm:^19.8.0":
+  version: 19.8.0
+  resolution: "@commitlint/config-conventional@npm:19.8.0"
+  dependencies:
+    "@commitlint/types": "npm:^19.8.0"
+    conventional-changelog-conventionalcommits: "npm:^7.0.2"
+  checksum: 10c0/c0e2ad4ee8b793ad08ce8f0fd242d8111c71c81eba53b652431b7852e02d3eef0a383e234b7574429f5d1876b712a915921f6ff61fdaccdf708cbbaf3fa1f2f0
+  languageName: node
+  linkType: hard
+
+"@commitlint/types@npm:^19.8.0":
+  version: 19.8.0
+  resolution: "@commitlint/types@npm:19.8.0"
+  dependencies:
+    "@types/conventional-commits-parser": "npm:^5.0.0"
+    chalk: "npm:^5.3.0"
+  checksum: 10c0/634a5db20110675da8ddf226f200c33f262c6e99d06853fd4a2f6d543e6cc7dfe48b045f7ae76bcce2e39595099bfebe6a5dd6da37ff2968733c1263b8d46644
+  languageName: node
+  linkType: hard
+
 "@conventional-changelog/git-client@npm:^1.0.0":
   version: 1.0.1
   resolution: "@conventional-changelog/git-client@npm:1.0.1"
@@ -3156,6 +3176,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/conventional-commits-parser@npm:^5.0.0":
+  version: 5.0.1
+  resolution: "@types/conventional-commits-parser@npm:5.0.1"
+  dependencies:
+    "@types/node": "npm:*"
+  checksum: 10c0/4b7b561f195f779d07f973801a9f15d77cd58ceb67e817459688b11cc735288d30de050f445c91f4cd2c007fa86824e59a6e3cde602d150b828c4474f6e67be5
+  languageName: node
+  linkType: hard
+
 "@types/estree@npm:1.0.7":
   version: 1.0.7
   resolution: "@types/estree@npm:1.0.7"
@@ -4680,6 +4709,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"conventional-changelog-conventionalcommits@npm:^7.0.2":
+  version: 7.0.2
+  resolution: "conventional-changelog-conventionalcommits@npm:7.0.2"
+  dependencies:
+    compare-func: "npm:^2.0.0"
+  checksum: 10c0/3cb1eab35e37fc973cfb3aed0e159f54414e49b222988da1c2aa86cc8a87fe7531491bbb7657fe5fc4dc0e25f5b50e2065ba8ac71cc4c08eed9189102a2b81bd
+  languageName: node
+  linkType: hard
+
 "conventional-changelog-conventionalcommits@npm:^8.0.0":
   version: 8.0.0
   resolution: "conventional-changelog-conventionalcommits@npm:8.0.0"
@@ -5840,6 +5878,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "expo-release-it@workspace:."
   dependencies:
+    "@commitlint/config-conventional": "npm:^19.8.0"
     "@inquirer/prompts": "npm:^7.4.1"
     "@mj-studio/js-util": "npm:^1.1.20"
     "@release-it/conventional-changelog": "npm:^10.0.1"
@@ -5849,6 +5888,7 @@ __metadata:
     commander: "npm:^13.1.0"
     execa: "npm:^9.5.2"
     fs-extra: "npm:^11.3.0"
+    lefthook: "npm:^1.11.11"
     ora: "npm:^8.2.0"
     prettier: "npm:3.5.3"
     react: "npm:18.3.1"
@@ -8133,6 +8173,117 @@ __metadata:
   version: 3.0.3
   resolution: "kleur@npm:3.0.3"
   checksum: 10c0/cd3a0b8878e7d6d3799e54340efe3591ca787d9f95f109f28129bdd2915e37807bf8918bb295ab86afb8c82196beec5a1adcaf29042ce3f2bd932b038fe3aa4b
+  languageName: node
+  linkType: hard
+
+"lefthook-darwin-arm64@npm:1.11.11":
+  version: 1.11.11
+  resolution: "lefthook-darwin-arm64@npm:1.11.11"
+  conditions: os=darwin & cpu=arm64
+  languageName: node
+  linkType: hard
+
+"lefthook-darwin-x64@npm:1.11.11":
+  version: 1.11.11
+  resolution: "lefthook-darwin-x64@npm:1.11.11"
+  conditions: os=darwin & cpu=x64
+  languageName: node
+  linkType: hard
+
+"lefthook-freebsd-arm64@npm:1.11.11":
+  version: 1.11.11
+  resolution: "lefthook-freebsd-arm64@npm:1.11.11"
+  conditions: os=freebsd & cpu=arm64
+  languageName: node
+  linkType: hard
+
+"lefthook-freebsd-x64@npm:1.11.11":
+  version: 1.11.11
+  resolution: "lefthook-freebsd-x64@npm:1.11.11"
+  conditions: os=freebsd & cpu=x64
+  languageName: node
+  linkType: hard
+
+"lefthook-linux-arm64@npm:1.11.11":
+  version: 1.11.11
+  resolution: "lefthook-linux-arm64@npm:1.11.11"
+  conditions: os=linux & cpu=arm64
+  languageName: node
+  linkType: hard
+
+"lefthook-linux-x64@npm:1.11.11":
+  version: 1.11.11
+  resolution: "lefthook-linux-x64@npm:1.11.11"
+  conditions: os=linux & cpu=x64
+  languageName: node
+  linkType: hard
+
+"lefthook-openbsd-arm64@npm:1.11.11":
+  version: 1.11.11
+  resolution: "lefthook-openbsd-arm64@npm:1.11.11"
+  conditions: os=openbsd & cpu=arm64
+  languageName: node
+  linkType: hard
+
+"lefthook-openbsd-x64@npm:1.11.11":
+  version: 1.11.11
+  resolution: "lefthook-openbsd-x64@npm:1.11.11"
+  conditions: os=openbsd & cpu=x64
+  languageName: node
+  linkType: hard
+
+"lefthook-windows-arm64@npm:1.11.11":
+  version: 1.11.11
+  resolution: "lefthook-windows-arm64@npm:1.11.11"
+  conditions: os=win32 & cpu=arm64
+  languageName: node
+  linkType: hard
+
+"lefthook-windows-x64@npm:1.11.11":
+  version: 1.11.11
+  resolution: "lefthook-windows-x64@npm:1.11.11"
+  conditions: os=win32 & cpu=x64
+  languageName: node
+  linkType: hard
+
+"lefthook@npm:^1.11.11":
+  version: 1.11.11
+  resolution: "lefthook@npm:1.11.11"
+  dependencies:
+    lefthook-darwin-arm64: "npm:1.11.11"
+    lefthook-darwin-x64: "npm:1.11.11"
+    lefthook-freebsd-arm64: "npm:1.11.11"
+    lefthook-freebsd-x64: "npm:1.11.11"
+    lefthook-linux-arm64: "npm:1.11.11"
+    lefthook-linux-x64: "npm:1.11.11"
+    lefthook-openbsd-arm64: "npm:1.11.11"
+    lefthook-openbsd-x64: "npm:1.11.11"
+    lefthook-windows-arm64: "npm:1.11.11"
+    lefthook-windows-x64: "npm:1.11.11"
+  dependenciesMeta:
+    lefthook-darwin-arm64:
+      optional: true
+    lefthook-darwin-x64:
+      optional: true
+    lefthook-freebsd-arm64:
+      optional: true
+    lefthook-freebsd-x64:
+      optional: true
+    lefthook-linux-arm64:
+      optional: true
+    lefthook-linux-x64:
+      optional: true
+    lefthook-openbsd-arm64:
+      optional: true
+    lefthook-openbsd-x64:
+      optional: true
+    lefthook-windows-arm64:
+      optional: true
+    lefthook-windows-x64:
+      optional: true
+  bin:
+    lefthook: bin/index.js
+  checksum: 10c0/e7c4ecca522dc4701c5170fd58e5291cd0e13cdf628b091bf1ed6052bf9a26168aec79cd053418bc99eb35c45f32f2d69dba594e4e1436e014a9a41477194549
   languageName: node
   linkType: hard
 

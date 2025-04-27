@@ -46,8 +46,8 @@ However, once you understand this approach, your app deployment process will bec
 
 # Structurual Requirements
 
-- Match iOS, Android Binary build version like `1.0.0`. These will be bumped with `bump` command with same manner.
-- All Keys, Credentials(except iOS certificates & provisioning profiles served in github separately) are stored in VCS
+- `Version Code(Android)` and `Builder Number(iOS)` are the same.
+- All Keys, Credentials(except iOS certificates & provisioning profiles served in Github separately) are stored in VCS
 
 # Getting Started
 
@@ -99,8 +99,6 @@ You'd have to fill your key & credentials information using `init` command and p
 
 ## 4. Set binary version in expo config file.
 
-You must match `version` and `buildNumber` with `versionCode` for each platform.
-
 The following buildNumber, versionCode format `ABBBCCC` is not mandatory but recommended for readability. 
 
 If your expo config file is `app.json`, then set like the following.
@@ -124,10 +122,7 @@ If your expo config file is `app.config.(js|ts|mjs|cjs)`, then set like the foll
 
 ```typescript
 import type { ExpoConfig, ConfigContext } from 'expo/config';
-// checked with /^const\s+VERSION_NAME\s*?=\s*?['"]([\d\.]*?)['"];?$/
 const VERSION_NAME = '1.2.3'; // VERSION_NAME variable is required.
-
-// checked with /^const\s+VERSION_CODE\s*?=\s*?(\d*?);?$/
 const VERSION_CODE = 1002003; // VERSION_CODE variable is required.
 
 export default ({ config }: ConfigContext): ExpoConfig => {
@@ -168,6 +163,10 @@ Even after running `init`, you can manually edit `keyholder.json`, and all subse
 ## bump
 
 **Bump binary release patch version with modifying app.json**
+
+```shell
+npx expo-release-it bump
+```
 
 ## pull
 

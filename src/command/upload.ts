@@ -16,8 +16,7 @@ export async function upload({ options }: { options: any }) {
   await setup();
   await promptInputs();
 
-  logger.info('Build & Upload Started');
-  logger.info(`Version: ${OptionHolder.versionName}(${OptionHolder.versionCode})`);
+  logger.info('Upload Testing Track Started');
 
   if (OptionHolder.input.platform === 'ios') {
     await uploadIos();

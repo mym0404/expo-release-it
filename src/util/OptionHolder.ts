@@ -18,6 +18,7 @@ export const OptionHolder: {
   };
   input: {
     platform: 'android' | 'ios';
+    platformAll: 'android' | 'ios' | 'all';
     uploadMetadata: boolean;
     androidOutput: 'apk' | 'aab';
     pod: boolean;

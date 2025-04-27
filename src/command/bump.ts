@@ -11,10 +11,9 @@ export async function bump({ options }: { options: any }) {
   await preCheck();
   await setup();
 
-  logger.info(`current version: ${OptionHolder.versionName}(${OptionHolder.versionCode})`);
   const nextVersionName = semver.inc(OptionHolder.versionName, 'patch')!;
   const nextVersionCode = Number(OptionHolder.versionCode) + 1 + '';
-  logger.info(`next version: ${nextVersionName}(${nextVersionCode})`);
+  logger.info(`Next Version: ${nextVersionName}(${nextVersionCode})`);
 
   await injectBinaryVersions({ versionName: nextVersionName, versionCode: nextVersionCode });
   logger.success('Binary versions have been bumped in expo config file');

@@ -18,7 +18,6 @@ export async function build({ options }: { options: any }) {
   await promptInputs();
 
   logger.info('Build Started');
-  logger.info(`Version: ${OptionHolder.versionName}(${OptionHolder.versionCode})`);
 
   if (OptionHolder.input.platform === 'ios') {
     await buildIos();

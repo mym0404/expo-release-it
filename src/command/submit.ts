@@ -17,7 +17,6 @@ export async function submit({ options }: { options: any }) {
   await promptInputs();
 
   logger.info('Submit Started');
-  logger.info(`Version: ${OptionHolder.versionName}(${OptionHolder.versionCode})`);
 
   if (OptionHolder.input.platform === 'ios') {
     await submitIos();

@@ -18,6 +18,21 @@ export const InqueryInputs = {
       });
     }
   },
+  platformAll: async () => {
+    if (!OptionHolder.input.platformAll) {
+      OptionHolder.input.platformAll = await select({
+        message: constructInquirerFormattedMessage({
+          name: 'Platform',
+          explanation: `Platforms to run action`,
+        }),
+        choices: [
+          { name: 'all', value: 'all', description: 'Both' },
+          { name: 'ios', value: 'ios', description: 'Release ios' },
+          { name: 'android', value: 'android', description: 'Release android' },
+        ],
+      });
+    }
+  },
   podinstall: async () => {
     if (OptionHolder.input.platform === 'ios') {
       OptionHolder.input.pod = await select({

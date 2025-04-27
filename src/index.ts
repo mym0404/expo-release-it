@@ -15,6 +15,11 @@ const platformOption = new Option('-p --platform <platform>', 'Platform').choice
   'android',
   'ios',
 ]);
+// const platformAllOption = new Option('-p --platformAll <platform>', 'Platform').choices([
+//   'all',
+//   'android',
+//   'ios',
+// ]);
 const androidBuildOutputOption = new Option(
   '--androidOutput <output>',
   'Android Build Output',
@@ -37,6 +42,7 @@ export const run = () => {
   program
     .command('bump')
     .description('Bump binary release patch version with modifying app.json')
+    // .addOption(platformAllOption)
     .action(async (options) => handleError(bump({ options })));
 
   program

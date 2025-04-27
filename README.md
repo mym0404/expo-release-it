@@ -289,6 +289,19 @@ You have to fill all necessary metadata to submit app for the reivew.
 
 Check yourself if app can be submitted manually at the app store connect yourself first.
 
+## [iOS] Provisioning profile "..." doesn't include signing certificate "..."
+
+You might need to revoke iOS Certificates & Provisioning Profile and generate again.
+
+```shell
+cd ios
+bundle
+bundle exec fastlane match nuke distribution # revoke all certificates
+
+cd ..
+npx expo-release-it built -p ios # command you tried, this generate required certificates automatically
+```
+
 ## [Android] Google Api Error: Invalid request - Package not found: ...
 
 At first, you have to upload your artifacts manually.

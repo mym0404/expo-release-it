@@ -30,6 +30,7 @@ export async function submit({ options }: { options: any }) {
 async function promptInputs() {
   await InqueryInputs.platform();
   await InqueryInputs.uploadMetadata();
+  await InqueryInputs.uploadScreenshot();
 }
 
 async function submitIos() {

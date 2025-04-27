@@ -57,13 +57,16 @@ export const run = () => {
     .description('Upload artifact to play console internal test track(android) and testflight(ios)')
     .addOption(platformOption)
     .addOption(androidBuildOutputOption)
-    .option('-m --uploadMetadata', 'Upload store metadatas')
+    .option('-m --uploadMetadata', 'Upload store text metadatas')
+    .option('-s --uploadScreenshot', 'Upload store screenshots')
     .action(async (options) => handleError(upload({ options })));
 
   program
     .command('submit')
     .description('Submit Google Play Console & App Store Connect Review with latest testing track')
     .addOption(platformOption)
+    .option('-m --uploadMetadata', 'Upload store text metadatas')
+    .option('-s --uploadScreenshot', 'Upload store screenshots')
     .action(async (options) => handleError(submit({ options })));
 
   program

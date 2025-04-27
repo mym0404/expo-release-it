@@ -91,7 +91,7 @@ platform :ios do
       force: true, # Set to true to skip verification of HTML preview
       skip_binary_upload: true,
       submit_for_review: true,
-      skip_screenshots: !to_b(options[:upload_metadata]),
+      skip_screenshots: !to_b(options[:upload_screenshot]),
       skip_metadata: !to_b(options[:upload_metadata]),
       precheck_include_in_app_purchases: false,
       reject_if_possible: true,

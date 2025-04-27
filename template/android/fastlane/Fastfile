@@ -22,7 +22,7 @@ platform :android do
     	skip_upload_metadata: !to_b(options[:upload_metadata]),
     	skip_upload_changelogs: !to_b(options[:upload_metadata]),
     	skip_upload_images: !to_b(options[:upload_metadata]),
-    	skip_upload_screenshots: !to_b(options[:upload_metadata]),
+    	skip_upload_screenshots: !to_b(options[:upload_screenshot]),
     	skip_upload_aab: to_b(options[:skip_upload_aab]),
     	skip_upload_apk: to_b(options[:skip_upload_apk]),
     )
@@ -40,8 +40,8 @@ platform :android do
     	rollout: "1.0",
     	skip_upload_metadata: !to_b(options[:upload_metadata]),
     	skip_upload_changelogs: !to_b(options[:upload_metadata]),
-    	skip_upload_images: !to_b(options[:upload_metadata]),
-    	skip_upload_screenshots: !to_b(options[:upload_metadata]),
+    	skip_upload_images: !to_b(options[:upload_screenshot]),
+    	skip_upload_screenshots: !to_b(options[:upload_screenshot]),
        	skip_upload_aab: true,
        	skip_upload_apk: true,
     )

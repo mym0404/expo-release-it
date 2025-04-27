@@ -32,9 +32,13 @@ async function promptInputs() {
   await InqueryInputs.androidBuildOutput();
   if (OptionHolder.input.platform !== 'ios') {
     await InqueryInputs.uploadMetadata();
+    await InqueryInputs.uploadScreenshot();
   }
-  if (OptionHolder.input.platform === 'ios' && OptionHolder.input.uploadMetadata) {
-    logger.warn("ios upload command doesn't support uploading metadatas");
+  if (
+    OptionHolder.input.platform === 'ios' &&
+    (OptionHolder.input.uploadMetadata || OptionHolder.input.uploadScreenshot)
+  ) {
+    logger.warn("ios upload command doesn't support uploading metadatas and screenshots");
   }
 }
 

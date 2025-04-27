@@ -65,7 +65,20 @@ export const InqueryInputs = {
     if (!is.boolean(OptionHolder.input.uploadMetadata)) {
       OptionHolder.input.uploadMetadata = await select({
         message: constructInquirerFormattedMessage({
-          name: 'Upload Metadata(screenshot, title, description, ...)',
+          name: 'Upload Text Metadata(title, description, ...)',
+        }),
+        choices: [
+          { name: 'yes', value: true, description: 'Upload' },
+          { name: 'no', value: false, description: "Don't Upload" },
+        ],
+      });
+    }
+  },
+  uploadScreenshot: async () => {
+    if (!is.boolean(OptionHolder.input.uploadScreenshot)) {
+      OptionHolder.input.uploadScreenshot = await select({
+        message: constructInquirerFormattedMessage({
+          name: 'Upload Screenshots & Images',
         }),
         choices: [
           { name: 'yes', value: true, description: 'Upload' },

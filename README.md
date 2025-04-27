@@ -286,6 +286,12 @@ You have to fill required metadata attributes of iOS in `expo-release-it/metadat
 
 You also skip uploading metadatas with opt out the metadata uploading from the cli prompt.
 
+## [iOS - submit]  This resource cannot be reviewed
+
+You have to fill all necessary metadata to submit app for the reivew.
+
+Check yourself if app can be submitted manually at the app store connect yourself first.
+
 ## [android] Google Api Error: Invalid request - Package not found: ...
 
 At first, you have to upload your artifacts manually.

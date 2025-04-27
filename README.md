@@ -97,6 +97,8 @@ Create and configure your application in Google Play Console & App Store Connect
 
 You'd have to fill your key & credentials information using `init` command and pull store metadatas using `pull` command later.
 
+You would need to upload & publish your first artifact, release manually at first.
+
 ## 4. Set binary version in expo config file.
 
 The following buildNumber, versionCode format `ABBBCCC` is not mandatory but recommended for readability. 
@@ -138,6 +140,19 @@ export default ({ config }: ConfigContext): ExpoConfig => {
   };
 };
 
+```
+
+## 5. Update `.gitignore`
+
+```gitignore
+# Expo Release It
+
+expo-release-it/.temp
+android/vendor/bundle
+ios/vendor/bundle
+!*.jks
+!*.p8
+!*.keystore
 ```
 
 # Usage
@@ -199,6 +214,18 @@ npx expo-release-it upload
 ```shell
 npx expo-release-it submit
 ```
+
+# About Security
+
+That’s right. You might be wondering whether storing files like .p8, keystore files, or key values in version control is truly secure.
+In conclusion, if you’re using a private repository, you can consider it to be somewhat safe.
+
+For example, Fastlane Match also uses OpenSSL encryption, but it still stores certificates and profiles in a private Git repository.
+
+While you could implement additional security policies, I haven’t taken any extra measures for now.
+If you need further encryption, you can build middleware in your pipeline that runs expo-release-it so that everything in the expo-release-it directory goes through encryption and decryption processes.
+
+Any suggestions are welcome.
 
 # Troubleshooting
 

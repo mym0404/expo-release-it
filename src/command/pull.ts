@@ -52,6 +52,7 @@ async function pullIosMetadata() {
     '-f',
     '--api_key_path',
     generateAppStoreConnectApiKeyFile(),
+    '--use_live_version',
   ]);
 
   copyIosMetadata('resources');

@@ -3,17 +3,16 @@ import { OptionHolder } from '../OptionHolder';
 import { injectTemplatePlaceHolders } from '../injectTemplatePlaceHolders';
 import { spinner } from '../spinner';
 import { exe, yesShell } from './execShellScript';
+import { logger } from '../logger';
 
 export async function prepareAndroid() {
   const srcDir = resolve(OptionHolder.cli.templateDir, 'android');
   const destDir = resolve(OptionHolder.projectDir, 'android');
 
-  await spinner(
-    'Expo Prebuild',
-    yesShell(`expo prebuild -p android --no-install`, {
-      cwd: OptionHolder.projectDir,
-    }),
-  );
+  await yesShell('expo', ['prebuild', '-p', 'android', '--no-install'], {
+    cwd: OptionHolder.projectDir,
+  });
+  logger.success('Expo Prebuild - Done');
 
   await spinner(
     'Inject Templates',

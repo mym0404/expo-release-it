@@ -49,7 +49,7 @@ async function buildIos() {
 
   async function fastlane() {
     if (OptionHolder.input.pod) {
-      await spinner('Pod Install', exeEnv`bundle exec pod install`);
+      await spinner('Pod Install', exeEnv('bundle', ['exec', 'pod', 'install']));
     }
     remove(resolve(iosDir, '.xcode.env.local'));
 

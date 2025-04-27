@@ -8,12 +8,11 @@ import { logger } from '../logger';
 export async function prepareIos() {
   const srcDir = resolve(OptionHolder.cli.templateDir, 'ios');
   const destDir = resolve(OptionHolder.projectDir, 'ios');
-  await spinner(
-    'Expo Prebuild',
-    yesShell(`expo prebuild -p ios --no-install`, {
-      cwd: OptionHolder.projectDir,
-    }),
-  );
+
+  await yesShell('expo', ['prebuild', '-p', 'ios', '--no-install'], {
+    cwd: OptionHolder.projectDir,
+  });
+  logger.success('Expo Prebuild - Done');
 
   await spinner(
     'Inject templates',

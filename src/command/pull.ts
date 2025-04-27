@@ -32,8 +32,26 @@ async function pullIosMetadata() {
       MATCH_PASSWORD: OptionHolder.keyholderMap.ios_match_password,
     },
   });
-  await exeEnv`bundle exec fastlane deliver download_metadata -f --api_key_path ${generateAppStoreConnectApiKeyFile()}`;
-  await exeEnv`bundle exec fastlane deliver download_screenshots -f --api_key_path ${generateAppStoreConnectApiKeyFile()}`;
+
+  await exeEnv('bundle', [
+    'exec',
+    'fastlane',
+    'deliver',
+    'download_metadata',
+    '-f',
+    '--api_key_path',
+    generateAppStoreConnectApiKeyFile(),
+  ]);
+
+  await exeEnv('bundle', [
+    'exec',
+    'fastlane',
+    'deliver',
+    'download_screenshots',
+    '-f',
+    '--api_key_path',
+    generateAppStoreConnectApiKeyFile(),
+  ]);
 
   const metadataSrcDir = join(iosDir, 'fastlane/metadata');
   const screenshotsSrcDir = join(iosDir, 'fastlane/screenshots');
@@ -48,7 +66,6 @@ async function pullIosMetadata() {
 async function pullAndroidMetadata() {
   await prepareAndroid();
   const androidDir = join(OptionHolder.projectDir, 'android');
-  await exe({
-    cwd: androidDir,
-  })`bundle exec fastlane supply init`;
+
+  await exe('bundle', ['exec', 'fastlane', 'supply', 'init'], { cwd: androidDir });
 }

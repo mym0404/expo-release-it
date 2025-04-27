@@ -59,7 +59,7 @@ export const run = () => {
       try {
         await build({ options });
       } catch (e) {
-        throwError('Command Failed');
+        throwError('Command Failed', e);
       }
     });
 

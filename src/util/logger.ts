@@ -2,6 +2,7 @@ import chalk from 'chalk';
 
 export const logger = {
   success: (...msg: any[]) => console.log(chalk.green(`✔ ${msg.join(', ')}`)),
+  done: (...msg: any[]) => console.log(chalk.green(`✔ ${msg.join(', ')} - Done`)),
   error: (...msg: any[]) => console.log(chalk.red(`✖ ${msg.join(', ')}`)),
   warn: (...msg: any[]) => console.log(chalk.yellow(`⚠ ${msg.join(', ')}`)),
   info: (...msg: any[]) => console.log(chalk.cyan(`ℹ ${msg.join(', ')}`)),

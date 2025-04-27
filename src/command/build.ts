@@ -49,11 +49,16 @@ async function buildIos() {
 
   async function fastlane() {
     if (OptionHolder.input.pod) {
-      await spinner('Pod Install', exeEnv('bundle', ['exec', 'pod', 'install']));
+      await exeEnv('bundle', ['exec', 'pod', 'install']);
+      logger.done('Pod Install');
     }
     remove(resolve(iosDir, '.xcode.env.local'));
 
-    await exeEnv`bundle exec fastlane build ${getIosFastlaneOptions()}`;
+    await exeEnv('bundle', ['exec', 'fastlane', 'build', ...getIosFastlaneOptions()]);
+
+    logger.success(
+      `artifact generated: ${relativePath(OptionHolder.projectDir, resolve(OptionHolder.outputOfInitDir, 'output', 'ios', 'app.ipa'))}`,
+    );
   }
 }
 async function buildAndroid() {
@@ -70,14 +75,17 @@ async function buildAndroid() {
 
     if (OptionHolder.input.androidOutput === 'aab') {
       // aab: app/build/outputs/bundle/release/app-release.aab
-      await spinner('Bundle AAB', exeEnv`${isWin ? 'gradle.bat' : './gradlew'} app:bundleRelease`);
+      await spinner(
+        'Bundle AAB',
+        exeEnv(isWin ? 'gradle.bat' : './gradlew', ['app:bundleRelease']),
+      );
       buildOutputDir = resolve(androidDir, 'app', 'build', 'outputs', 'bundle', 'release');
       outputDir = resolve(OptionHolder.outputOfInitDir, 'output', 'android', 'aab');
     } else {
       // apk: app/build/outputs/apk/release/app-release.apk
       await spinner(
         'Bundle APK',
-        exeEnv`${isWin ? 'gradle.bat' : './gradlew'} app:assembleRelease`,
+        exeEnv(isWin ? 'gradle.bat' : './gradlew', ['app:assembleRelease']),
       );
       buildOutputDir = resolve(androidDir, 'app', 'build', 'outputs', 'apk', 'release');
       outputDir = resolve(OptionHolder.outputOfInitDir, 'output', 'android', 'apk');

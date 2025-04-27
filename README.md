@@ -108,11 +108,11 @@ If your expo config file is `app.json`, then set like the following.
   "expo": {
     "version": "1.2.3",
     "ios": {
-      "buildNumber": "1002003",
+      "buildNumber": "1002003"
     },
     "android": {
-      "versionCode": 1002003,
-    },
+      "versionCode": 1002003
+    }
   }
 }
 

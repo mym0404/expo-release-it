@@ -2,7 +2,7 @@
   "expo": {
     "name": "example",
     "slug": "example",
-    "version": "1.0.4",
+    "version": "1.0.5",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "myapp",
@@ -10,7 +10,7 @@
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "buildNumber": "1000004",
+      "buildNumber": "1000005",
       "bundleIdentifier": "happy.mjstudio.timing"
     },
     "android": {
@@ -18,7 +18,7 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "versionCode": 1000004,
+      "versionCode": 1000005,
       "package": "happy.mjstudio.timing"
     },
     "web": {

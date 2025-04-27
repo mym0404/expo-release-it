@@ -3,8 +3,8 @@ import { throwError } from '../throwError';
 import semver from 'semver';
 import { readdir, read, readJsonSlow, write, writeJson, resolve } from '../FileUtil';
 
-const versionNameRegex = () => /const\s+VERSION_NAME\s*?=\s*?['"]([\d\.]+?)['"];?/;
-const versionCodeRegex = () => /const\s+VERSION_CODE\s*?=\s*?(\d+?);?/;
+const versionNameRegex = () => /const\s+VERSION_NAME\s*?=\s*?['"]([\d\.]*?)['"]\s*?;?/;
+const versionCodeRegex = () => /const\s+VERSION_CODE\s*?=\s*?(\d+)\s*?;?/;
 
 export async function parseBinaryVersions() {
   const files = readdir(OptionHolder.projectDir);

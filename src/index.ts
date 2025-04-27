@@ -24,12 +24,14 @@ export const run = () => {
   const program = new Command();
   program
     .name('expo-release-it')
-    .description('Build & Upload & Submit locally for Expo project')
+    .description(
+      'Opinionated Expo CICD workflow CLI for building & uploading & submitting Expo projects on your machine',
+    )
     .version(OptionHolder.cli.version);
 
   program
     .command('init')
-    .description('Initialize CLI utilities')
+    .description('Configure resources and environment')
     .action(async (options) => handleError(init({ options })));
 
   program

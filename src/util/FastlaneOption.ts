@@ -20,7 +20,7 @@ export function getIosFastlaneOptions() {
     ...Object.entries(OptionHolder.keyholderMap).map(([k, v]) => `${k}:${v}`),
     `version_name:${OptionHolder.versionName}`,
     `version_code:${OptionHolder.versionCode}`,
-    `api_key_filepath:${resolve(OptionHolder.keyDir, 'ios_testflight_upload_api_key.p8')}`,
+    `api_key_filepath:${resolve(OptionHolder.keyDir, 'ios_app_store_connect_api_key.p8')}`,
     `upload_metadata:${OptionHolder.input.uploadMetadata}`,
     `ipa_path:${resolve(OptionHolder.resourcesDir, 'output', 'ios', 'app.ipa')}`,
     `ipa_dir:${resolve(OptionHolder.resourcesDir, 'output', 'ios')}`,

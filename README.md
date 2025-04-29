@@ -21,15 +21,15 @@ Opinionated Expo CICD workflow CLI for building & uploading & submitting Expo pr
 <details>
   <summary>Full Details</summary>
 
-Expo EAS is convenient, but it requires additional configuration files, console setup, and a conceptual understanding of Over-The-Air (OTA) updates. Also, builds must be performed on EAS Cloud, which is not free and can be slow.
+Expo EAS is convenient, but it requires additional configuration files, console setup, and a conceptual understanding of Over-The-Air (OTA) updates.
+Also, builds must be performed on EAS Cloud, which is not free and can be slow.
 
 While EAS is useful for larger teams, if you are developing alone or with just a few people and question the need for such a process, `expo-release-it` is the answer.
 
-Based on years of experience developing with React Native, I encourage a more traditional approach: build APK, AAB, and IPA files locally, upload them to each platform’s store testing track, and request reviews—without worrying about binary versions, OTA update versions, or branch management.
+Based on years of experience developing with React Native, I encourage a more traditional approach: build APK, AAB, and IPA files locally,
+upload them to each platform’s store testing track, and request reviews—without worrying about binary versions, OTA update versions, or branch management.
 
 This approach is much faster, simpler, and, most importantly, allows you to take full advantage of your computer’s fast CPU.
-
-OTA updates are a powerful tool in React Native, but to fully take advantage of them, you need a self-hosted CDN server, a version management console both in the cloud and inside the app, and you have to separately manage binary versions and bundle versions—all of which introduce significant complexity and semantic overhead that often outweigh the benefits of implementing OTA updates. Furthermore, due to a general lack of deep understanding about OTA updates, issues like native library version mismatches can occur frequently, so OTA updates are excluded by default.
 
 I’m also a big fan of OTA updates, and I’ve enjoyed a lot of efficiency when working in larger teams, but it always required setting up many supporting systems in advance.
 
@@ -59,7 +59,10 @@ If not, set up your environment so that `ruby` and `bundler` are available by fo
 `init` command generates sample key files structure in `expo-release-it/key`. They are **noob files** and you must replace file contents.
 
 > [!IMPORTANT]
-**You must prepare all required key files in `expo-release-it/key` exactly the same filenames.**
+> **You must prepare all required key files in `expo-release-it/key` exactly the same filenames.**
+
+> [!TIP]
+> You can add the following files in `.gitignore` if you aren't sure about security issues. Treat them as `.env` and share it to your teammates.
 
 ### `android_play_console_service_account.json`
 
@@ -148,9 +151,9 @@ export default ({ config }: ConfigContext): ExpoConfig => {
 expo-release-it/.temp
 android/vendor/bundle
 ios/vendor/bundle
-!*.jks
-!*.p8
-!*.keystore
+# if you aren't sure about security issues, feel free to exclude these files from the VCS.
+!expo-release-it/*.p8
+!expo-release-it/*.keystore
 ```
 
 ## 6. Run `expo-release-it init`
@@ -241,6 +244,8 @@ npx expo-release-it submit
 
 That’s right. You might be wondering whether storing files like .p8, keystore files, or key values in version control is truly secure.
 In conclusion, if you’re using a private repository, you can consider it to be somewhat safe.
+
+Whereas, you can exclude those key files from the VCS and share it to your teamates.
 
 For example, Fastlane Match also uses OpenSSL encryption, but it still stores certificates and profiles in a private Git repository.
 

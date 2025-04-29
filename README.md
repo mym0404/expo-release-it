@@ -152,8 +152,8 @@ expo-release-it/.temp
 android/vendor/bundle
 ios/vendor/bundle
 # if you aren't sure about security issues, feel free to exclude these files from the VCS.
-!expo-release-it/*.p8
-!expo-release-it/*.keystore
+!expo-release-it/key/*.p8
+!expo-release-it/key/*.keystore
 ```
 
 ## 6. Run `expo-release-it init`

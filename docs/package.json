@@ -1,0 +1,23 @@
+{
+  "name": "docs",
+  "private": false,
+  "version": "1.0.0",
+  "description": "expo-release-it document site",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "expo-release-it"
+  ],
+  "author": "mym0404",
+  "license": "ISC",
+  "packageManager": "pnpm@10.10.0",
+  "dependencies": {
+    "next": "catalog:",
+    "nextra": "^4.2.17",
+    "nextra-theme-docs": "^4.2.17",
+    "react": "catalog:",
+    "react-dom": "catalog:"
+  }
+}

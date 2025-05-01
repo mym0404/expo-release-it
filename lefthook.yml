@@ -12,10 +12,12 @@ check:
       run: tsc --noEmit -p .
 
 pre-commit:
-  parallel: true
-  jobs:
-    - run: yarn t
-
+  paralle: true
+  commands:
+    test:
+      run: yarn vitest -w false
+    tsc:
+      run: tsc --noEmit -p .
 commit-msg:
   commands:
     commitlint:

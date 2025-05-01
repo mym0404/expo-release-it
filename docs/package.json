@@ -2,6 +2,7 @@
   "name": "docs",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://expo-release-it.mjstudio.net/",
   "scripts": {
     "dev": "next dev",
     "build": "next build",

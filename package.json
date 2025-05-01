@@ -4,7 +4,7 @@
   "type": "module",
   "version": "0.4.0",
   "license": "MIT",
-  "homepage": "https://github.com/mym0404/expo-release-it",
+  "homepage": "https://expo-release-it.mjstudio.net/",
   "repository": "https://github.com/mym0404/expo-release-it",
   "scripts": {
     "build": "pnpm build:json-schema-type && tsup",

@@ -5,10 +5,17 @@ import 'nextra-theme-docs/style.css';
 import { ReactNode } from 'react';
 import './globals.css';
 import Image from 'next/image';
+import { Metadata } from 'next';
 
-export const metadata = {
-  // Define your metadata here
-  // For more information on metadata API, see: https://nextjs.org/docs/app/building-your-application/optimizing/metadata
+export const metadata: Metadata = {
+  title: 'Expo Release It',
+  description: 'Expo CICD workflow CLI for building & uploading & submitting on your machine',
+  openGraph: {
+    images: '/social-image.png',
+  },
+  twitter: {
+    images: '/social-image.png',
+  },
 };
 
 const navbar = (

@@ -10,7 +10,7 @@
     "build": "pnpm build:json-schema-type && tsup",
     "build:json-schema-type": "json2ts --input expo-release-it.schema.json --output src/type/ExpoReleaseItConfiguration.d.ts",
     "dev": "pnpm build && NODE_ENV=development node bin/expo-release-it.mjs",
-    "release": "pnpm build && pnpm t && release-it",
+    "release": "pnpm build && pnpm run t && release-it",
     "t": "lefthook run check"
   },
   "dependencies": {

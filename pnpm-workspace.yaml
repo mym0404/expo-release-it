@@ -1,0 +1,7 @@
+packages:
+  - example
+  - docs
+
+onlyBuiltDependencies:
+  - esbuild
+  - lefthook

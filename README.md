@@ -151,6 +151,8 @@ export default ({ config }: ConfigContext): ExpoConfig => {
 expo-release-it/.temp
 android/vendor/bundle
 ios/vendor/bundle
+# if you excluded android, ios for using CNG
+!expo-release-it/metadata/*
 # if you aren't sure about security issues, feel free to exclude these files from the VCS.
 !expo-release-it/key/*.p8
 !expo-release-it/key/*.keystore

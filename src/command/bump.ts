@@ -16,12 +16,16 @@ export async function bump({ options }: { options: any }) {
   await setup();
 
   const nextVersionName = semver.inc(OptionHolder.versionName, OptionHolder.input.semverIncrement)!;
-  const nextVersionCode = checkVersionCodeIsTiedWithVersionName(
-    OptionHolder.versionName,
-    OptionHolder.versionCode,
-  )
-    ? generateVersionCodeTiedWithVersionName(nextVersionName)
-    : Number(OptionHolder.versionCode) + 1 + '';
+  const nextVersionCode = (() => {
+    if (checkVersionCodeIsTiedWithVersionName(OptionHolder.versionName, OptionHolder.versionCode)) {
+      return generateVersionCodeTiedWithVersionName(nextVersionName);
+    } else {
+      logger.warn(
+        'version name is not tied with version code like (1.3.5=1003005). Version code is just incremented by 1.',
+      );
+      return Number(OptionHolder.versionCode) + 1 + '';
+    }
+  })();
 
   logger.info(`Next Version: ${nextVersionName}(${nextVersionCode})`);
 

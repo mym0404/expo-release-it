@@ -24,6 +24,7 @@ export const OptionHolder: {
     pod: boolean;
     useLiveVersionIos: boolean;
     semverIncrement: 'major' | 'minor' | 'patch';
+    config?: string;
   };
   keyholderMap: {
     ios_app_identifier: string;

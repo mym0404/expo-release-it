@@ -3,9 +3,11 @@ import { parseBinaryVersions } from './VersionUtil';
 import { OptionHolder } from '../OptionHolder';
 import { isDev } from '../EnvUtil';
 import { resolve } from '../FileUtil';
+import { parseConfigFile } from '../parseConfigFile';
 
 export async function setup() {
   await setupBasicOptions();
+  await parseConfigFile();
   await hydrateKeyholderFileValues();
   await parseBinaryVersions();
 }

@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "expo-release-it-schema-json",
+  "title": "expo-release-it configuration",
+  "description": "expo-release-it configuration json schema",
+  "type": "object",
+  "properties": {
+    "bump": {
+      "type": "object",
+      "description": "configuration for `bump` command",
+      "properties": {
+        "increment": {
+          "type": "string",
+          "enum": ["major", "minor", "patch"]
+        }
+      }
+    }
+  }
+}

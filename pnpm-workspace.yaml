@@ -7,7 +7,22 @@ onlyBuiltDependencies:
   - lefthook
 
 catalog:
-  react: ^18.3.1
-  react-dom: ^18.3.1
-  react-native: 0.76.9
-  next: ^15.3.1
+  typescript: ^5
+  prettier: 3.5.3
+
+catalogs:
+  web:
+    react: ^19.0.0
+    react-dom: ^19.0.0
+    next: ^15.3.1
+    '@types/node': ^20
+    '@types/react-dom': ^19
+    '@types/react': ^19
+    '@tailwindcss/postcss': ^4
+    'tailwindcss': ^4
+
+  native:
+    react: ^18.3.1
+    react-dom: ^18.3.1
+    react-native: 0.76.9
+    '@types/react': ~18.3.12

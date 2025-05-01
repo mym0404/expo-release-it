@@ -1,23 +1,28 @@
 {
   "name": "docs",
-  "private": false,
-  "version": "1.0.0",
-  "description": "expo-release-it document site",
-  "main": "index.js",
+  "version": "0.1.0",
+  "private": true,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "postbuild": "pagefind --site .next/server/app --output-path public/_pagefind"
   },
-  "keywords": [
-    "expo-release-it"
-  ],
-  "author": "mym0404",
-  "license": "ISC",
-  "packageManager": "pnpm@10.10.0",
   "dependencies": {
-    "next": "catalog:",
+    "next": "catalog:web",
     "nextra": "^4.2.17",
     "nextra-theme-docs": "^4.2.17",
-    "react": "catalog:",
-    "react-dom": "catalog:"
+    "react": "catalog:web",
+    "react-dom": "catalog:web"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "catalog:web",
+    "@types/node": "catalog:web",
+    "@types/react": "catalog:web",
+    "@types/react-dom": "catalog:web",
+    "pagefind": "^1.3.0",
+    "tailwindcss": "catalog:web",
+    "typescript": "catalog:"
   }
 }

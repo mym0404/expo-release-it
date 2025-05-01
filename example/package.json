@@ -26,20 +26,17 @@
     "expo-symbols": "~0.2.2",
     "expo-system-ui": "~4.0.9",
     "expo-web-browser": "~14.0.2",
-    "react": "catalog:",
-    "react-dom": "catalog:",
-    "react-native": "catalog:",
+    "react": "catalog:native",
+    "react-native": "catalog:native",
     "react-native-gesture-handler": "~2.20.2",
     "react-native-reanimated": "~3.16.1",
     "react-native-safe-area-context": "4.12.0",
-    "react-native-screens": "~4.4.0",
-    "react-native-web": "~0.19.13",
-    "react-native-webview": "13.12.5"
+    "react-native-screens": "~4.4.0"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
-    "@types/react": "~18.3.12",
-    "typescript": "^5.3.3"
+    "@types/react": "catalog:native",
+    "typescript": "catalog:"
   },
   "private": true
 }

@@ -15,15 +15,11 @@ const platformOption = new Option('-p --platform <platform>', 'Platform').choice
   'android',
   'ios',
 ]);
-// const platformAllOption = new Option('-p --platformAll <platform>', 'Platform').choices([
-//   'all',
-//   'android',
-//   'ios',
-// ]);
 const androidBuildOutputOption = new Option(
   '--androidOutput <output>',
   'Android Build Output',
 ).choices(['aab', 'apk']);
+const configFileOption = new Option('--config <filePath>', 'expo-release-it.config.json path');
 
 export const run = () => {
   const program = new Command();
@@ -37,19 +33,28 @@ export const run = () => {
   program
     .command('init')
     .description('Configure resources and environment')
+    .addOption(configFileOption)
     .action(async (options) => handleError(init({ options })));
 
   program
     .command('bump')
     .description('Bump binary release patch version with modifying app.json')
-    // .addOption(platformAllOption)
-    .action(async (options) => handleError(bump({ options })));
+    .addOption(
+      new Option('-i --increment <increment>', 'Version increment mode')
+        .default('patch')
+        .choices(['major', 'minor', 'patch']),
+    )
+    .addOption(configFileOption)
+    .action(async (options) =>
+      handleError(bump({ options: { ...options, semverIncrement: options.increment } })),
+    );
 
   program
     .command('build')
     .description('Build artifacts')
     .addOption(platformOption)
     .addOption(androidBuildOutputOption)
+    .addOption(configFileOption)
     .action(async (options) => handleError(build({ options })));
 
   program
@@ -59,6 +64,7 @@ export const run = () => {
     .addOption(androidBuildOutputOption)
     .option('-m --uploadMetadata', 'Upload store text metadatas')
     .option('-s --uploadScreenshot', 'Upload store screenshots')
+    .addOption(configFileOption)
     .action(async (options) => handleError(upload({ options })));
 
   program
@@ -67,6 +73,7 @@ export const run = () => {
     .addOption(platformOption)
     .option('-m --uploadMetadata', 'Upload store text metadatas')
     .option('-s --uploadScreenshot', 'Upload store screenshots')
+    .addOption(configFileOption)
     .action(async (options) => handleError(submit({ options })));
 
   program
@@ -74,6 +81,7 @@ export const run = () => {
     .description('Download metadatas from stores')
     .addOption(platformOption)
     .option('-l --useLiveVersionIos', 'Download metadatas from live version rather than draft')
+    .addOption(configFileOption)
     .action(async (options) => handleError(pull({ options })));
 
   program.parse();

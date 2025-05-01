@@ -18,12 +18,13 @@ export const OptionHolder: {
   };
   input: {
     platform: 'android' | 'ios';
-    platformAll: 'android' | 'ios' | 'all';
     uploadMetadata: boolean;
     uploadScreenshot: boolean;
     androidOutput: 'apk' | 'aab';
     pod: boolean;
     useLiveVersionIos: boolean;
+    semverIncrement: 'major' | 'minor' | 'patch';
+    config?: string;
   };
   keyholderMap: {
     ios_app_identifier: string;

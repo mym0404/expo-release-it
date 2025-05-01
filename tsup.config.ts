@@ -3,7 +3,7 @@ import glob from 'tiny-glob';
 import * as path from 'node:path';
 
 export default defineConfig(async () => {
-  const entries = await glob('./src/**/!(*.d|*.spec).ts');
+  const entries = await glob('./src/**/!(*.test|*.spec).ts');
   const normalizedEntries = entries.map((p) => p.split(path.sep).join('/'));
   return [
     {

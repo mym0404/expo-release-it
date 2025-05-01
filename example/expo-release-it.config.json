@@ -1,0 +1,6 @@
+{
+  "$schema": "../expo-release-it.schema.json",
+  "bump": {
+    "increment": "patch"
+  }
+}

@@ -3,12 +3,6 @@ node_modules
 .idea
 example/expo-release-it
 
-.pnp.*
-.yarn/*
-!.yarn/patches
-!.yarn/plugins
-!.yarn/releases
-!.yarn/sdks
-!.yarn/versions
+.pnpm-store/
 
 .DS_Store

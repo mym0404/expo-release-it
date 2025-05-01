@@ -2,7 +2,7 @@
   "name": "expo-release-it",
   "module": "src/index.ts",
   "type": "module",
-  "version": "0.3.2",
+  "version": "0.4.0",
   "license": "MIT",
   "homepage": "https://github.com/mym0404/expo-release-it",
   "repository": "https://github.com/mym0404/expo-release-it",

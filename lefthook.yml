@@ -3,25 +3,21 @@
 #   Refer for explanation to following link:
 #   https://lefthook.dev/configuration/
 
-pre-push:
-#  jobs:
-#    - name: packages audit
-#      tags:
-#        - frontend
-#        - security
-#      run: yarn audit
-#
-#    - name: gems audit
-#      tags:
-#        - backend
-#        - security
-#      run: bundle audit
+check:
+  paralle: true
+  commands:
+    test:
+      run: pnpm vitest -w false
+    tsc:
+      run: tsc --noEmit -p .
 
 pre-commit:
-  parallel: true
-  jobs:
-    - run: yarn t
-
+  paralle: true
+  commands:
+    test:
+      run: pnpm vitest -w false
+    tsc:
+      run: tsc --noEmit -p .
 commit-msg:
   commands:
     commitlint:

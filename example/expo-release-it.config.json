@@ -2,5 +2,17 @@
   "$schema": "../expo-release-it.schema.json",
   "bump": {
     "increment": "patch"
+  },
+  "build": {
+    "androidBuildOutput": "aab"
+  },
+  "submit": {
+    "androidBuildOutput": "aab",
+    "uploadMetadata": true,
+    "uploadScreenshot": false
+  },
+  "upload": {
+    "uploadMetadata": true,
+    "uploadScreenshot": false
   }
 }

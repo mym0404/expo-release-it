@@ -14,6 +14,44 @@
           "enum": ["major", "minor", "patch"]
         }
       }
+    },
+    "build": {
+      "type": "object",
+      "description": "configuration for `build` command",
+      "properties": {
+        "androidBuildOutput": {
+          "type": "string",
+          "enum": ["aab", "apk"]
+        }
+      }
+    },
+    "upload": {
+      "type": "object",
+      "description": "configuration for `upload` command",
+      "properties": {
+        "androidBuildOutput": {
+          "type": "string",
+          "enum": ["aab", "apk"]
+        },
+        "uploadMetadata": {
+          "type": "boolean"
+        },
+        "uploadScreenshot": {
+          "type": "boolean"
+        }
+      }
+    },
+    "submit": {
+      "type": "object",
+      "description": "configuration for `upload` command",
+      "properties": {
+        "uploadMetadata": {
+          "type": "boolean"
+        },
+        "uploadScreenshot": {
+          "type": "boolean"
+        }
+      }
     }
   }
 }

@@ -16,5 +16,29 @@ export interface ExpoReleaseItConfiguration {
     increment?: "major" | "minor" | "patch";
     [k: string]: unknown;
   };
+  /**
+   * configuration for `build` command
+   */
+  build?: {
+    androidBuildOutput?: "aab" | "apk";
+    [k: string]: unknown;
+  };
+  /**
+   * configuration for `upload` command
+   */
+  upload?: {
+    androidBuildOutput?: "aab" | "apk";
+    uploadMetadata?: boolean;
+    uploadScreenshot?: boolean;
+    [k: string]: unknown;
+  };
+  /**
+   * configuration for `upload` command
+   */
+  submit?: {
+    uploadMetadata?: boolean;
+    uploadScreenshot?: boolean;
+    [k: string]: unknown;
+  };
   [k: string]: unknown;
 }

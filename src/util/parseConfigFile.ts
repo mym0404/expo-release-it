@@ -20,8 +20,35 @@ export async function parseConfigFile() {
 
   const config = readJsonSlow(validConfigFilePath) as ExpoReleaseItConfiguration;
 
-  // make sure config file options doesn't overwrite passed options from cli directly.
-  if (!OptionHolder.input.semverIncrement && config.bump?.increment) {
-    OptionHolder.input.semverIncrement = config.bump?.increment;
+  assignIfValueIsValidAndNotSetAlready(
+    OptionHolder.input,
+    'semverIncrement',
+    config.bump?.increment,
+  );
+  assignIfValueIsValidAndNotSetAlready(
+    OptionHolder.input,
+    'androidOutput',
+    config.build?.androidBuildOutput ?? config.upload?.androidBuildOutput,
+  );
+  assignIfValueIsValidAndNotSetAlready(
+    OptionHolder.input,
+    'uploadMetadata',
+    config.upload?.uploadMetadata ?? config.submit?.uploadMetadata,
+  );
+  assignIfValueIsValidAndNotSetAlready(
+    OptionHolder.input,
+    'uploadScreenshot',
+    config.upload?.uploadScreenshot ?? config.submit?.uploadScreenshot,
+  );
+}
+
+// make sure config file options doesn't overwrite passed options from cli directly.
+function assignIfValueIsValidAndNotSetAlready<R, T extends Record<K, R>, K extends keyof T>(
+  object: T,
+  key: K,
+  value?: NonNullable<R>,
+) {
+  if (!object[key] && value) {
+    object[key] = value as any;
   }
 }

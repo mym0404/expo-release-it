@@ -37,7 +37,14 @@ export const run = () => {
   program
     .command('bump')
     .description('Bump binary release patch version with modifying app.json')
-    .action(async (options) => handleError(bump({ options })));
+    .addOption(
+      new Option('-i --increment <increment>', 'Version increment mode')
+        .default('patch')
+        .choices(['major', 'minor', 'patch']),
+    )
+    .action(async (options) =>
+      handleError(bump({ options: { ...options, semverIncrement: options.increment } })),
+    );
 
   program
     .command('build')

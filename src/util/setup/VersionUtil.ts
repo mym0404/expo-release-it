@@ -2,6 +2,7 @@ import { OptionHolder } from '../OptionHolder';
 import { throwError } from '../throwError';
 import semver from 'semver';
 import { readdir, read, readJsonSlow, write, writeJson, resolve } from '../FileUtil';
+import { padZero } from '@mj-studio/js-util';
 
 const versionNameRegex = () => /const\s+VERSION_NAME\s*?=\s*?['"]([\d\.]*?)['"]\s*?;?/;
 const versionCodeRegex = () => /const\s+VERSION_CODE\s*?=\s*?(\d+)\s*?;?/;
@@ -123,4 +124,24 @@ export async function injectBinaryVersions({
 
     writeJson(filePath, json);
   }
+}
+
+export function checkVersionCodeIsTiedWithVersionName(
+  versionName: string,
+  versionCode: string,
+): boolean {
+  if (!semver.valid(versionName)) return false;
+  return generateVersionCodeTiedWithVersionName(versionName) === versionCode;
+}
+
+export function generateVersionCodeTiedWithVersionName(versionName: string) {
+  if (!semver.valid(versionName))
+    throwError(
+      'Version Name is not a valid semver format when running `generateVersionCodeTiedWithVersionName`',
+    );
+  const major = semver.major(versionName);
+  const minor = semver.minor(versionName);
+  const patch = semver.patch(versionName);
+
+  return `${major}${padZero(minor, 3)}${padZero(patch, 3)}`;
 }

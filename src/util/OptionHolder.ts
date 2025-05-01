@@ -23,6 +23,7 @@ export const OptionHolder: {
     androidOutput: 'apk' | 'aab';
     pod: boolean;
     useLiveVersionIos: boolean;
+    semverIncrement: 'major' | 'minor' | 'patch';
   };
   keyholderMap: {
     ios_app_identifier: string;

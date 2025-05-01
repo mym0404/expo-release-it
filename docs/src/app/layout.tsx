@@ -11,10 +11,10 @@ export const metadata: Metadata = {
   title: 'Expo Release It',
   description: 'Expo CICD workflow CLI for building & uploading & submitting on your machine',
   openGraph: {
-    images: '/social-image.png',
+    images: 'https://expo-release-it.mjstudio.net/social-image.png',
   },
   twitter: {
-    images: '/social-image.png',
+    images: 'https://expo-release-it.mjstudio.net/social-image.png',
   },
 };
 

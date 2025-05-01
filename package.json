@@ -11,8 +11,7 @@
     "build:json-schema-type": "json2ts --input expo-release-it.schema.json --output src/type/ExpoReleaseItConfiguration.d.ts",
     "dev": "yarn run build && NODE_ENV=development node bin/expo-release-it.mjs",
     "release": "yarn build && yarn t && release-it",
-    "test": "vitest",
-    "t": "tsc --noEmit -p ."
+    "t": "lefthook run check"
   },
   "dependencies": {
     "@inquirer/prompts": "^7.4.1",

@@ -8,9 +8,8 @@ const meta: MetaRecord = {
   'getting-started': {
     title: 'Getting Started',
   },
-  usage: {
-    title: 'Usage',
-  },
+  usage: 'Usage',
+  config: 'Configuration',
   security: 'About Security',
   troubleshooting: {
     title: 'Troubleshooting',

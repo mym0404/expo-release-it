@@ -9,6 +9,10 @@ import { OptionHolder } from '../util/OptionHolder';
 import semver from 'semver';
 import { setup } from '../util/setup/setup';
 import { exe } from '../util/setup/execShellScript';
+import { select } from '@inquirer/prompts';
+import { constructInquirerFormattedMessage } from '../util/input/InqueryInputs';
+import { isDev } from '../util/EnvUtil';
+import { is } from '@mj-studio/js-util';
 
 export async function bump({ options }: { options: any }) {
   Object.assign(OptionHolder.input, options);
@@ -31,9 +35,15 @@ export async function bump({ options }: { options: any }) {
 
   await injectBinaryVersions({ versionName: nextVersionName, versionCode: nextVersionCode });
   logger.success('Binary versions have been bumped in expo config file');
+
+  await processCommit({ nextVersionName, nextVersionCode });
+  if (OptionHolder.input.git.commit) {
+    await promptTagAndPush({ nextVersionName, nextVersionCode });
+  }
 }
 
 async function preCheck() {
+  if (isDev) return;
   try {
     let hasChange = false;
     try {
@@ -46,5 +56,85 @@ async function preCheck() {
     }
   } catch (e) {
     throwError('Precheck Failed', e);
+  }
+}
+
+async function processCommit({
+  nextVersionCode,
+  nextVersionName,
+}: {
+  nextVersionName: string;
+  nextVersionCode: string;
+}) {
+  if (!is.boolean(OptionHolder.input.git.commit)) {
+    OptionHolder.input.git.commit = await select({
+      message: constructInquirerFormattedMessage({ name: 'Commit?' }),
+      choices: [
+        { name: 'yes', value: true },
+        { name: 'no', value: false },
+      ],
+    });
+  }
+  if (!is.notEmptyString(OptionHolder.input.git.commitMessage)) {
+    OptionHolder.input.git.commitMessage = 'chore: release $(version) 🚀';
+  }
+
+  if (OptionHolder.input.git.commit) {
+    await exe('git', ['add', '--all']);
+    await exe('git', [
+      'commit',
+      '-m',
+      OptionHolder.input.git.commitMessage!.replaceAll(
+        '$(version)',
+        `${nextVersionName}(${nextVersionCode})`,
+      ),
+    ]);
+  }
+}
+
+async function promptTagAndPush({
+  nextVersionCode,
+  nextVersionName,
+}: {
+  nextVersionName: string;
+  nextVersionCode: string;
+}) {
+  if (!is.boolean(OptionHolder.input.git.tag)) {
+    OptionHolder.input.git.tag = await select({
+      message: constructInquirerFormattedMessage({ name: 'Tag?' }),
+      choices: [
+        { name: 'yes', value: true },
+        { name: 'no', value: false },
+      ],
+    });
+  }
+  if (!is.notEmptyString(OptionHolder.input.git.tagName)) {
+    OptionHolder.input.git.tagName = 'v$(version)';
+  }
+
+  const tagName = OptionHolder.input.git.tagName!.replaceAll(
+    '$(version)',
+    `${nextVersionName}(${nextVersionCode})`,
+  );
+
+  if (OptionHolder.input.git.tag) {
+    await exe('git', ['tag', '-a', tagName, '-m', tagName]);
+  }
+
+  if (!is.boolean(OptionHolder.input.git.push)) {
+    OptionHolder.input.git.push = await select({
+      message: constructInquirerFormattedMessage({ name: 'Push?' }),
+      choices: [
+        { name: 'yes', value: true },
+        { name: 'no', value: false },
+      ],
+    });
+  }
+
+  if (OptionHolder.input.git.push) {
+    if (OptionHolder.input.git.tag) {
+      await exe('git', ['push', 'origin', tagName]);
+    }
+    await exe('git', ['push']);
   }
 }

@@ -14,6 +14,14 @@ export interface ExpoReleaseItConfiguration {
    */
   bump?: {
     increment?: "major" | "minor" | "patch";
+    git?: {
+      commit?: boolean;
+      commitMessage?: string;
+      tag?: boolean;
+      push?: boolean;
+      tagName?: string;
+      [k: string]: unknown;
+    };
     [k: string]: unknown;
   };
   /**

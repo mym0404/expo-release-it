@@ -25,6 +25,13 @@ export const OptionHolder: {
     useLiveVersionIos: boolean;
     semverIncrement: 'major' | 'minor' | 'patch';
     config?: string;
+    git: {
+      commit?: boolean;
+      commitMessage?: string;
+      tag?: boolean;
+      tagName?: string;
+      push?: boolean;
+    };
   };
   keyholderMap: {
     ios_app_identifier: string;
@@ -56,7 +63,9 @@ export const OptionHolder: {
     rootDir: resolve(fileURLToPath(import.meta.url), '../..'),
     templateDir: resolve(fileURLToPath(import.meta.url), '../../template'),
   },
-  input: {} as any,
+  input: {
+    git: {},
+  } as any,
   keyholderMap: {} as any,
   templateDirNames: ['key'],
   projectDir: '',

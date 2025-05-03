@@ -1,7 +1,14 @@
 {
   "$schema": "../expo-release-it.schema.json",
   "bump": {
-    "increment": "patch"
+    "increment": "patch",
+    "git": {
+      "commit": true,
+      "commitMessage": "chore: release $(version) 🚀",
+      "tag": true,
+      "tagName": "v$(version)",
+      "push": true
+    }
   },
   "build": {
     "androidBuildOutput": "aab"

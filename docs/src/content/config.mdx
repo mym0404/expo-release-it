@@ -28,11 +28,18 @@ put `expo-release-it.config.json` into your project root or generated `expo-rele
 
 Or you can provide config file path with `--config` cli option in any command.
 
-```json filename="expo-release-it.config.json"
+```json filename="expo-release-it.config.json" /$schema/
 {
   "$schema": "https://raw.githubusercontent.com/mym0404/expo-release-it/refs/heads/master/expo-release-it.schema.json",
   "bump": {
-    "increment": "patch"
+    "increment": "patch",
+    "git": {
+      "commit": true,
+      "commitMessage": "chore: release $(version) 🚀",
+      "tag": true,
+      "tagName": "v$(version)",
+      "push": true
+    }
   },
   "build": {
     "androidBuildOutput": "aab"

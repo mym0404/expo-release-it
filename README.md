@@ -16,7 +16,7 @@ Visit our [Documentation Site](https://expo-release-it.mjstudio.net)
 - 🌍 Works with [Expo CNG](https://docs.expo.dev/workflow/continuous-native-generation/) mode (also available in non-CNG environments)
 - 📦 Build artifacts **locally** (`apk`, `aab`, `ipa`)
 - 🚀 Upload artifacts to Google Play Console Internal Testing Track and iOS TestFlight
-- ✅ Submit releases for review
+- ✅ Submit releases for store review
 
 # Licenses
 

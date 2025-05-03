@@ -40,13 +40,26 @@ export async function parseConfigFile() {
     'uploadScreenshot',
     config.upload?.uploadScreenshot ?? config.submit?.uploadScreenshot,
   );
+  assignIfValueIsValidAndNotSetAlready(OptionHolder.input.git, 'commit', config.bump?.git?.commit);
+  assignIfValueIsValidAndNotSetAlready(
+    OptionHolder.input.git,
+    'commitMessage',
+    config.bump?.git?.commitMessage,
+  );
+  assignIfValueIsValidAndNotSetAlready(OptionHolder.input.git, 'tag', config.bump?.git?.tag);
+  assignIfValueIsValidAndNotSetAlready(
+    OptionHolder.input.git,
+    'tagName',
+    config.bump?.git?.tagName,
+  );
+  assignIfValueIsValidAndNotSetAlready(OptionHolder.input.git, 'push', config.bump?.git?.push);
 }
 
 // make sure config file options doesn't overwrite passed options from cli directly.
 function assignIfValueIsValidAndNotSetAlready<R, T extends Record<K, R>, K extends keyof T>(
-  object: T,
+  object: Partial<T>,
   key: K,
-  value?: NonNullable<R>,
+  value: R,
 ) {
   if (!object[key] && value) {
     object[key] = value as any;

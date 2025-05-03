@@ -12,6 +12,26 @@
         "increment": {
           "type": "string",
           "enum": ["major", "minor", "patch"]
+        },
+        "git": {
+          "type": "object",
+          "properties": {
+            "commit": {
+              "type": "boolean"
+            },
+            "commitMessage": {
+              "type": "string"
+            },
+            "tag": {
+              "type": "boolean"
+            },
+            "push": {
+              "type": "boolean"
+            },
+            "tagName": {
+              "type": "string"
+            }
+          }
         }
       }
     },

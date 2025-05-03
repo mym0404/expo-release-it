@@ -23,9 +23,9 @@
     "noPropertyAccessFromIndexSignature": false,
     "outDir": "build",
     "rootDir": "src",
+    "types": ["vitest/globals"]
   },
   "include": [
     "src",
-    "node_modules/.pnpm/vitest@3.1.2_@types+node@22.15.3_jiti@2.4.2_jsdom@20.0.3_lightningcss@1.27.0_terser@5.39.0/node_modules/vitest/globals.d.ts"
   ]
 }

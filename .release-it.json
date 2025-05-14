@@ -16,8 +16,5 @@
   },
   "npm": {
     "publish": false
-  },
-  "hook": {
-    "after:release": "pnpm publish"
   }
 }

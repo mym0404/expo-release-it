@@ -22,10 +22,11 @@
     "noUnusedParameters": false,
     "noPropertyAccessFromIndexSignature": false,
     "outDir": "build",
-    "rootDir": "src",
+    "rootDir": ".",
     "types": ["vitest/globals"]
   },
   "include": [
     "src",
+    "package.json"
   ]
 }

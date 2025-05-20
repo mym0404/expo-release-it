@@ -6,7 +6,9 @@
   },
   "git": {
     "commitMessage": "chore(release): v${version} 🚀",
-    "commit": true
+    "commit": true,
+    "tag": true,
+    "push": true
   },
   "github": {
     "release": true,

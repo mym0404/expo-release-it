@@ -61,7 +61,7 @@ function assignIfValueIsValidAndNotSetAlready<R, T extends Record<K, R>, K exten
   key: K,
   value: R,
 ) {
-  if (!object[key] && value) {
+  if (!object[key] && !(value === null || value === undefined)) {
     object[key] = value as any;
   }
 }

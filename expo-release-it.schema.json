@@ -42,6 +42,9 @@
         "androidBuildOutput": {
           "type": "string",
           "enum": ["aab", "apk"]
+        },
+        "iosPodInstall": {
+          "type": "boolean"
         }
       }
     },

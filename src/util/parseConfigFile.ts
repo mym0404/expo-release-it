@@ -30,6 +30,7 @@ export async function parseConfigFile() {
     'androidOutput',
     config.build?.androidBuildOutput ?? config.upload?.androidBuildOutput,
   );
+  assignIfValueIsValidAndNotSetAlready(OptionHolder.input, 'pod', config.build?.iosPodInstall);
   assignIfValueIsValidAndNotSetAlready(
     OptionHolder.input,
     'uploadMetadata',

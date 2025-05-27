@@ -29,6 +29,7 @@ export interface ExpoReleaseItConfiguration {
    */
   build?: {
     androidBuildOutput?: "aab" | "apk";
+    iosPodInstall?: boolean;
     [k: string]: unknown;
   };
   /**

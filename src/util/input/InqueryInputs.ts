@@ -19,7 +19,7 @@ export const InqueryInputs = {
     }
   },
   podinstall: async () => {
-    if (OptionHolder.input.platform === 'ios') {
+    if (OptionHolder.input.platform === 'ios' && !is.boolean(OptionHolder.input.pod)) {
       OptionHolder.input.pod = await select({
         message: constructInquirerFormattedMessage({
           name: 'Install CocoaPods?',

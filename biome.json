@@ -25,7 +25,7 @@
   },
   "linter": {
     "enabled": true,
-    "ignore": ["docs", "example", "*.json", "*.d.ts"],
+    "ignore": ["docs", "example", "*.json"],
     "rules": {
       "recommended": true,
       "style": {

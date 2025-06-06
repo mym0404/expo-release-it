@@ -8,7 +8,7 @@
   "repository": "https://github.com/mym0404/expo-release-it",
   "scripts": {
     "build": "pnpm build:json-schema-type && tsup",
-    "build:json-schema-type": "json2ts --input expo-release-it.schema.json --output src/type/ExpoReleaseItConfiguration.d.ts",
+    "build:json-schema-type": "json2ts --input expo-release-it.schema.json --output src/type/ExpoReleaseItConfiguration.d.ts && biome check --fix src/type/ExpoReleaseItConfiguration.d.ts",
     "dev": "pnpm build && NODE_ENV=development node bin/expo-release-it.mjs",
     "release": "pnpm build && pnpm run t && release-it && pnpm publish",
     "t": "lefthook run check"

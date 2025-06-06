@@ -1,6 +1,6 @@
 import * as path from 'node:path';
 import glob from 'tiny-glob';
-import { defineConfig } from 'tsup';
+import { defineConfig } from 'tsdown';
 
 export default defineConfig(async () => {
   const entries = await glob('./src/**/!(*.test|*.spec).ts');
@@ -8,13 +8,14 @@ export default defineConfig(async () => {
   return [
     {
       entry: normalizedEntries,
-      splitting: false,
+      splitting: true,
       sourcemap: true,
       clean: true,
       format: 'esm',
       outDir: 'build',
       dts: true,
       silent: true,
+      shims: true,
     },
   ];
 });

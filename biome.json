@@ -7,7 +7,7 @@
   },
   "files": {
     "ignoreUnknown": false,
-    "ignore": ["build", "docs", "example", "*.json"]
+    "ignore": ["build", "docs/.next", "example/android", "example/ios"]
   },
   "formatter": {
     "enabled": true,
@@ -25,6 +25,7 @@
   },
   "linter": {
     "enabled": true,
+    "ignore": ["docs", "example", "*.json", "*.d.ts"],
     "rules": {
       "recommended": true,
       "style": {

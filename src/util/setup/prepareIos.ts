@@ -1,10 +1,10 @@
-import { remove, resolve, iterateDir, copy } from '../FileUtil';
+import { copy, iterateDir, remove, resolve } from '../FileUtil';
+import { copyIosMetadata } from '../MetadataSyncUtil';
 import { OptionHolder } from '../OptionHolder';
 import { injectTemplatePlaceHolders } from '../injectTemplatePlaceHolders';
+import { logger } from '../logger';
 import { spinner } from '../spinner';
 import { exe, yesShell } from './execShellScript';
-import { logger } from '../logger';
-import { copyIosMetadata } from '../MetadataSyncUtil';
 
 export async function prepareIos() {
   const srcDir = resolve(OptionHolder.cli.templateDir, 'ios');

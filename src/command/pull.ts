@@ -1,12 +1,12 @@
-import { OptionHolder } from '../util/OptionHolder';
-import { InqueryInputs } from '../util/input/InqueryInputs';
-import { setup } from '../util/setup/setup';
 import { join, resolve } from '../util/FileUtil';
-import { exe } from '../util/setup/execShellScript';
-import { prepareIos } from '../util/setup/prepareIos';
-import { prepareAndroid } from '../util/setup/prepareAndroid';
+import { copyAndroidMetadata, copyIosMetadata } from '../util/MetadataSyncUtil';
+import { OptionHolder } from '../util/OptionHolder';
 import { generateAppStoreConnectApiKeyFile } from '../util/generateAppStoreConnectApiKeyFile';
-import { copyIosMetadata, copyAndroidMetadata } from '../util/MetadataSyncUtil';
+import { InqueryInputs } from '../util/input/InqueryInputs';
+import { exe } from '../util/setup/execShellScript';
+import { prepareAndroid } from '../util/setup/prepareAndroid';
+import { prepareIos } from '../util/setup/prepareIos';
+import { setup } from '../util/setup/setup';
 
 export async function pull({ options }: { options: any }) {
   Object.assign(OptionHolder.input, options);
@@ -54,7 +54,7 @@ async function pullIosMetadata() {
     '--api_key_path',
     generateAppStoreConnectApiKeyFile(),
     '--use_live_version',
-    OptionHolder.input.useLiveVersionIos + '',
+    `${OptionHolder.input.useLiveVersionIos}`,
   ]);
 
   copyIosMetadata('resources');

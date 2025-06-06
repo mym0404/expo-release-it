@@ -1,14 +1,14 @@
-import { prepareAndroid } from '../util/setup/prepareAndroid';
-import { setup } from '../util/setup/setup';
-import { prepareIos } from '../util/setup/prepareIos';
-import { logger } from '../util/logger';
-import { OptionHolder } from '../util/OptionHolder';
-import { resolve } from '../util/FileUtil';
 import chalk from 'chalk';
+import { getAndroidFastlaneOptions, getIosFastlaneOptions } from '../util/FastlaneOption';
+import { resolve } from '../util/FileUtil';
+import { OptionHolder } from '../util/OptionHolder';
 import { calculateElapsed } from '../util/calculateElapsed';
 import { InqueryInputs } from '../util/input/InqueryInputs';
-import { getAndroidFastlaneOptions, getIosFastlaneOptions } from '../util/FastlaneOption';
+import { logger } from '../util/logger';
 import { exe } from '../util/setup/execShellScript';
+import { prepareAndroid } from '../util/setup/prepareAndroid';
+import { prepareIos } from '../util/setup/prepareIos';
+import { setup } from '../util/setup/setup';
 
 export async function upload({ options }: { options: any }) {
   Object.assign(OptionHolder.input, options);

@@ -1,5 +1,5 @@
-import { logger } from './logger';
 import { isTest } from './EnvUtil';
+import { logger } from './logger';
 
 export function throwError(message: string, e?: any): never {
   if (e) {

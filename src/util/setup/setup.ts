@@ -1,9 +1,9 @@
-import { hydrateKeyholderFileValues } from './hydrateKeyholderFileValues';
-import { parseBinaryVersions } from './VersionUtil';
-import { OptionHolder } from '../OptionHolder';
 import { isDev } from '../EnvUtil';
 import { resolve } from '../FileUtil';
+import { OptionHolder } from '../OptionHolder';
 import { parseConfigFile } from '../parseConfigFile';
+import { parseBinaryVersions } from './VersionUtil';
+import { hydrateKeyholderFileValues } from './hydrateKeyholderFileValues';
 
 export async function setup() {
   await setupBasicOptions();

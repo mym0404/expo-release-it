@@ -1,8 +1,8 @@
+import { padZero } from '@mj-studio/js-util';
+import semver from 'semver';
+import { read, readJsonSlow, readdir, resolve, write, writeJson } from '../FileUtil';
 import { OptionHolder } from '../OptionHolder';
 import { throwError } from '../throwError';
-import semver from 'semver';
-import { readdir, read, readJsonSlow, write, writeJson, resolve } from '../FileUtil';
-import { padZero } from '@mj-studio/js-util';
 
 const versionNameRegex = () => /const\s+VERSION_NAME\s*?=\s*?['"]([\d\.]*?)['"]\s*?;?/;
 const versionCodeRegex = () => /const\s+VERSION_CODE\s*?=\s*?(\d+)\s*?;?/;
@@ -53,9 +53,9 @@ export async function parseBinaryVersions() {
     const filePath = resolve(OptionHolder.projectDir, filename);
     const json = readJsonSlow(filePath);
 
-    const versionName = json.expo?.version + '';
-    const iosVersionCode = json.expo?.ios?.buildNumber + '';
-    const androidVersionCode = json.expo?.android?.versionCode + '';
+    const versionName = `${json.expo?.version}`;
+    const iosVersionCode = `${json.expo?.ios?.buildNumber}`;
+    const androidVersionCode = `${json.expo?.android?.versionCode}`;
 
     if (!/\d+/.test(iosVersionCode)) {
       throwError('app.json expo.ios.buildNumber is not an integer');

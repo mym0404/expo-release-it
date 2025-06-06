@@ -1,6 +1,6 @@
+import { fileURLToPath } from 'url';
 import pkgJson from '../../package.json';
 import { resolve } from './FileUtil';
-import { fileURLToPath } from 'url';
 
 /**
  * CLI Comprehensive options

@@ -13,7 +13,7 @@ export interface ExpoReleaseItConfiguration {
    * configuration for `bump` command
    */
   bump?: {
-    increment?: "major" | "minor" | "patch";
+    increment?: 'major' | 'minor' | 'patch';
     git?: {
       commit?: boolean;
       commitMessage?: string;
@@ -28,7 +28,7 @@ export interface ExpoReleaseItConfiguration {
    * configuration for `build` command
    */
   build?: {
-    androidBuildOutput?: "aab" | "apk";
+    androidBuildOutput?: 'aab' | 'apk';
     iosPodInstall?: boolean;
     [k: string]: unknown;
   };
@@ -36,7 +36,7 @@ export interface ExpoReleaseItConfiguration {
    * configuration for `upload` command
    */
   upload?: {
-    androidBuildOutput?: "aab" | "apk";
+    androidBuildOutput?: 'aab' | 'apk';
     uploadMetadata?: boolean;
     uploadScreenshot?: boolean;
     [k: string]: unknown;

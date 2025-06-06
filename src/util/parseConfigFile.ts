@@ -1,7 +1,7 @@
-import type { ExpoReleaseItConfiguration } from '../type/ExpoReleaseItConfiguration';
-import { OptionHolder } from './OptionHolder';
-import { join, exist, readJsonSlow } from './FileUtil';
 import { is } from '@mj-studio/js-util';
+import type { ExpoReleaseItConfiguration } from '../type/ExpoReleaseItConfiguration';
+import { exist, join, readJsonSlow } from './FileUtil';
+import { OptionHolder } from './OptionHolder';
 
 export async function parseConfigFile() {
   const candidates = [

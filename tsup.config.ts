@@ -1,6 +1,6 @@
-import { defineConfig } from 'tsup';
-import glob from 'tiny-glob';
 import * as path from 'node:path';
+import glob from 'tiny-glob';
+import { defineConfig } from 'tsup';
 
 export default defineConfig(async () => {
   const entries = await glob('./src/**/!(*.test|*.spec).ts');

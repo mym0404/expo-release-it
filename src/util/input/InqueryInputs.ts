@@ -1,7 +1,7 @@
-import { OptionHolder } from '../OptionHolder';
 import { select } from '@inquirer/prompts';
 import { is } from '@mj-studio/js-util';
 import chalk from 'chalk';
+import { OptionHolder } from '../OptionHolder';
 
 export const InqueryInputs = {
   platform: async () => {
@@ -9,7 +9,7 @@ export const InqueryInputs = {
       OptionHolder.input.platform = await select({
         message: constructInquirerFormattedMessage({
           name: 'Platform',
-          explanation: `Platform to run action`,
+          explanation: 'Platform to run action',
         }),
         choices: [
           { name: 'ios', value: 'ios', description: 'Release ios' },

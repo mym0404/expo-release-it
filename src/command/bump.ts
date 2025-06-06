@@ -1,18 +1,18 @@
+import { select } from '@inquirer/prompts';
+import { is } from '@mj-studio/js-util';
+import semver from 'semver';
+import { isDev } from '../util/EnvUtil';
+import { OptionHolder } from '../util/OptionHolder';
+import { constructInquirerFormattedMessage } from '../util/input/InqueryInputs';
+import { logger } from '../util/logger';
 import {
-  injectBinaryVersions,
   checkVersionCodeIsTiedWithVersionName,
   generateVersionCodeTiedWithVersionName,
+  injectBinaryVersions,
 } from '../util/setup/VersionUtil';
-import { throwError } from '../util/throwError';
-import { logger } from '../util/logger';
-import { OptionHolder } from '../util/OptionHolder';
-import semver from 'semver';
-import { setup } from '../util/setup/setup';
 import { exe } from '../util/setup/execShellScript';
-import { select } from '@inquirer/prompts';
-import { constructInquirerFormattedMessage } from '../util/input/InqueryInputs';
-import { isDev } from '../util/EnvUtil';
-import { is } from '@mj-studio/js-util';
+import { setup } from '../util/setup/setup';
+import { throwError } from '../util/throwError';
 
 export async function bump({ options }: { options: any }) {
   Object.assign(OptionHolder.input, options);
@@ -27,7 +27,7 @@ export async function bump({ options }: { options: any }) {
       logger.warn(
         'version name is not tied with version code like (1.3.5=1003005). Version code is just incremented by 1.',
       );
-      return Number(OptionHolder.versionCode) + 1 + '';
+      return `${Number(OptionHolder.versionCode) + 1}`;
     }
   })();
 

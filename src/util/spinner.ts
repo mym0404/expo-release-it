@@ -1,5 +1,5 @@
-import { oraPromise } from 'ora';
 import chalk from 'chalk';
+import { oraPromise } from 'ora';
 
 export async function spinner<T>(text: string, promise: Promise<T>): Promise<T> {
   return oraPromise(promise, {

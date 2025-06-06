@@ -1,10 +1,11 @@
-import { resolve, remove, iterateDir, copy, read, write, relativePath } from '../FileUtil';
+import { copy, iterateDir, read, relativePath, remove, resolve, write } from '../FileUtil';
+import { copyAndroidMetadata } from '../MetadataSyncUtil';
 import { OptionHolder } from '../OptionHolder';
 import { injectTemplatePlaceHolders } from '../injectTemplatePlaceHolders';
+import { logger } from '../logger';
+import { replaceStringIfNotContain } from '../replaceStringIfNotContain';
 import { spinner } from '../spinner';
 import { exe, yesShell } from './execShellScript';
-import { logger } from '../logger';
-import { copyAndroidMetadata } from '../MetadataSyncUtil';
 
 export async function prepareAndroid() {
   const srcDir = resolve(OptionHolder.cli.templateDir, 'android');
@@ -46,10 +47,8 @@ async function replaceAndroidSigningConfig(destDir: string) {
     android_keystore_key_password,
   } = OptionHolder.keyholderMap;
 
-  const content = read(buildGradlePath).replace(
-    /signingConfigs.*?{.*?debug.*?{.*?}.*?}/s,
-    `
-  signingConfigs {
+  const injectedNewDebugSigningConfig = `
+signingConfigs {
     debug {
         storeFile file('${relativePath(buildGradleDirPath, resolve(OptionHolder.resourcesDir, 'key', 'android_release.keystore'))}')
         storePassword '${android_keystore_store_password}'
@@ -57,7 +56,15 @@ async function replaceAndroidSigningConfig(destDir: string) {
         keyPassword '${android_keystore_key_password}'
     }
   }
-      `,
+`.trim();
+
+  let content = read(buildGradlePath);
+
+  content = replaceStringIfNotContain(
+    content,
+    /signingConfigs.*?{.*?debug.*?{.*?}.*?}/s,
+    injectedNewDebugSigningConfig,
   );
+
   write(buildGradlePath, content);
 }

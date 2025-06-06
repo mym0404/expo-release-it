@@ -1,6 +1,6 @@
 import {
-  generateVersionCodeTiedWithVersionName,
   checkVersionCodeIsTiedWithVersionName,
+  generateVersionCodeTiedWithVersionName,
 } from './VersionUtil';
 
 describe('checkVersionCodeIsTiedWithVersionName', () => {

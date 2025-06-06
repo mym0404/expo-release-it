@@ -1,5 +1,5 @@
+import * as path from 'node:path';
 import fs from 'fs-extra';
-import * as path from 'path';
 
 export const join = path.join;
 export const resolve = path.resolve;

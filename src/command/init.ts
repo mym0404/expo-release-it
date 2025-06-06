@@ -1,9 +1,9 @@
-import { OptionHolder } from '../util/OptionHolder';
-import { logger } from '../util/logger';
-import chalk from 'chalk';
 import { input } from '@inquirer/prompts';
+import chalk from 'chalk';
 import { copy, join, writeJson } from '../util/FileUtil';
+import { OptionHolder } from '../util/OptionHolder';
 import { constructInquirerFormattedMessage } from '../util/input/InqueryInputs';
+import { logger } from '../util/logger';
 import { setup } from '../util/setup/setup';
 
 export async function init({ options }: { options: any }) {
@@ -37,7 +37,7 @@ This means 'CFBundleIdentifier' in info.plist and 'ios.bundleIdentifier' in expo
   OptionHolder.keyholderMap.ios_developer_team_id = await input({
     message: constructInquirerFormattedMessage({
       name: 'IOS Developer Team Id',
-      explanation: `A unique alphanumeric string that identifies your Apple Developer Team`,
+      explanation: 'A unique alphanumeric string that identifies your Apple Developer Team',
       example: '8A51ABC4H7',
       referUrl: 'https://developer.apple.com/account',
     }),
@@ -48,7 +48,8 @@ This means 'CFBundleIdentifier' in info.plist and 'ios.bundleIdentifier' in expo
   OptionHolder.keyholderMap.ios_match_git_url = await input({
     message: constructInquirerFormattedMessage({
       name: 'iOS Fastlane Match Github URL',
-      explanation: `The URL of the private Git repository where code signing certificates and profiles are stored for Fastlane Match.`,
+      explanation:
+        'The URL of the private Git repository where code signing certificates and profiles are stored for Fastlane Match.',
       example: 'https://github.com/yourname/your-certificates-repo.git',
       referUrl: 'https://docs.fastlane.tools/actions/match/',
     }),
@@ -106,7 +107,8 @@ Usually, this is equivalent to {{name}}.xcodeproj in your ios directory`,
   OptionHolder.keyholderMap.android_package_name = await input({
     message: constructInquirerFormattedMessage({
       name: 'Android Package Name',
-      explanation: `The package name for your Android standalone app. You make it up, but it needs to be unique on the Play Store.`,
+      explanation:
+        'The package name for your Android standalone app. You make it up, but it needs to be unique on the Play Store.',
       example: 'com.companyname.appname',
       referUrl: 'https://docs.expo.dev/versions/latest/config/app/#package',
     }),

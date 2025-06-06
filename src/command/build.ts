@@ -1,15 +1,15 @@
-import { prepareAndroid } from '../util/setup/prepareAndroid';
-import { setup } from '../util/setup/setup';
-import { prepareIos } from '../util/setup/prepareIos';
-import { logger } from '../util/logger';
-import { OptionHolder } from '../util/OptionHolder';
-import { resolve, remove, copy, relativePath } from '../util/FileUtil';
 import chalk from 'chalk';
-import { calculateElapsed } from '../util/calculateElapsed';
 import { isWin } from '../util/EnvUtil';
-import { InqueryInputs } from '../util/input/InqueryInputs';
 import { getIosFastlaneOptions } from '../util/FastlaneOption';
+import { copy, relativePath, remove, resolve } from '../util/FileUtil';
+import { OptionHolder } from '../util/OptionHolder';
+import { calculateElapsed } from '../util/calculateElapsed';
+import { InqueryInputs } from '../util/input/InqueryInputs';
+import { logger } from '../util/logger';
 import { exe } from '../util/setup/execShellScript';
+import { prepareAndroid } from '../util/setup/prepareAndroid';
+import { prepareIos } from '../util/setup/prepareIos';
+import { setup } from '../util/setup/setup';
 
 export async function build({ options }: { options: any }) {
   Object.assign(OptionHolder.input, options);

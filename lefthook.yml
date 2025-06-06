@@ -6,6 +6,8 @@
 check:
   paralle: true
   commands:
+    lint:
+      run: biome
     test:
       run: pnpm vitest -w false
     tsc:

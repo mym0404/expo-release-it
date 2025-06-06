@@ -1,5 +1,5 @@
+import { join, read, resolve, writeJson } from './FileUtil';
 import { OptionHolder } from './OptionHolder';
-import { resolve, read, writeJson, join } from './FileUtil';
 
 export function generateAppStoreConnectApiKeyFile() {
   const json = {

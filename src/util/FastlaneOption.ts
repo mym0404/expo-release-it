@@ -1,5 +1,5 @@
-import { OptionHolder } from './OptionHolder';
 import { resolve } from './FileUtil';
+import { OptionHolder } from './OptionHolder';
 
 export function getAndroidFastlaneOptions() {
   return [
@@ -26,6 +26,6 @@ export function getIosFastlaneOptions() {
     `upload_screenshot:${OptionHolder.input.uploadScreenshot}`,
     `ipa_path:${resolve(OptionHolder.resourcesDir, 'output', 'ios', 'app.ipa')}`,
     `ipa_dir:${resolve(OptionHolder.resourcesDir, 'output', 'ios')}`,
-    `ipa_name:app.ipa`,
+    'ipa_name:app.ipa',
   ];
 }

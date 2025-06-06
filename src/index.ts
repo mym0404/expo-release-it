@@ -1,15 +1,15 @@
 import { Command, Option } from 'commander';
 
-import { init } from './command/init';
-import { OptionHolder } from './util/OptionHolder';
-import { bump } from './command/bump';
-import { upload } from './command/upload';
-import { submit } from './command/submit';
-import { build } from './command/build';
-import { pull } from './command/pull';
-import { throwError } from './util/throwError';
 import { ExecaError } from 'execa';
+import { build } from './command/build';
+import { bump } from './command/bump';
+import { init } from './command/init';
+import { pull } from './command/pull';
+import { submit } from './command/submit';
+import { upload } from './command/upload';
+import { OptionHolder } from './util/OptionHolder';
 import { logger } from './util/logger';
+import { throwError } from './util/throwError';
 
 const platformOption = new Option('-p --platform <platform>', 'Platform').choices([
   'android',

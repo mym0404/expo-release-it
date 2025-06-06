@@ -2,10 +2,10 @@ import { Footer, Layout, Navbar } from 'nextra-theme-docs';
 import { Head } from 'nextra/components';
 import { getPageMap } from 'nextra/page-map';
 import 'nextra-theme-docs/style.css';
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import './globals.css';
+import type { Metadata } from 'next';
 import Image from 'next/image';
-import { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: 'Expo Release It',

@@ -1,4 +1,4 @@
-import { readdir, isFile, isDir, join } from './FileUtil';
+import { isDir, isFile, join, readdir } from './FileUtil';
 
 export async function iterateAllFiles(root: string, callback: (filePath: string) => Promise<void>) {
   await go(root);

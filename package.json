@@ -2,7 +2,7 @@
   "name": "expo-release-it",
   "module": "src/index.ts",
   "type": "module",
-  "version": "0.6.2",
+  "version": "0.6.3",
   "license": "MIT",
   "homepage": "https://expo-release-it.mjstudio.net/",
   "repository": "https://github.com/mym0404/expo-release-it",
@@ -41,9 +41,17 @@
     "vitest": "^3.1.2"
   },
   "bin": "./bin/expo-release-it.mjs",
-  "files": ["build", "package.json", "bin", "template", "expo-release-it.schema.json"],
+  "files": [
+    "build",
+    "package.json",
+    "bin",
+    "template",
+    "expo-release-it.schema.json"
+  ],
   "commitlint": {
-    "extends": ["@commitlint/config-conventional"]
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
   },
   "packageManager": "pnpm@10.10.0+sha512.d615db246fe70f25dcfea6d8d73dee782ce23e2245e3c4f6f888249fb568149318637dca73c2c5c8ef2a4ca0d5657fb9567188bfab47f566d1ee6ce987815c39"
 }

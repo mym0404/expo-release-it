@@ -70,12 +70,6 @@ importers:
       ora:
         specifier: ^8.2.0
         version: 8.2.0
-      react:
-        specifier: catalog:native
-        version: 18.3.1
-      react-native:
-        specifier: catalog:native
-        version: 0.76.9(@babel/core@7.27.1)(@babel/preset-env@7.27.1(@babel/core@7.27.1))(@types/react@18.3.20)(react@18.3.1)
       semver:
         specifier: ^7.7.1
         version: 7.7.1
@@ -104,6 +98,12 @@ importers:
       lefthook:
         specifier: ^1.11.11
         version: 1.11.12
+      react:
+        specifier: catalog:native
+        version: 18.3.1
+      react-native:
+        specifier: catalog:native
+        version: 0.76.9(@babel/core@7.27.1)(@babel/preset-env@7.27.1(@babel/core@7.27.1))(@types/react@18.3.20)(react@18.3.1)
       release-it:
         specifier: ^19.0.1
         version: 19.0.1(@types/node@22.15.3)

@@ -1,8 +1,8 @@
 import { copy, iterateDir, read, relativePath, remove, resolve, write } from '../FileUtil';
-import { copyAndroidMetadata } from '../MetadataSyncUtil';
-import { OptionHolder } from '../OptionHolder';
 import { injectTemplatePlaceHolders } from '../injectTemplatePlaceHolders';
 import { logger } from '../logger';
+import { copyAndroidMetadata } from '../MetadataSyncUtil';
+import { OptionHolder } from '../OptionHolder';
 import { replaceStringIfNotContain } from '../replaceStringIfNotContain';
 import { spinner } from '../spinner';
 import { exe, yesShell } from './execShellScript';

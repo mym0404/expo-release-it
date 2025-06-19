@@ -1,9 +1,9 @@
 import { input } from '@inquirer/prompts';
 import chalk from 'chalk';
 import { copy, join, writeJson } from '../util/FileUtil';
-import { OptionHolder } from '../util/OptionHolder';
 import { constructInquirerFormattedMessage } from '../util/input/InqueryInputs';
 import { logger } from '../util/logger';
+import { OptionHolder } from '../util/OptionHolder';
 import { setup } from '../util/setup/setup';
 
 export async function init({ options }: { options: any }) {

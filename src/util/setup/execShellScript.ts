@@ -1,4 +1,4 @@
-import { type Options, execa } from 'execa';
+import { execa, type Options } from 'execa';
 
 export const exe = execa({
   stdin: 'pipe',

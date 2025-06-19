@@ -1,8 +1,8 @@
 import { join, resolve } from '../util/FileUtil';
-import { copyAndroidMetadata, copyIosMetadata } from '../util/MetadataSyncUtil';
-import { OptionHolder } from '../util/OptionHolder';
 import { generateAppStoreConnectApiKeyFile } from '../util/generateAppStoreConnectApiKeyFile';
 import { InqueryInputs } from '../util/input/InqueryInputs';
+import { copyAndroidMetadata, copyIosMetadata } from '../util/MetadataSyncUtil';
+import { OptionHolder } from '../util/OptionHolder';
 import { exe } from '../util/setup/execShellScript';
 import { prepareAndroid } from '../util/setup/prepareAndroid';
 import { prepareIos } from '../util/setup/prepareIos';

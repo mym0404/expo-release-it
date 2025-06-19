@@ -2,16 +2,16 @@ import { select } from '@inquirer/prompts';
 import { is } from '@mj-studio/js-util';
 import semver from 'semver';
 import { isDev } from '../util/EnvUtil';
-import { OptionHolder } from '../util/OptionHolder';
 import { constructInquirerFormattedMessage } from '../util/input/InqueryInputs';
 import { logger } from '../util/logger';
+import { OptionHolder } from '../util/OptionHolder';
+import { exe } from '../util/setup/execShellScript';
+import { setup } from '../util/setup/setup';
 import {
   checkVersionCodeIsTiedWithVersionName,
   generateVersionCodeTiedWithVersionName,
   injectBinaryVersions,
 } from '../util/setup/VersionUtil';
-import { exe } from '../util/setup/execShellScript';
-import { setup } from '../util/setup/setup';
 import { throwError } from '../util/throwError';
 
 export async function bump({ options }: { options: any }) {

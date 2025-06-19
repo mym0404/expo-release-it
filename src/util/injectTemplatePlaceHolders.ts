@@ -1,6 +1,6 @@
 import { read, write } from './FileUtil';
-import { OptionHolder } from './OptionHolder';
 import { iterateAllFiles } from './iterateAllFiles';
+import { OptionHolder } from './OptionHolder';
 
 export async function injectTemplatePlaceHolders(root: string) {
   await iterateAllFiles(root, async (filePath: string) => {

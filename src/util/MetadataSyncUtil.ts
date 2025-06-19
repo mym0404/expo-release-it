@@ -1,7 +1,7 @@
 import chalk from 'chalk';
 import { copy, exist, join, relativePath } from './FileUtil';
-import { OptionHolder } from './OptionHolder';
 import { logger } from './logger';
+import { OptionHolder } from './OptionHolder';
 
 export function copyIosMetadata(to: 'resources' | 'native') {
   const iosDir = join(OptionHolder.projectDir, 'ios');

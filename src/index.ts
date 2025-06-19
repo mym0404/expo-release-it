@@ -7,8 +7,8 @@ import { init } from './command/init';
 import { pull } from './command/pull';
 import { submit } from './command/submit';
 import { upload } from './command/upload';
-import { OptionHolder } from './util/OptionHolder';
 import { logger } from './util/logger';
+import { OptionHolder } from './util/OptionHolder';
 import { throwError } from './util/throwError';
 
 const platformOption = new Option('-p --platform <platform>', 'Platform').choices([

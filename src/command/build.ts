@@ -1,11 +1,11 @@
 import chalk from 'chalk';
+import { calculateElapsed } from '../util/calculateElapsed';
 import { isWin } from '../util/EnvUtil';
 import { getIosFastlaneOptions } from '../util/FastlaneOption';
 import { copy, relativePath, remove, resolve } from '../util/FileUtil';
-import { OptionHolder } from '../util/OptionHolder';
-import { calculateElapsed } from '../util/calculateElapsed';
 import { InqueryInputs } from '../util/input/InqueryInputs';
 import { logger } from '../util/logger';
+import { OptionHolder } from '../util/OptionHolder';
 import { exe } from '../util/setup/execShellScript';
 import { prepareAndroid } from '../util/setup/prepareAndroid';
 import { prepareIos } from '../util/setup/prepareIos';

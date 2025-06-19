@@ -1,10 +1,10 @@
 import { padZero } from '@mj-studio/js-util';
 import semver from 'semver';
-import { read, readJsonSlow, readdir, resolve, write, writeJson } from '../FileUtil';
+import { read, readdir, readJsonSlow, resolve, write, writeJson } from '../FileUtil';
 import { OptionHolder } from '../OptionHolder';
 import { throwError } from '../throwError';
 
-const versionNameRegex = () => /const\s+VERSION_NAME\s*?=\s*?['"]([\d\.]*?)['"]\s*?;?/;
+const versionNameRegex = () => /const\s+VERSION_NAME\s*?=\s*?['"]([\d.]*?)['"]\s*?;?/;
 const versionCodeRegex = () => /const\s+VERSION_CODE\s*?=\s*?(\d+)\s*?;?/;
 
 export async function parseBinaryVersions() {

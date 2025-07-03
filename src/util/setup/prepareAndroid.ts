@@ -62,7 +62,7 @@ signingConfigs {
 
   content = replaceStringIfNotContain(
     content,
-    /signingConfigs.*?{.*?debug.*?{.*?}.*?}/s,
+    /signingConfigs.*?{.*?debug.*?{.*?}.*?}/gs,
     injectedNewDebugSigningConfig,
   );
 

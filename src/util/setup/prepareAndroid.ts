@@ -62,8 +62,9 @@ signingConfigs {
 
   content = replaceStringIfNotContain(
     content,
-    /signingConfigs.*?{.*?debug.*?{.*?}.*?}/gs,
+    /signingConfigs.*?{.*?debug.*?{.*?}.*?}/s,
     injectedNewDebugSigningConfig,
+    false,
   );
 
   write(buildGradlePath, content);

@@ -10,8 +10,9 @@ RUN apk add --no-cache libc6-compat
 
 WORKDIR /app
 
-# Copy package files and pnpm configuration
-COPY package.json pnpm-lock.yaml* ./
+# Copy monorepo root files and docs package.json
+COPY pnpm-lock.yaml pnpm-workspace.yaml package.json ./
+COPY docs/package.json ./docs/
 
 # Install dependencies with corepack and pnpm
 RUN corepack enable && \
@@ -24,7 +25,10 @@ WORKDIR /app
 
 # Copy installed dependencies
 COPY --from=deps /app/node_modules ./node_modules
-COPY . .
+COPY --from=deps /app/docs/node_modules ./docs/node_modules
+COPY docs ./docs
+
+WORKDIR /app/docs
 
 # Enable corepack for build stage
 RUN corepack enable && \
@@ -50,8 +54,8 @@ RUN addgroup --system --gid 1001 nodejs && \
     adduser --system --uid 1001 nextjs
 
 # Copy necessary files
-COPY --from=builder /app/next.config.mjs ./
-COPY --from=builder /app/public ./public
+COPY --from=builder /app/docs/next.config.mjs ./
+COPY --from=builder /app/docs/public ./public
 
 # Set the correct permission for prerender cache
 RUN mkdir .next && \
@@ -59,8 +63,8 @@ RUN mkdir .next && \
 
 # Automatically leverage output traces to reduce image size
 # https://nextjs.org/docs/advanced-features/output-file-tracing
-COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+COPY --from=builder --chown=nextjs:nodejs /app/docs/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/docs/.next/static ./.next/static
 
 USER nextjs
 

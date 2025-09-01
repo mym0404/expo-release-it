@@ -2,7 +2,6 @@ packages:
   - example
   - docs
 
-hoist: false
 onlyBuiltDependencies:
   - esbuild
   - lefthook

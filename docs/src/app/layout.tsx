@@ -45,6 +45,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
       <Head
       // ... Your additional head options
       >
+        <Script defer src="https://umami.mjstudio.net/script.js" data-website-id="a82633cc-1420-405e-9f7d-803c4c7ca47e"></Script>
         {/* Your additional tags should be passed as `children` of `<Head>` element */}
       </Head>
       <body>

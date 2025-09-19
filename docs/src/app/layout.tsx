@@ -1,10 +1,10 @@
-import { Head } from 'nextra/components';
-import { getPageMap } from 'nextra/page-map';
-import { Footer, Layout, Navbar } from 'nextra-theme-docs';
+import {Head} from 'nextra/components';
+import {getPageMap} from 'nextra/page-map';
+import {Footer, Layout, Navbar} from 'nextra-theme-docs';
 import 'nextra-theme-docs/style.css';
-import type { ReactNode } from 'react';
+import type {ReactNode} from 'react';
 import './globals.css';
-import type { Metadata } from 'next';
+import type {Metadata} from 'next';
 import Image from 'next/image';
 import Script from "next/script";
 
@@ -43,11 +43,8 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
       // Suggested by `next-themes` package https://github.com/pacocoursey/next-themes#with-app
       suppressHydrationWarning
     >
+      <Head>
       <Script defer src="https://umami.mjstudio.net/script.js" data-website-id="a82633cc-1420-405e-9f7d-803c4c7ca47e"/>
-      <Head
-      // ... Your additional head options
-      >
-        <Script defer src="https://umami.mjstudio.net/script.js" data-website-id="a82633cc-1420-405e-9f7d-803c4c7ca47e"></Script>
         {/* Your additional tags should be passed as `children` of `<Head>` element */}
       </Head>
       <body>

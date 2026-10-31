@@ -13,7 +13,7 @@ Visit our [Documentation Site](https://expo-release-it.mjstudio.net)
 - 🎉 No **EAS**
 - 🩵 No headaches when understanding and managing **keys and credentials**
 - 🧩 Manage and sync **store metadata** easily
-- 🌍 Built exclusively for [Expo CNG](https://docs.expo.dev/workflow/continuous-native-generation/), supporting Expo SDK 52 and newer with each SDK’s official React Native version
+- 🌍 Works with [Expo CNG](https://docs.expo.dev/workflow/continuous-native-generation/) mode (also available in non-CNG environments)
 - 📦 Build artifacts **locally** (`apk`, `aab`, `ipa`)
 - 🚀 Upload artifacts to Google Play Console Internal Testing Track and iOS TestFlight
 - ✅ Submit releases for store review

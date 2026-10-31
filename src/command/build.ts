@@ -1,4 +1,5 @@
 import chalk from 'chalk';
+
 import { calculateElapsed } from '../util/calculateElapsed';
 import { isWin } from '../util/EnvUtil';
 import { getIosFastlaneOptions } from '../util/FastlaneOption';

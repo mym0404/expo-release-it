@@ -1,0 +1,32 @@
+{
+  "$schema": "./node_modules/oxfmt/configuration_schema.json",
+  "tabWidth": 2,
+  "useTabs": false,
+  "endOfLine": "lf",
+  "printWidth": 100,
+  "singleQuote": true,
+  "jsxSingleQuote": false,
+  "semi": true,
+  "trailingComma": "all",
+  "arrowParens": "always",
+  "bracketSameLine": false,
+  "bracketSpacing": true,
+  "quoteProps": "as-needed",
+  "sortImports": {
+    "sortSideEffects": false
+  },
+  "ignorePatterns": [
+    "**/node_modules/**",
+    "**/build/**",
+    "**/dist/**",
+    "**/.next/**",
+    "**/out/**",
+    "**/.expo/**",
+    "**/web-build/**",
+    "**/coverage/**",
+    "**/_pagefind/**",
+    "example/android/**",
+    "example/ios/**",
+    "pnpm-lock.yaml"
+  ]
+}

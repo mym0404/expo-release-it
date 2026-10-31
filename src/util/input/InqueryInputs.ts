@@ -1,6 +1,7 @@
 import { select } from '@inquirer/prompts';
 import { is } from '@mj-studio/js-util';
 import chalk from 'chalk';
+
 import { OptionHolder } from '../OptionHolder';
 
 export const InqueryInputs = {

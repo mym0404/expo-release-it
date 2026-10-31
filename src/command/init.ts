@@ -1,5 +1,6 @@
 import { input } from '@inquirer/prompts';
 import chalk from 'chalk';
+
 import { copy, join, writeJson } from '../util/FileUtil';
 import { constructInquirerFormattedMessage } from '../util/input/InqueryInputs';
 import { logger } from '../util/logger';
@@ -25,8 +26,8 @@ async function promptInputs() {
   OptionHolder.keyholderMap.ios_app_identifier = await input({
     message: constructInquirerFormattedMessage({
       name: 'iOS Bundle Identifier',
-      explanation: `The bundle identifier for your iOS standalone app. You make it up, but it needs to be unique on the App Store.
-This means 'CFBundleIdentifier' in info.plist and 'ios.bundleIdentifier' in expo app config`,
+      explanation:
+        "The bundle identifier for your iOS standalone app. You make it up, but it needs to be unique on the App Store.\nThis means 'CFBundleIdentifier' in info.plist and 'ios.bundleIdentifier' in expo app config",
       example: 'com.companyname.appname',
       referUrl: 'https://docs.expo.dev/versions/latest/config/app/#bundleidentifier',
     }),
@@ -60,7 +61,8 @@ This means 'CFBundleIdentifier' in info.plist and 'ios.bundleIdentifier' in expo
   OptionHolder.keyholderMap.ios_match_password = await input({
     message: constructInquirerFormattedMessage({
       name: 'iOS Fastlane Match Passphrase',
-      explanation: `When running match for the first time on a new machine, it will ask you for the passphrase for the Git repository. This is an additional layer of security: each of the files will be encrypted using openssl. Make sure to remember the password, as you'll need it when you run match on a different machine.`,
+      explanation:
+        "When running match for the first time on a new machine, it will ask you for the passphrase for the Git repository. This is an additional layer of security: each of the files will be encrypted using openssl. Make sure to remember the password, as you'll need it when you run match on a different machine.",
       example: 'yourpassphrase',
       referUrl: 'https://docs.fastlane.tools/actions/match/',
     }),
@@ -95,8 +97,8 @@ App Store Connect API Key can be issued in ${chalk.underline.blue('https://appst
   OptionHolder.keyholderMap.ios_xcode_project_target = await input({
     message: constructInquirerFormattedMessage({
       name: 'iOS App Target Name',
-      explanation: `A target in Xcode defines a product to build, including app, extension, or framework, with its own settings and build instructions.
-Usually, this is equivalent to {{name}}.xcodeproj in your ios directory`,
+      explanation:
+        'A target in Xcode defines a product to build, including app, extension, or framework, with its own settings and build instructions.\nUsually, this is equivalent to {{name}}.xcodeproj in your ios directory',
       example: 'app',
     }),
     required: true,

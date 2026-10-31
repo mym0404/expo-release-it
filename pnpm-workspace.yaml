@@ -8,7 +8,6 @@ onlyBuiltDependencies:
 
 catalog:
   typescript: ^5
-  prettier: 3.5.3
 
 catalogs:
   web:

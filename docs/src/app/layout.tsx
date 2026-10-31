@@ -1,12 +1,14 @@
-import {Head} from 'nextra/components';
-import {getPageMap} from 'nextra/page-map';
-import {Footer, Layout, Navbar} from 'nextra-theme-docs';
-import 'nextra-theme-docs/style.css';
-import type {ReactNode} from 'react';
-import './globals.css';
-import type {Metadata} from 'next';
+import type { Metadata } from 'next';
 import Image from 'next/image';
-import Script from "next/script";
+import Script from 'next/script';
+
+import 'nextra-theme-docs/style.css';
+import { Footer, Layout, Navbar } from 'nextra-theme-docs';
+
+import './globals.css';
+import { Head } from 'nextra/components';
+import { getPageMap } from 'nextra/page-map';
+import type { ReactNode } from 'react';
 
 export const metadata: Metadata = {
   title: 'Expo Release It',
@@ -44,7 +46,11 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
       suppressHydrationWarning
     >
       <Head>
-      <Script defer src="https://umami.mjstudio.net/script.js" data-website-id="a82633cc-1420-405e-9f7d-803c4c7ca47e"/>
+        <Script
+          defer
+          src="https://umami.mjstudio.net/script.js"
+          data-website-id="a82633cc-1420-405e-9f7d-803c4c7ca47e"
+        />
         {/* Your additional tags should be passed as `children` of `<Head>` element */}
       </Head>
       <body>

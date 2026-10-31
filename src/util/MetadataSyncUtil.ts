@@ -1,4 +1,5 @@
 import chalk from 'chalk';
+
 import { copy, exist, join, relativePath } from './FileUtil';
 import { logger } from './logger';
 import { OptionHolder } from './OptionHolder';

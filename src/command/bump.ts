@@ -1,6 +1,7 @@
 import { select } from '@inquirer/prompts';
 import { is } from '@mj-studio/js-util';
 import semver from 'semver';
+
 import { isDev } from '../util/EnvUtil';
 import { constructInquirerFormattedMessage } from '../util/input/InqueryInputs';
 import { logger } from '../util/logger';
@@ -48,7 +49,7 @@ async function preCheck() {
     let hasChange = false;
     try {
       await exe('git', ['diff', '--quiet', 'HEAD']);
-    } catch (_) {
+    } catch {
       hasChange = true;
     }
     if (hasChange) {

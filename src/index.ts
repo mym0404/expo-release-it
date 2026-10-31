@@ -1,6 +1,6 @@
 import { Command, Option } from 'commander';
-
 import { ExecaError } from 'execa';
+
 import { build } from './command/build';
 import { bump } from './command/bump';
 import { init } from './command/init';

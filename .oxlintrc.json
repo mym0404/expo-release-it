@@ -1,0 +1,43 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["eslint", "typescript", "unicorn", "oxc", "react"],
+  "categories": {
+    "correctness": "error"
+  },
+  "rules": {
+    "eslint/default-param-last": "off",
+    "eslint/no-else-return": "off",
+    "typescript/no-non-null-assertion": "off",
+    "typescript/no-explicit-any": "off",
+    "eslint/no-param-reassign": "error",
+    "typescript/prefer-as-const": "error",
+    "typescript/prefer-enum-initializers": "error",
+    "react/self-closing-comp": "error",
+    "eslint/one-var": ["error", "never"],
+    "unicorn/prefer-number-properties": "error",
+    "typescript/no-inferrable-types": "error",
+    "eslint/no-unused-vars": "error"
+  },
+  "ignorePatterns": [
+    "**/node_modules/**",
+    "**/build/**",
+    "**/dist/**",
+    "**/.next/**",
+    "**/out/**",
+    "**/.expo/**",
+    "**/web-build/**",
+    "**/coverage/**",
+    "**/_pagefind/**",
+    "example/android/**",
+    "example/ios/**",
+    "src/type/ExpoReleaseItConfiguration.d.ts"
+  ],
+  "overrides": [
+    {
+      "files": ["example/hooks/useColorScheme.web.ts"],
+      "rules": {
+        "react/set-state-in-effect": "off"
+      }
+    }
+  ]
+}

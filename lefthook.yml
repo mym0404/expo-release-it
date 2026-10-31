@@ -4,22 +4,28 @@
 #   https://lefthook.dev/configuration/
 
 check:
-  paralle: true
+  parallel: true
   commands:
     lint:
-      run: biome lint
+      run: pnpm lint
+    format:
+      run: pnpm format:check
     test:
       run: pnpm vitest -w false
     tsc:
-      run: tsc --noEmit -p .
+      run: pnpm exec tsc --noEmit -p .
 
 pre-commit:
-  paralle: true
+  parallel: true
   commands:
+    lint:
+      run: pnpm lint
+    format:
+      run: pnpm format:check
     test:
       run: pnpm vitest -w false
     tsc:
-      run: tsc --noEmit -p .
+      run: pnpm exec tsc --noEmit -p .
 commit-msg:
   commands:
     commitlint:

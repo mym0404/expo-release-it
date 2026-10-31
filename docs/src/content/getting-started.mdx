@@ -14,8 +14,13 @@ If not, set up your environment so that `ruby` and `bundler` are available by fo
 
 `init` command generates sample key files structure in `expo-release-it/key`. They are **noob files** and you must replace file contents.
 
-<Callout type={'warning'}>You must prepare all required key files in `expo-release-it/key` exactly the same filenames.</Callout>
-<Callout type={'info'}>You can add the following files in `.gitignore` if you aren't sure about security issues. Treat them as `.env` and share it to your teammates.</Callout>
+<Callout type={'warning'}>
+  You must prepare all required key files in `expo-release-it/key` exactly the same filenames.
+</Callout>
+<Callout type={'info'}>
+  You can add the following files in `.gitignore` if you aren't sure about security issues. Treat
+  them as `.env` and share it to your teammates.
+</Callout>
 
 ### `android_play_console_service_account.json`
 
@@ -71,7 +76,6 @@ If your expo config file is `app.json`, then set like the following.
     }
   }
 }
-
 ```
 
 If your expo config file is `app.config.(js|ts|mjs|cjs)`, then set like the following.
@@ -93,7 +97,6 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     },
   };
 };
-
 ```
 
 ## 5. Update `.gitignore`

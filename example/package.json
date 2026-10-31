@@ -1,14 +1,15 @@
 {
   "name": "example",
-  "main": "expo-router/entry",
   "version": "1.0.0",
+  "private": true,
+  "main": "expo-router/entry",
   "scripts": {
     "start": "expo start",
     "reset-project": "node ./scripts/reset-project.js",
     "android": "expo run:android",
     "ios": "expo run:ios",
     "web": "expo start --web",
-    "lint": "expo lint"
+    "lint": "pnpm --dir .. exec oxlint --deny-warnings example"
   },
   "dependencies": {
     "@expo/vector-icons": "^14.0.2",
@@ -37,6 +38,5 @@
     "@babel/core": "^7.25.2",
     "@types/react": "catalog:native",
     "typescript": "catalog:"
-  },
-  "private": true
+  }
 }

@@ -1,4 +1,5 @@
 import { fileURLToPath } from 'url';
+
 import pkgJson from '../../package.json';
 import { resolve } from './FileUtil';
 

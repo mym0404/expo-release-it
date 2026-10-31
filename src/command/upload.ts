@@ -1,4 +1,5 @@
 import chalk from 'chalk';
+
 import { calculateElapsed } from '../util/calculateElapsed';
 import { getAndroidFastlaneOptions, getIosFastlaneOptions } from '../util/FastlaneOption';
 import { resolve } from '../util/FileUtil';

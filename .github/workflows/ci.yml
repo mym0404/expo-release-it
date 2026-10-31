@@ -57,6 +57,7 @@ jobs:
         run: |
           git fetch origin main
           test "$(git rev-parse HEAD)" = "$(git rev-parse origin/main)"
+          git branch main HEAD
 
       - name: Setup
         uses: ./.github/actions/setup

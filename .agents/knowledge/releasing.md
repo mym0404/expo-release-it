@@ -10,7 +10,7 @@ The published package lives at the repository root. Keep `.` in the pnpm workspa
 
 The CI workflow validates pull requests to `main` and pushes to `main`. After its checks pass, a main-branch release job:
 
-1. Checks out the triggering commit and verifies main has not advanced, then reads pending changesets. If any exist, `pnpm version-packages` consumes them, updates versions and CHANGELOG, and synchronizes the pnpm lockfile.
+1. Checks out the triggering commit, verifies main has not advanced, and creates a local main ref for Changesets before reading pending changesets. If any exist, `pnpm version-packages` consumes them, updates versions and CHANGELOG, and synchronizes the pnpm lockfile.
 2. Builds and checks the resulting release, then pushes the version commit to main before publishing. Pushes are not forced; a concurrent branch update fails this step before a package is published.
 3. Publishes versions absent from npm, creates Changesets tags, pushes tags, and creates the corresponding GitHub release.
 

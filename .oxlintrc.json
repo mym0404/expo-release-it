@@ -28,16 +28,8 @@
     "**/web-build/**",
     "**/coverage/**",
     "**/_pagefind/**",
-    "example/android/**",
-    "example/ios/**",
+    "examples/*/android/**",
+    "examples/*/ios/**",
     "src/type/ExpoReleaseItConfiguration.d.ts"
-  ],
-  "overrides": [
-    {
-      "files": ["example/hooks/useColorScheme.web.ts"],
-      "rules": {
-        "react/set-state-in-effect": "off"
-      }
-    }
   ]
 }

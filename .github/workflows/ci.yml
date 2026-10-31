@@ -36,9 +36,67 @@ jobs:
       - name: Build
         run: pnpm run build
 
+  ruby:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, macos-26]
+        ruby: ['3.3', '3.4', '4.0']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+          working-directory: template/ruby
+      - run: pnpm build
+      - run: pnpm test:ruby
+
+  native:
+    name: SDK ${{ matrix.sdk }} / ${{ matrix.platform }} / ${{ matrix.output }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { sdk: 57, platform: android, output: aab, os: ubuntu-24.04 }
+          - { sdk: 57, platform: android, output: apk, os: ubuntu-24.04 }
+          - { sdk: 57, platform: ios, output: unsigned, os: xcode-27, xcode: '27.0' }
+          - { sdk: 58, platform: android, output: aab, os: ubuntu-24.04 }
+          - { sdk: 58, platform: android, output: apk, os: ubuntu-24.04 }
+          - { sdk: 58, platform: ios, output: unsigned, os: xcode-27, xcode: '27.0' }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3'
+          working-directory: template/ruby
+      - uses: actions/setup-java@v4
+        if: matrix.platform == 'android'
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: android-actions/setup-android@v3
+        if: matrix.platform == 'android'
+      - name: Select Xcode
+        if: matrix.platform == 'ios'
+        run: sudo xcode-select --switch /Applications/Xcode_${{ matrix.xcode }}.app/Contents/Developer
+      - run: pnpm build
+      - run: pnpm test:e2e ${{ matrix.sdk }} ${{ matrix.platform }} ${{ matrix.output }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: sdk-${{ matrix.sdk }}-${{ matrix.platform }}-${{ matrix.output }}
+          path: .e2e-artifacts/
+          retention-days: 3
+          include-hidden-files: true
+          if-no-files-found: error
+
   release:
     if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
-    needs: lint
+    needs: [lint, ruby, native]
     runs-on: ubuntu-latest
     permissions:
       contents: write

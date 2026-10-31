@@ -1,7 +1,9 @@
 packages:
   - .
-  - example
+  - examples/*
   - docs
+
+autoInstallPeers: false
 
 onlyBuiltDependencies:
   - esbuild
@@ -20,12 +22,6 @@ catalogs:
     '@types/react': ^19
     '@tailwindcss/postcss': ^4
     'tailwindcss': ^4
-
-  native:
-    react: ^18.3.1
-    react-dom: ^18.3.1
-    react-native: 0.76.9
-    '@types/react': ~18.3.12
 
 patchedDependencies:
   nextra-theme-docs@4.6.1: patches/nextra-theme-docs@4.6.1.patch

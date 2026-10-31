@@ -1,4 +1,4 @@
-import { input } from '@inquirer/prompts';
+import { input, password } from '@inquirer/prompts';
 import chalk from 'chalk';
 
 import { copy, join, writeJson } from '../util/FileUtil';
@@ -58,7 +58,7 @@ async function promptInputs() {
     default: OptionHolder.keyholderMap.ios_match_git_url,
   });
 
-  OptionHolder.keyholderMap.ios_match_password = await input({
+  OptionHolder.keyholderMap.ios_match_password = await inputSecret({
     message: constructInquirerFormattedMessage({
       name: 'iOS Fastlane Match Passphrase',
       explanation:
@@ -66,8 +66,7 @@ async function promptInputs() {
       example: 'yourpassphrase',
       referUrl: 'https://docs.fastlane.tools/actions/match/',
     }),
-    required: true,
-    default: OptionHolder.keyholderMap.ios_match_password,
+    previous: OptionHolder.keyholderMap.ios_match_password,
   });
 
   OptionHolder.keyholderMap.ios_app_store_connect_api_key_id = await input({
@@ -94,17 +93,6 @@ App Store Connect API Key can be issued in ${chalk.underline.blue('https://appst
     default: OptionHolder.keyholderMap.ios_app_store_connect_api_key_issuer_id,
   });
 
-  OptionHolder.keyholderMap.ios_xcode_project_target = await input({
-    message: constructInquirerFormattedMessage({
-      name: 'iOS App Target Name',
-      explanation:
-        'A target in Xcode defines a product to build, including app, extension, or framework, with its own settings and build instructions.\nUsually, this is equivalent to {{name}}.xcodeproj in your ios directory',
-      example: 'app',
-    }),
-    required: true,
-    default: OptionHolder.keyholderMap.ios_xcode_project_target || 'app',
-  });
-
   /* android */
   OptionHolder.keyholderMap.android_package_name = await input({
     message: constructInquirerFormattedMessage({
@@ -117,7 +105,7 @@ App Store Connect API Key can be issued in ${chalk.underline.blue('https://appst
     required: true,
     default: OptionHolder.keyholderMap.android_package_name,
   });
-  OptionHolder.keyholderMap.android_keystore_store_password = await input({
+  OptionHolder.keyholderMap.android_keystore_store_password = await inputSecret({
     message: constructInquirerFormattedMessage({
       name: 'Android Keystore Store Password',
       explanation: `Storage password used in android release keystore
@@ -125,8 +113,7 @@ You can issue your android release keystore following this guide: ${chalk.underl
 Or, you can do same thing with CLI: ${chalk.underline.blue('https://gist.github.com/henriquemenezes/70feb8fff20a19a65346e48786bedb8f')}`,
       referUrl: 'https://developer.android.com/studio/publish/app-signing.html#generate-key',
     }),
-    required: true,
-    default: OptionHolder.keyholderMap.android_keystore_store_password,
+    previous: OptionHolder.keyholderMap.android_keystore_store_password,
   });
   OptionHolder.keyholderMap.android_keystore_key_alias = await input({
     message: constructInquirerFormattedMessage({
@@ -139,7 +126,7 @@ Or, you can do same thing with CLI: ${chalk.underline.blue('https://gist.github.
     required: true,
     default: OptionHolder.keyholderMap.android_keystore_key_alias,
   });
-  OptionHolder.keyholderMap.android_keystore_key_password = await input({
+  OptionHolder.keyholderMap.android_keystore_key_password = await inputSecret({
     message: constructInquirerFormattedMessage({
       name: 'Android Keystore Key Password',
       explanation: `Key password used in android release keystore
@@ -147,11 +134,20 @@ You can issue your android release keystore following this guide: ${chalk.underl
 Or, you can do same thing with CLI: ${chalk.underline.blue('https://gist.github.com/henriquemenezes/70feb8fff20a19a65346e48786bedb8f')}`,
       referUrl: 'https://developer.android.com/studio/publish/app-signing.html#generate-key',
     }),
-    required: true,
-    default: OptionHolder.keyholderMap.android_keystore_key_password,
+    previous: OptionHolder.keyholderMap.android_keystore_key_password,
   });
 
   writeJson(OptionHolder.keyholderFilePath, OptionHolder.keyholderMap);
+
+  async function inputSecret({ message, previous }: { message: string; previous?: string }) {
+    const stored = previous ?? '';
+    const value = await password({
+      message: stored ? `${message}\nLeave blank to keep the stored value.` : message,
+      mask: true,
+      validate: (value) => Boolean(value || stored) || 'A value is required.',
+    });
+    return value || stored;
+  }
 }
 
 async function copyTemplates() {

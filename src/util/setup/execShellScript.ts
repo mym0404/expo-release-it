@@ -1,19 +1,39 @@
+import { createInterface } from 'node:readline';
+
 import { execa, type Options } from 'execa';
 
-export const exe = execa({
-  stdin: 'pipe',
-  stdout: 'inherit',
-  stderr: 'inherit',
-  shell: false,
-});
+import { redact } from '../logger';
 
-export const yesShell = <OptionsType extends Options>(
+export async function printRedactedOutput(stream: NodeJS.ReadableStream) {
+  let hasPrivateKey = false;
+  const privateKeyEnd = /-----END .*PRIVATE KEY-----/;
+  for await (const line of createInterface({ input: stream })) {
+    if (/-----BEGIN .*PRIVATE KEY-----/.test(line)) {
+      hasPrivateKey = !privateKeyEnd.test(line);
+      console.log('[REDACTED PRIVATE KEY]');
+    } else if (privateKeyEnd.test(line)) {
+      hasPrivateKey = false;
+    } else if (!hasPrivateKey) {
+      console.log(redact(line));
+    }
+  }
+}
+
+export async function exe(
   command: string,
   args: string[] = [],
-  options: OptionsType,
-) => {
-  const subProcess = exe(command, args, { ...options, stdin: 'pipe' });
-  subProcess.stdin?.write('y\n');
-  subProcess.stdin?.end();
-  return subProcess;
-};
+  options: Pick<Options, 'cwd' | 'env' | 'extendEnv'> = {},
+) {
+  const child = execa(command, args, {
+    ...options,
+    stdin: 'pipe',
+    stdout: 'pipe',
+    stderr: 'pipe',
+    all: true,
+    reject: false,
+  });
+  if (child.all) await printRedactedOutput(child.all);
+  const result = await child;
+  if (result.failed) throw result;
+  return result;
+}

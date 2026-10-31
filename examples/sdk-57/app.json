@@ -1,0 +1,26 @@
+{
+  "expo": {
+    "name": "ReleaseSdk57",
+    "slug": "release-sdk-57",
+    "version": "1.0.0",
+    "newArchEnabled": true,
+    "ios": {
+      "bundleIdentifier": "net.mjstudio.release.sdk57",
+      "buildNumber": "1"
+    },
+    "android": {
+      "package": "net.mjstudio.release.sdk57",
+      "versionCode": 1
+    },
+    "plugins": [
+      [
+        "expo-build-properties",
+        {
+          "ios": {
+            "enableSceneSupport": true
+          }
+        }
+      ]
+    ]
+  }
+}

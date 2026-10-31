@@ -1,2 +1,0 @@
-app_identifier("{{ios_app_identifier}}") # The bundle identifier of your app
-team_id("{{ios_developer_team_id}}") # Developer Portal Team ID

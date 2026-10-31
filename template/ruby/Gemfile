@@ -1,0 +1,10 @@
+source "https://rubygems.org"
+
+gem "fastlane", "2.227.1"
+gem "abbrev", "0.1.2"
+gem "csv", "3.3.7"
+gem "ostruct", "0.6.3"
+
+group :ios do
+  gem "cocoapods", "1.16.2"
+end

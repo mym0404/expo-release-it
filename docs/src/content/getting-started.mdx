@@ -6,9 +6,16 @@ You've got to follow each step to execute `expo-release-it`.
 
 ## 1. Ruby, Bundler
 
-`expo-release-it` requires `bundler` of ruby is available in your environment to run `Fastlane` internally.
+Use an Expo CNG project with SDK 52 or newer and its official React Native version. Native changes must be expressed in app configuration or config plugins: builds delete and regenerate the selected native directory.
 
-If not, set up your environment so that `ruby` and `bundler` are available by following [Ruby Install Guide](https://www.ruby-lang.org/en/downloads/)
+Prepare MRI Ruby 3.3, 3.4, or 4.0 and the exact managed Bundler version:
+
+```sh
+ruby --version
+gem install bundler -v 2.5.22 --no-document
+```
+
+See [Ruby toolchain](/ruby) for mise/rbenv examples, supported versions, isolation, and maintenance instructions. Ruby is never installed automatically. iOS builds require macOS/Xcode; Android builds are maintained on macOS/Linux with the Expo SDK's required JDK and Android SDK.
 
 ## 2. Prepare Keys & Credentials
 
@@ -105,9 +112,10 @@ export default ({ config }: ConfigContext): ExpoConfig => {
 # Expo Release It
 
 expo-release-it/.temp
-android/vendor/bundle
-ios/vendor/bundle
-# if you excluded android, ios for using CNG
+expo-release-it/.ruby/
+ios/
+android/
+# Persistent metadata and keys live outside generated native directories
 !expo-release-it/metadata/*
 # if you aren't sure about security issues, feel free to exclude these files from the VCS.
 !expo-release-it/key/*.p8
@@ -115,3 +123,9 @@ ios/vendor/bundle
 ```
 
 ## 6. Run `expo-release-it init`
+
+```sh
+npx expo-release-it init
+```
+
+For an iOS compilation check without Apple credentials, `build --platform ios --no-sign` does not require store/signing keys. Store commands use the managed Fastlane workspace and never regenerate native directories.

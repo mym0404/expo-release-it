@@ -1,0 +1,5 @@
+node_modules/
+.expo/
+android/
+ios/
+expo-release-it/

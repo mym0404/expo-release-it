@@ -1,19 +1,30 @@
+require "json"
+
 default_platform(:ios)
 
 def to_b(str)
   str == true || str.to_s.downcase == "true"
 end
 
+def release_options
+  JSON.parse(ENV.fetch("EXPO_RELEASE_IT_OPTIONS"), symbolize_names: true)
+end
+
 platform :ios do
-  lane :common do |options|
+  private_lane :authenticate do |options|
     api_key = app_store_connect_api_key(
       key_id: options[:ios_app_store_connect_api_key_id],
       issuer_id: options[:ios_app_store_connect_api_key_issuer_id],
       key_filepath: options[:api_key_filepath],
     )
     Actions.lane_context[:API_KEY] = api_key
+  end
+
+  private_lane :sign do |options|
+    authenticate(options)
     setup_ci
     match(
+      api_key: lane_context[:API_KEY],
       storage_mode: "git",
       git_url: options[:ios_match_git_url],
       type: "appstore",
@@ -24,24 +35,28 @@ platform :ios do
 
     update_code_signing_settings(
       use_automatic_signing: false,
-      path: "#{options[:ios_xcode_project_target]}.xcodeproj",
+      path: options[:project],
+      targets: [options[:target]],
+      build_configurations: ["Release"],
       team_id: options[:ios_developer_team_id],
       code_sign_identity: "Apple Distribution"
     )
 
     update_project_provisioning(
-      xcodeproj: "#{options[:ios_xcode_project_target]}.xcodeproj",
+      xcodeproj: options[:project],
       profile: ENV["sigh_#{options[:ios_app_identifier]}_appstore_profile-path"],
-      target_filter: options[:ios_xcode_project_target],
+      target_filter: "^#{Regexp.escape(options[:target])}$",
       build_configuration: "Release",
       code_signing_identity: "Apple Distribution"
     )
   end
 
-  lane :pull do |options|
-    common(options)
+  lane :pull do
+    options = release_options
+    authenticate(options)
     deliver(
       api_key: lane_context[:API_KEY],
+      app_identifier: options[:ios_app_identifier],
       app_version: options[:version_name],
       force: true, # Set to true to skip verification of HTML preview
       skip_binary_upload: true,
@@ -53,25 +68,40 @@ platform :ios do
     )
   end
 
-  lane :build do |options|
-    common(options)
-    build_app(
-      scheme: options[:ios_xcode_project_target],
+  lane :build do
+    options = release_options
+    no_sign = to_b(options[:no_sign])
+    sign(options) unless no_sign
+    build_options = {
+      project: options[:workspace] ? nil : options[:project],
+      workspace: options[:workspace],
+      scheme: options[:scheme],
+      configuration: "Release",
+      destination: "generic/platform=iOS",
       silent: true,
       output_directory: options[:ipa_dir],
       output_name: options[:ipa_name],
-      export_method: "app-store",
-      codesigning_identity: "Apple Distribution",
-      export_options: {
+      archive_path: options[:archive_path],
+      skip_codesigning: no_sign,
+      skip_package_ipa: no_sign,
+    }
+    if no_sign
+      build_options[:xcargs] = "CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO"
+    else
+      build_options[:export_method] = "app-store"
+      build_options[:codesigning_identity] = "Apple Distribution"
+      build_options[:export_options] = {
         provisioningProfiles: {
           options[:ios_app_identifier] => "match AppStore #{options[:ios_app_identifier]}"
         }
       }
-    )
+    end
+    build_app(**build_options)
   end
 
-  lane :upload do |options|
-    common(options)
+  lane :upload do
+    options = release_options
+    authenticate(options)
     upload_to_testflight(
       api_key: lane_context[:API_KEY],
       app_version: options[:version_name],
@@ -83,11 +113,15 @@ platform :ios do
     )
   end
 
-  lane :submit do |options|
-    common(options)
+  lane :submit do
+    options = release_options
+    authenticate(options)
     deliver(
       api_key: lane_context[:API_KEY],
+      app_identifier: options[:ios_app_identifier],
       app_version: options[:version_name],
+      metadata_path: File.join(__dir__, "metadata"),
+      screenshots_path: File.join(__dir__, "screenshots"),
       force: true, # Set to true to skip verification of HTML preview
       skip_binary_upload: true,
       submit_for_review: true,

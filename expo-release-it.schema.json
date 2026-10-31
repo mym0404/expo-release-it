@@ -43,8 +43,22 @@
           "type": "string",
           "enum": ["aab", "apk"]
         },
-        "iosPodInstall": {
-          "type": "boolean"
+        "ios": {
+          "type": "object",
+          "properties": {
+            "project": {
+              "type": "string",
+              "description": "Xcode project filename, required only when discovery is ambiguous"
+            },
+            "target": {
+              "type": "string",
+              "description": "App target, required only when discovery is ambiguous"
+            },
+            "scheme": {
+              "type": "string",
+              "description": "Build scheme, required only when discovery is ambiguous"
+            }
+          }
         }
       }
     },

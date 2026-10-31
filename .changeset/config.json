@@ -12,5 +12,5 @@
     "version": false,
     "tag": false
   },
-  "ignore": ["docs", "example"]
+  "ignore": ["docs", "example-sdk-57", "example-sdk-58"]
 }

@@ -4,8 +4,8 @@ import { copy, exist, join, relativePath } from './FileUtil';
 import { logger } from './logger';
 import { OptionHolder } from './OptionHolder';
 
-export function copyIosMetadata(to: 'resources' | 'native') {
-  const iosDir = join(OptionHolder.projectDir, 'ios');
+export function copyIosMetadata(to: 'resources' | 'workspace', workspace: string) {
+  const iosDir = workspace;
 
   const nativeDir = join(iosDir, 'fastlane');
   const metadataNativeDir = join(nativeDir, 'metadata');
@@ -44,13 +44,13 @@ export function copyIosMetadata(to: 'resources' | 'native') {
   }
 }
 
-export function copyAndroidMetadata(to: 'resouces' | 'native') {
-  const androidDir = join(OptionHolder.projectDir, 'android');
+export function copyAndroidMetadata(to: 'resources' | 'workspace', workspace: string) {
+  const androidDir = workspace;
 
   const nativeDir = join(androidDir, 'fastlane/metadata/android');
   const resourcesDir = join(OptionHolder.resourcesDir, 'metadata/android');
 
-  if (to === 'resouces') {
+  if (to === 'resources') {
     if (exist(nativeDir)) {
       copy(nativeDir, resourcesDir);
       logger.done(

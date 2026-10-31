@@ -22,7 +22,11 @@ export const OptionHolder: {
     uploadMetadata: boolean;
     uploadScreenshot: boolean;
     androidOutput: 'apk' | 'aab';
-    pod: boolean;
+    sign?: boolean;
+    iosProject?: string;
+    iosTarget?: string;
+    iosScheme?: string;
+    iosWorkspace?: string;
     useLiveVersionIos: boolean;
     semverIncrement: 'major' | 'minor' | 'patch';
     config?: string;
@@ -40,7 +44,6 @@ export const OptionHolder: {
     ios_match_git_url: string;
     ios_app_store_connect_api_key_id: string;
     ios_app_store_connect_api_key_issuer_id: string;
-    ios_xcode_project_target: string;
     ios_match_password: string;
 
     android_keystore_store_password: string;

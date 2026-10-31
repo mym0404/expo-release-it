@@ -1,0 +1,15 @@
+android {
+    signingConfigs {
+        expoReleaseIt {
+            storeFile file(System.getenv("EXPO_RELEASE_IT_KEYSTORE"))
+            storePassword System.getenv("EXPO_RELEASE_IT_STORE_PASSWORD")
+            keyAlias System.getenv("EXPO_RELEASE_IT_KEY_ALIAS")
+            keyPassword System.getenv("EXPO_RELEASE_IT_KEY_PASSWORD")
+        }
+    }
+    buildTypes {
+        release {
+            signingConfig signingConfigs.expoReleaseIt
+        }
+    }
+}

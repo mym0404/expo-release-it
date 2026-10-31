@@ -4,11 +4,11 @@
 
 Changesets manages the npm package version, independently of the consumer app's binary-version commands. Run `pnpm changeset` with releasable changes and select the semver bump for `expo-release-it`. For changes that do not need an npm release, use `pnpm changeset --empty`.
 
-The published package lives at the repository root. Keep `.` in the pnpm workspace package list so Changesets discovers it. The `docs` and `example` packages remain private and excluded from versioning and publishing. The JSON configuration under `.changeset/` controls this scope; release notes come from changeset descriptions.
+The published package lives at the repository root. Keep `.` in the pnpm workspace package list so Changesets discovers it. The `docs`, `example-sdk-57`, and `example-sdk-58` packages remain private and excluded from versioning and publishing. The JSON configuration under `.changeset/` controls this scope; release notes come from changeset descriptions.
 
 ## Main-Branch Automation
 
-The CI workflow validates pull requests to `main` and pushes to `main`. After its checks pass, a main-branch release job:
+The CI workflow validates pull requests to `main` and pushes to `main`. After its root, Ruby, and native E2E checks pass, a main-branch release job:
 
 1. Checks out the triggering commit, verifies main has not advanced, and creates a local main ref for Changesets before reading pending changesets. If any exist, `pnpm version-packages` consumes them, updates versions and CHANGELOG, and synchronizes the pnpm lockfile.
 2. Builds and checks the resulting release, then pushes the version commit to main before publishing. Pushes are not forced; a concurrent branch update fails this step before a package is published.

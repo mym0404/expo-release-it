@@ -13,10 +13,12 @@ Visit our [Documentation Site](https://expo-release-it.mjstudio.net)
 - 🎉 No **EAS**
 - 🩵 No headaches when understanding and managing **keys and credentials**
 - 🧩 Manage and sync **store metadata** easily
-- 🌍 Works with [Expo CNG](https://docs.expo.dev/workflow/continuous-native-generation/) mode (also available in non-CNG environments)
+- 🌍 Built exclusively for [Expo CNG](https://docs.expo.dev/workflow/continuous-native-generation/), supporting Expo SDK 52 and newer with each SDK’s official React Native version
 - 📦 Build artifacts **locally** (`apk`, `aab`, `ipa`)
 - 🚀 Upload artifacts to Google Play Console Internal Testing Track and iOS TestFlight
 - ✅ Submit releases for store review
+
+The CLI owns release orchestration, integration with Expo-generated projects, and its managed Ruby toolchain. Prepare a toolchain supported by your project's Expo and React Native versions. Upstream native dependency or compiler incompatibilities are outside this library's scope; it does not patch Expo/RN, Pods source, or Xcode to repair them.
 
 # Licenses
 

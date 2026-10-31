@@ -1,7 +1,46 @@
 # build
 
-**Build artifacts (apk, aab, ipa)**
+Build local release artifacts from an Expo CNG project. Expo SDK 52 and newer are supported with the React Native version targeted by that SDK. There is no SDK upper-bound check. Other React Native combinations may work but are outside the maintenance scope.
 
-```shell
-npx expo-release-it build
+```sh
+npx expo-release-it build --platform android --androidOutput aab
+npx expo-release-it build --platform android --androidOutput apk
+npx expo-release-it build --platform ios
 ```
+
+Before changing files, the CLI checks the selected Ruby/Bundler, project-local Expo CLI, Node requirement, and native build tool availability. Ruby dependencies are installed in `expo-release-it/.ruby`.
+
+Every build runs `expo prebuild --clean --no-install` for the selected platform. This deletes and regenerates that platform's `ios/` or `android/` directory. Express native customizations through Expo app configuration and config plugins. Keep signing keys, store metadata, and outputs under `expo-release-it/`, outside generated native directories.
+
+## Toolchain boundary
+
+SDK 52+ describes the CLI's CNG and release workflow support. Prepare a Node/JDK/Xcode and native dependency combination supported by your Expo SDK and React Native version. The CLI does not repair compatibility conflicts inside Expo, React Native, CocoaPods-installed native libraries, or Xcode. It does not patch Pods headers, node_modules, compiler behavior, or project dependencies to make incompatible combinations build. Upstream compilation failures remain failures and are reported through the tool output.
+
+## iOS
+
+Local iOS builds require macOS and Xcode. CocoaPods installation always runs; there is no skip option. After Pods installation, the CLI removes `.xcode.env.local` to avoid reusing a temporary Node executable path created by package-manager wrappers.
+
+A normal build prepares Match signing and exports `expo-release-it/output/ios/app.ipa`.
+
+For compilation without Apple credentials:
+
+```sh
+npx expo-release-it build --platform ios --no-sign
+```
+
+This creates `expo-release-it/output/ios/app.xcarchive`, without an app signature or IPA export. It cannot be uploaded to App Store Connect as a distribution binary.
+
+The CLI discovers the Xcode project, application target, and scheme independently. A single candidate is selected automatically. If discovery is ambiguous, supply the names shown in the error:
+
+```sh
+npx expo-release-it build --platform ios --no-sign \
+  --ios-project MyApp.xcodeproj --ios-target MyApp --ios-scheme MyAppProduction
+```
+
+## Android
+
+Local Android builds are maintained on macOS and Linux. Prepare the Android SDK and the JDK required by your Expo/RN version. Windows may work but is outside the maintenance scope.
+
+Provide `expo-release-it/key/android_release.keystore` and its store password, key alias, and key password in `keyholder.json`. The CLI preserves the generated debug signing configuration and applies a separate release signing configuration. Passwords are passed through the build process environment, not written into generated Gradle source.
+
+Outputs are stored under `expo-release-it/output/android/apk/` or `expo-release-it/output/android/aab/`.

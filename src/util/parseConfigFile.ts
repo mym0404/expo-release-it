@@ -31,7 +31,13 @@ export async function parseConfigFile() {
     'androidOutput',
     config.build?.androidBuildOutput ?? config.upload?.androidBuildOutput,
   );
-  assignIfValueIsValidAndNotSetAlready(OptionHolder.input, 'pod', config.build?.iosPodInstall);
+  assignIfValueIsValidAndNotSetAlready(
+    OptionHolder.input,
+    'iosProject',
+    config.build?.ios?.project,
+  );
+  assignIfValueIsValidAndNotSetAlready(OptionHolder.input, 'iosTarget', config.build?.ios?.target);
+  assignIfValueIsValidAndNotSetAlready(OptionHolder.input, 'iosScheme', config.build?.ios?.scheme);
   assignIfValueIsValidAndNotSetAlready(
     OptionHolder.input,
     'uploadMetadata',
@@ -63,7 +69,7 @@ function assignIfValueIsValidAndNotSetAlready<R, T extends Record<K, R>, K exten
   key: K,
   value: R,
 ) {
-  if (!object[key] && !(value === null || value === undefined)) {
-    object[key] = value as any;
+  if (object[key] === undefined && value !== null && value !== undefined) {
+    object[key] = value as T[K];
   }
 }

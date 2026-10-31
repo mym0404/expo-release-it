@@ -6,7 +6,7 @@
 | ------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Project root        | The consumer Expo project targeted by the CLI: the current directory in normal execution, or this repository's example app in development mode.                               |
 | Resources directory | `<project>/expo-release-it`, the persistent home for release configuration, keys, output artifacts, and store metadata.                                                       |
-| Native workspace    | The consumer project's `ios/` or `android/` directory, prepared through Expo prebuild before platform operations.                                                             |
+| Native workspace    | The consumer project's `ios/` or `android/` directory, regenerated through clean Expo prebuild only by `build`.                                                               |
 | Keyholder           | `keyholder.json` in the resources directory: identifiers and passwords used by native release automation. Signing and service-account key files live separately under `key/`. |
 | Version name        | The semver app version used by the CLI and store workflows.                                                                                                                   |
 | Version code        | The shared build identifier represented by iOS `buildNumber` and Android `versionCode`.                                                                                       |
@@ -14,9 +14,17 @@
 
 ## Persistent Resources and Native Preparation
 
-Native preparation runs Expo prebuild and replaces the CLI-managed automation templates. Preserve the resources directory as the persistent input/output boundary across native regeneration. `init` retains existing key files rather than overwriting them; metadata synchronization uses resources as the input for native preparation and as the destination for pulled store metadata.
+The CLI owns Ruby dependency selection, integration with Expo-generated project structures, CNG preparation, signing configuration, artifact handling, and store orchestration. Expo/React Native/native dependency bugs and incompatible SDK/compiler combinations are outside its support boundary. Never patch Pods source, node_modules, compiler internals, or upstream native libraries to make such combinations compile. Report upstream failures and require a toolchain supported by the project; do not suppress native failures or silently switch SDK/Xcode versions. CI verifies the CLI integration at its explicitly configured SDK/toolchain baselines.
 
-These boundaries are implemented by `src/command/init.ts`, the platform preparation modules under `src/util/setup/`, and `src/util/MetadataSyncUtil.ts`.
+Only `build` runs project-local Expo prebuild with `--clean --no-install` for the selected platform. CNG is the sole supported workflow, with SDK 52 and newer and each SDK's official React Native pairing; there is no upper SDK version gate. Native customizations belong in Expo config/config plugins. iOS always installs Pods and removes `.xcode.env.local` afterward to avoid stale temporary Node paths.
+
+`<resources>/.ruby` owns the tool Gemfile/lockfile, private gem installations, and platform Fastlane workspaces. Ruby/Bundler preflight precedes dependency installation, template writes, and native regeneration. `RubyEnvironment.ts` selects a specific Bundler from the packaged lockfile using the inspected Ruby, ignoring inherited Bundler configuration. The consumer's Gemfiles and global settings are not modified. Only iOS builds install the CocoaPods group.
+
+Store commands prepare this persistent Fastlane workspace and do not generate or mutate native projects. Metadata synchronization copies between that workspace and persistent `metadata/`. Signing keys and output artifacts remain in resources. `init` retains existing key files.
+
+Android release signing uses a separate generated Gradle script with environment-provided keys; generated debug signing is preserved. iOS project, application target, and scheme are discovered independently, with explicit configuration required for ambiguous choices. `build --no-sign` skips Apple authentication/signing/export and produces an unsigned archive rather than an IPA.
+
+These boundaries are implemented by `src/command/init.ts`, the preparation modules under `src/util/setup/`, `src/util/MetadataSyncUtil.ts`, and the packaged templates.
 
 ## Configuration and Binary Versions
 

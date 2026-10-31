@@ -14,6 +14,7 @@ The resources & output directory structure is the following.
 
 ```text
 📁 expo-release-it/
+├── .ruby/         # managed Ruby gems and Fastlane workspace, excluded from Git
 ├── 📁 key/         # key & certificate files
 ├── 📁 metadata/    # result of `pull`
 │   ├── 📁 android/  # android store metadatas
@@ -23,3 +24,5 @@ The resources & output directory structure is the following.
 │   └── 📁 ios/      # ios build output
 └── keyholder.json
 ```
+
+Xcode project, app target, and scheme are discovered at build time. They are not credentials requested by `init`.

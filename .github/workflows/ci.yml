@@ -72,7 +72,7 @@ jobs:
       - name: Read release plan
         id: changesets
         run: |
-          pnpm changeset status --since=origin/main --output="$RUNNER_TEMP/changeset-status.json"
+          pnpm changeset status --output="$RUNNER_TEMP/changeset-status.json"
           node --input-type=module <<'JS'
           import { appendFileSync, readFileSync } from 'node:fs';
           import { join } from 'node:path';

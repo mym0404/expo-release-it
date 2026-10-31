@@ -44,6 +44,7 @@ This setup command requires npm 11.15 or newer and maintainer authentication. A 
 ## Verification and Retry
 
 - `pnpm changeset status --since=origin/main` validates release intent without changing versions. Fetch main first when checking a feature branch.
+- `pnpm changeset status` reads all pending changesets for a main-branch release. Do not use `--since=origin/main` here: it filters out changesets already committed to main.
 - `pnpm changeset publish-plan` reports unpublished packages without publishing. Only the public root package should appear.
 - Exercise `pnpm version-packages` in a temporary checkout when verifying version consumption; it changes tracked versions, lockfile, CHANGELOG, and changeset files.
 - Use the CI workflow's manual dispatch on main to retry publication after a version commit. Rerunning the original run fails its freshness check once main has advanced. No second bump is needed; publishing skips versions already on npm, and tag/release creation can complete afterward.

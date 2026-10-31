@@ -6,7 +6,7 @@ The root TypeScript check includes `src` and `package.json`; it does not type-ch
 
 Oxlint checks supported JS/TS files, not MDX rendering. The generated configuration declaration is excluded from lint but remains covered by formatting and the root type check. Generated build, Expo, native, and search output are excluded from lint/format checks; pnpm manages the lockfile without Oxfmt formatting.
 
-CI runs the root check and CLI build only. It does not build docs or launch the example app.
+CI validates changesets and runs the root check and CLI build; it does not build docs or launch the example app. Pull requests are validated against `origin/main`, so release-affecting changes need a changeset and non-release changes can use an empty changeset.
 
 ## Conditional Checks
 

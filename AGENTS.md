@@ -9,7 +9,7 @@
 - TypeScript ESM on Node.js, managed as a pnpm workspace. Runtime and package-manager versions are defined by `.nvmrc` and the root `package.json`.
 - Native automation uses Expo prebuild, Ruby/Bundler and Fastlane, with Gradle for Android and Xcode for iOS.
 - The documentation site uses Next.js, Nextra, React, Tailwind CSS, and Pagefind. The example app uses Expo and React Native; their dependencies use separate `web` and `native` catalogs.
-- tsdown builds the CLI; Vitest, TypeScript, Oxlint, Oxfmt, and Lefthook provide local checks.
+- tsdown builds the CLI; Vitest, TypeScript, Oxlint, Oxfmt, and Lefthook provide local checks. Changesets manages package releases.
 
 ## Project Tree
 
@@ -38,6 +38,10 @@ Owns the domain glossary, persistent resource boundaries, configuration-file sel
 .agents/knowledge/verification.md
 
 Owns conditional workspace checks and the coverage limits of the default checks and CI.
+
+.agents/knowledge/releasing.md
+
+Owns package release intent, main-branch automation, npm trusted-publisher setup, and release retries. Read it before changing the release workflow or package discovery.
 
 .agents/troubleshooting/nextra-layout-props-validation.md
 

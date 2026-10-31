@@ -2,17 +2,27 @@ name: CI
 on:
   push:
     branches:
-      - master
+      - main
   pull_request:
     branches:
-      - master
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
 
 jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Setup
         uses: ./.github/actions/setup
@@ -20,5 +30,86 @@ jobs:
       - name: Check
         run: pnpm run t
 
+      - name: Check changesets
+        run: pnpm changeset status --since=origin/main
+
       - name: Build
         run: pnpm run build
+
+  release:
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    needs: lint
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      NPM_CONFIG_PROVENANCE: 'true'
+    steps:
+      - name: Checkout release commit
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+
+      - name: Verify main has not advanced
+        run: |
+          git fetch origin main
+          test "$(git rev-parse HEAD)" = "$(git rev-parse origin/main)"
+
+      - name: Setup
+        uses: ./.github/actions/setup
+
+      - name: Install npm with trusted publishing support
+        run: npm install --global npm@11
+
+      - name: Configure release author
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+
+      - name: Read release plan
+        id: changesets
+        run: |
+          pnpm changeset status --since=origin/main --output="$RUNNER_TEMP/changeset-status.json"
+          node --input-type=module <<'JS'
+          import { appendFileSync, readFileSync } from 'node:fs';
+          import { join } from 'node:path';
+          const plan = JSON.parse(readFileSync(join(process.env.RUNNER_TEMP, 'changeset-status.json'), 'utf8'));
+          appendFileSync(process.env.GITHUB_OUTPUT, `hasChangesets=${plan.changesets.length > 0}\n`);
+          JS
+
+      - name: Version packages
+        if: steps.changesets.outputs.hasChangesets == 'true'
+        run: pnpm version-packages
+
+      - name: Build release
+        run: pnpm build
+
+      - name: Check release
+        run: pnpm run t
+
+      - name: Commit versions and changelog
+        if: steps.changesets.outputs.hasChangesets == 'true'
+        run: |
+          git add --all
+          if ! git diff --cached --quiet; then
+            git commit -m 'chore(release): version packages [skip ci]'
+            git push origin HEAD:main
+          fi
+
+      - name: Publish unpublished versions
+        run: pnpm exec changeset publish
+
+      - name: Create and push release tags
+        run: |
+          pnpm exec changeset git-tag
+          git push origin --tags
+
+      - name: Create GitHub release
+        run: |
+          release_tag=$(node -p "const pkg = require('./package.json'); pkg.name + '@' + pkg.version")
+          if ! gh release view "$release_tag" > /dev/null 2>&1; then
+            gh release create "$release_tag" --verify-tag --generate-notes
+          fi

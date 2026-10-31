@@ -18,12 +18,14 @@
     "build": "pnpm build:json-schema-type && tsdown --silent",
     "build:json-schema-type": "json2ts --input expo-release-it.schema.json --output src/type/ExpoReleaseItConfiguration.d.ts && oxfmt --write src/type/ExpoReleaseItConfiguration.d.ts",
     "dev": "pnpm build && NODE_ENV=development node bin/expo-release-it.mjs",
-    "release": "pnpm build && pnpm run t && release-it && pnpm publish",
+    "release": "pnpm build && pnpm run t && changeset publish",
     "t": "lefthook run check",
     "lint": "oxlint --deny-warnings .",
     "lint:fix": "oxlint --fix .",
     "format": "oxfmt --write .",
-    "format:check": "oxfmt --check ."
+    "format:check": "oxfmt --check .",
+    "changeset": "changeset",
+    "version-packages": "changeset version && pnpm install --lockfile-only --ignore-scripts"
   },
   "dependencies": {
     "@inquirer/prompts": "^7.4.1",
@@ -37,8 +39,8 @@
     "url": "^0.11.4"
   },
   "devDependencies": {
+    "@changesets/cli": "^3.0.3",
     "@commitlint/config-conventional": "^19.8.0",
-    "@release-it/conventional-changelog": "^10.0.1",
     "@types/fs-extra": "^11.0.4",
     "@types/semver": "^7.7.0",
     "json-schema-to-typescript": "^15.0.4",
@@ -47,7 +49,6 @@
     "oxlint": "1.90.0",
     "react": "catalog:native",
     "react-native": "catalog:native",
-    "release-it": "^19.0.1",
     "tiny-glob": "^0.2.9",
     "tsdown": "^0.12.7",
     "typescript": "catalog:",

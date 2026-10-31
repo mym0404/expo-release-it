@@ -4,16 +4,16 @@
   "private": true,
   "homepage": "https://expo-release-it.mjstudio.net/",
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
+    "dev": "next dev --webpack",
+    "build": "next build --webpack",
     "start": "next start",
     "lint": "pnpm --dir .. exec oxlint --deny-warnings docs",
     "postbuild": "pagefind --site .next/server/app --output-path public/_pagefind"
   },
   "dependencies": {
     "next": "catalog:web",
-    "nextra": "^4.2.17",
-    "nextra-theme-docs": "^4.2.17",
+    "nextra": "^4.6.1",
+    "nextra-theme-docs": "^4.6.1",
     "react": "catalog:web",
     "react-dom": "catalog:web"
   },

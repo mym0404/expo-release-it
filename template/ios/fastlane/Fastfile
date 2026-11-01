@@ -1,4 +1,6 @@
 require "json"
+require "openssl"
+require "tmpdir"
 
 default_platform(:ios)
 
@@ -8,6 +10,11 @@ end
 
 def release_options
   JSON.parse(ENV.fetch("EXPO_RELEASE_IT_OPTIONS"), symbolize_names: true)
+end
+
+def profile_contains_certificate?(path, certificate)
+  profile = FastlaneCore::ProvisioningProfile.parse(path)
+  profile.fetch("DeveloperCertificates").any? { |item| OpenSSL::X509::Certificate.new(item.string).to_der == certificate.to_der }
 end
 
 platform :ios do
@@ -23,15 +30,29 @@ platform :ios do
   private_lane :sign do |options|
     authenticate(options)
     setup_ci
-    match(
+    match_options = {
       api_key: lane_context[:API_KEY],
       storage_mode: "git",
       git_url: options[:ios_match_git_url],
       type: "appstore",
       app_identifier: [options[:ios_app_identifier]],
+      renew_expired_certs: true,
+      readonly: false,
       verbose: false,
       team_id: options[:ios_developer_team_id]
-    )
+    }
+    Dir.mktmpdir("expo-release-it-match-") do |directory|
+      match_options[:output_path] = directory
+      match(match_options)
+      certificate_pattern = File.join(directory, "*.cer")
+      match(match_options) if Dir[certificate_pattern].empty?
+      certificate = OpenSSL::X509::Certificate.new(File.binread(Dir[certificate_pattern].fetch(0)))
+      profile_key = "sigh_#{options[:ios_app_identifier]}_appstore_profile-path"
+      unless profile_contains_certificate?(ENV.fetch(profile_key), certificate)
+        match(match_options.merge(force: true))
+        raise "Provisioning profile does not contain the selected distribution certificate" unless profile_contains_certificate?(ENV.fetch(profile_key), certificate)
+      end
+    end
 
     update_code_signing_settings(
       use_automatic_signing: false,

@@ -18,6 +18,8 @@ The CLI owns Ruby dependency selection, integration with Expo-generated project 
 
 Only `build` runs project-local Expo prebuild with `--clean --no-install` for the selected platform. CNG is the sole supported workflow, with SDK 52 and newer and each SDK's official React Native pairing; there is no upper SDK version gate. Native customizations belong in Expo config/config plugins. iOS always installs Pods and removes `.xcode.env.local` afterward to avoid stale temporary Node paths.
 
+Signed iOS builds run Match in write mode locally and on CI. Expired distribution certificates are replaced in Match storage, and a profile that does not contain the selected certificate is regenerated. Apple certificate/profile management and Match Git write access are required; API keys are not renewed by Match.
+
 `<resources>/.ruby` owns the tool Gemfile/lockfile, private gem installations, and platform Fastlane workspaces. Ruby/Bundler preflight precedes dependency installation, template writes, and native regeneration. `RubyEnvironment.ts` selects a specific Bundler from the packaged lockfile using the inspected Ruby, ignoring inherited Bundler configuration. The consumer's Gemfiles and global settings are not modified. Only iOS builds install the CocoaPods group.
 
 Store commands prepare this persistent Fastlane workspace and do not generate or mutate native projects. Metadata synchronization copies between that workspace and persistent `metadata/`. Encrypted credentials and output artifacts remain in resources.

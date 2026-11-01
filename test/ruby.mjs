@@ -36,7 +36,7 @@ try {
     cwd: directory,
     capture: true,
   });
-  assert.match(fastlane.stdout, /fastlane 2\.227\.1/);
+  assert.match(fastlane.stdout, /fastlane 2\.241\.2/);
   const pods = await ruby.bundle(['exec', 'pod', '--version'], { cwd: directory, capture: true });
   assert.match(pods.stdout, /1\.16\.2/);
   await ruby.bundle(
@@ -69,16 +69,63 @@ debug_before = target.build_configurations.find { |config| config.name == debug_
 fastfile = Fastlane::FastFile.new(ARGV.fetch(0))
 fastfile.define_singleton_method(:authenticate) { |_| }
 fastfile.define_singleton_method(:setup_ci) {}
-fastfile.define_singleton_method(:match) { |_| }
+key = OpenSSL::PKey::RSA.new(2048)
+certificate = OpenSSL::X509::Certificate.new
+certificate.version = 2
+certificate.serial = 1
+certificate.subject = certificate.issuer = OpenSSL::X509::Name.parse("/CN=Fixture")
+certificate.public_key = key.public_key
+certificate.not_before = Time.now - 60
+certificate.not_after = Time.now + 3600
+certificate.sign(key, OpenSSL::Digest::SHA256.new)
+other_certificate = OpenSSL::X509::Certificate.new(certificate.to_der)
+other_certificate.serial = 2
+other_certificate.sign(key, OpenSSL::Digest::SHA256.new)
+profile_certificate = certificate
+profile_parser = FastlaneCore::ProvisioningProfile.singleton_class
+profile_parser.send(:define_method, :parse) { |_| { "DeveloperCertificates" => [Struct.new(:string).new(profile_certificate.to_der)] } }
+match_calls = []
+is_new_certificate = false
+should_fail = false
+fastfile.define_singleton_method(:match) do |options|
+  match_calls << options.dup
+  raise "Match repository permission denied" if should_fail
+  raise "Match must enable renewal and writing" unless options[:renew_expired_certs] && options[:readonly] == false
+  unless is_new_certificate && match_calls.size == 1
+    File.binwrite(File.join(options[:output_path], "fixture.cer"), certificate.to_der)
+  end
+  profile_certificate = certificate if options[:force]
+  ENV["sigh_com.example.app_appstore_profile-path"] = "fixture.mobileprovision"
+end
 fastfile.define_singleton_method(:update_code_signing_settings) do |options|
   Fastlane::Actions::UpdateCodeSigningSettingsAction.run(options)
 end
 fastfile.define_singleton_method(:update_project_provisioning) do |options|
   raise "Provisioning must select Release" unless options[:build_configuration] == release_configuration
 end
-fastfile.runner.lanes[:ios][:sign].call(
-  project: project_path, target: target.name, ios_developer_team_id: release_team
-)
+sign_options = { project: project_path, target: target.name, ios_developer_team_id: release_team, ios_app_identifier: "com.example.app" }
+fastfile.runner.lanes[:ios][:sign].call(sign_options)
+raise "Valid profile was renewed" unless match_calls.size == 1 && !match_calls.first[:force]
+match_calls.clear
+profile_certificate = other_certificate
+is_new_certificate = true
+fastfile.runner.lanes[:ios][:sign].call(sign_options)
+raise "Changed certificate did not renew profile" unless match_calls.size == 3 && match_calls.last[:force]
+raise "Temporary certificate files remain" if match_calls.any? { |options| File.exist?(options[:output_path]) }
+match_calls.clear
+is_new_certificate = false
+should_fail = true
+begin
+  fastfile.runner.lanes[:ios][:sign].call(sign_options)
+  raise "Permission failure was ignored"
+rescue => error
+  raise unless error.message.include?("Match repository permission denied")
+end
+should_fail = false
+fastfile.define_singleton_method(:build_app) { |_| }
+ENV["EXPO_RELEASE_IT_OPTIONS"] = JSON.generate(no_sign: true)
+fastfile.runner.lanes[:ios][:build].call({})
+raise "Unsigned build called match" unless match_calls.size == 1
 settings = Xcodeproj::Project.open(project_path).targets.first.build_configurations
 raise "Debug signing changed" unless settings.find { |config| config.name == debug_configuration }.build_settings == debug_before
 release = settings.find { |config| config.name == release_configuration }.build_settings

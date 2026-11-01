@@ -7,11 +7,6 @@ on:
     branches:
       - main
   workflow_dispatch:
-    inputs:
-      release_commit:
-        description: Merge commit of the version PR to retry
-        required: false
-        type: string
 
 permissions:
   contents: read
@@ -36,7 +31,6 @@ jobs:
         run: pnpm run t
 
       - name: Check changesets
-        if: github.event_name != 'pull_request' || github.head_ref != 'changeset-release/main' || github.event.pull_request.head.repo.full_name != github.repository
         run: pnpm changeset status --since=origin/main
 
       - name: Build
@@ -98,62 +92,9 @@ jobs:
           include-hidden-files: true
           if-no-files-found: error
 
-  release-plan:
+  release:
     if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
     needs: [lint, ruby, native]
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      pull-requests: read
-    outputs:
-      mode: ${{ steps.mode.outputs.mode }}
-      version-pr-merged: ${{ steps.version-pr.outputs.merged }}
-      release-commit: ${{ steps.version-pr.outputs.commit }}
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - uses: ./.github/actions/setup
-      - name: Identify merged version PR
-        id: version-pr
-        env:
-          GH_TOKEN: ${{ github.token }}
-          RELEASE_COMMIT: ${{ inputs.release_commit || github.sha }}
-        run: |
-          release_commit=$(git rev-parse --verify "${RELEASE_COMMIT}^{commit}")
-          git merge-base --is-ancestor "$release_commit" HEAD
-          merged=$(gh api "repos/$GITHUB_REPOSITORY/commits/$release_commit/pulls" \
-            --jq "any(.[]; .merged_at != null and .merge_commit_sha == \"$release_commit\" and .base.ref == \"$GITHUB_REF_NAME\" and .head.ref == (\"changeset-release/\" + .base.ref) and .head.repo.full_name == .base.repo.full_name)")
-          printf 'merged=%s\n' "$merged" >> "$GITHUB_OUTPUT"
-          printf 'commit=%s\n' "$release_commit" >> "$GITHUB_OUTPUT"
-      - name: Select Changesets mode
-        id: mode
-        uses: changesets/action/select-mode@v2.1.2
-
-  version:
-    if: needs.release-plan.outputs.mode == 'version'
-    needs: release-plan
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      pull-requests: write
-    env:
-      RELEASE_TITLE: 'chore(release): version packages'
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - uses: ./.github/actions/setup
-      - name: Create or update version PR
-        uses: changesets/action/version@v2.1.2
-        with:
-          script: pnpm version-packages
-          commit-message: ${{ env.RELEASE_TITLE }}
-          pr-title: ${{ env.RELEASE_TITLE }}
-
-  publish:
-    if: needs.release-plan.outputs.version-pr-merged == 'true' && needs.release-plan.outputs.mode != 'version'
-    needs: release-plan
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -165,15 +106,53 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          ref: ${{ needs.release-plan.outputs.release-commit }}
       - uses: ./.github/actions/setup
+      - name: Select Changesets mode
+        id: mode
+        uses: changesets/action/select-mode@v2.1.2
+      - name: Version packages and select release commit
+        id: version
+        env:
+          RELEASE_MODE: ${{ steps.mode.outputs.mode }}
+        run: |
+          release_commit=''
+          if [ "$RELEASE_MODE" = version ]; then
+            pnpm version-packages
+            pnpm build
+            pnpm run t
+            git config user.name 'github-actions[bot]'
+            git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+            git add -A
+            git commit -m 'chore(release): version packages'
+            git push origin HEAD:main
+            release_commit=$(git rev-parse HEAD)
+          else
+            candidate=$(git log -1 --format=%H --grep='^chore(release): version packages$' --author='github-actions\[bot\]' -- package.json)
+            if [ -n "$candidate" ]; then
+              current_version=$(node -p "require('./package.json').version")
+              candidate_version=$(git show "$candidate:package.json" | node -e 'let s="";process.stdin.on("data",c=>s+=c).on("end",()=>console.log(JSON.parse(s).version))')
+              if [ "$current_version" = "$candidate_version" ]; then
+                release_commit=$candidate
+              fi
+            fi
+          fi
+          printf 'commit=%s\n' "$release_commit" >> "$GITHUB_OUTPUT"
+      - name: Check out release commit
+        if: steps.version.outputs.commit != ''
+        run: git checkout --detach "$RELEASE_COMMIT"
+        env:
+          RELEASE_COMMIT: ${{ steps.version.outputs.commit }}
       - name: Install npm with trusted publishing support
+        if: steps.version.outputs.commit != ''
         run: npm install --global npm@11
       - name: Build release
+        if: steps.version.outputs.commit != ''
         run: pnpm build
       - name: Check release
+        if: steps.version.outputs.commit != ''
         run: pnpm run t
-      - name: Publish approved versions
+      - name: Publish release
+        if: steps.version.outputs.commit != ''
         run: |
           package_name=$(node -p "require('./package.json').name")
           package_version=$(node -p "require('./package.json').version")
@@ -182,6 +161,7 @@ jobs:
             npm publish --access public --provenance
           fi
       - name: Create and push release tags
+        if: steps.version.outputs.commit != ''
         run: |
           release_tag=$(node -p "const pkg = require('./package.json'); pkg.name + '@' + pkg.version")
           if ! git rev-parse -q --verify "refs/tags/$release_tag" > /dev/null; then
@@ -190,6 +170,7 @@ jobs:
           test "$(git rev-parse "refs/tags/$release_tag^{commit}")" = "$(git rev-parse HEAD)"
           git push origin "refs/tags/$release_tag"
       - name: Create GitHub release
+        if: steps.version.outputs.commit != ''
         run: |
           release_tag=$(node -p "const pkg = require('./package.json'); pkg.name + '@' + pkg.version")
           if ! gh release view "$release_tag" > /dev/null 2>&1; then

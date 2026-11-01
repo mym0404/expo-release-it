@@ -16,8 +16,6 @@ import { tmpdir } from 'node:os';
 import { dirname, isAbsolute, join, relative, resolve, sep } from 'node:path';
 import * as util from 'node:util';
 
-import { password } from '@inquirer/prompts';
-
 import { logger, registerSecrets } from './logger';
 import { OptionHolder } from './OptionHolder';
 
@@ -92,7 +90,7 @@ export function warnPlaintextCredentials() {
   return found;
 }
 
-export async function getEncryptionKey({ interactive = false, confirm = false } = {}) {
+export function getEncryptionKey() {
   let key = process.env[encryptionKeyEnvironment];
   const envFile = resolve(OptionHolder.projectDir, OptionHolder.input.envFile ?? '.env');
   if (key === undefined && (OptionHolder.input.envFile || existsSync(envFile))) {
@@ -114,24 +112,9 @@ export async function getEncryptionKey({ interactive = false, confirm = false } 
     }
   }
   if (key !== undefined) registerSecrets([key]);
-  if (key === undefined && interactive && process.stdin.isTTY) {
-    key = await password({
-      message: `Encryption key (${encryptionKeyEnvironment}; at least ${minimumKeyLength} characters)`,
-      mask: true,
-      validate: (value) =>
-        value.length >= minimumKeyLength || `Use at least ${minimumKeyLength} characters.`,
-    });
-    registerSecrets([key]);
-    if (confirm) {
-      const repeated = await password({ message: 'Confirm encryption key', mask: true });
-      registerSecrets([repeated]);
-      if (key !== repeated)
-        throw new Error('Encryption keys do not match. No credentials were changed.');
-    }
-  }
   if (key === undefined || key.length < minimumKeyLength)
     throw new Error(
-      `Set ${encryptionKeyEnvironment} to a key of at least ${minimumKeyLength} characters, or provide --env-file. init can ask for the key in an interactive terminal.`,
+      `${encryptionKeyEnvironment} is required for every command. Set a key of at least ${minimumKeyLength} characters in the process environment or an env file before running this command. Use --env-file to select another file.`,
     );
   return key;
 }
@@ -298,13 +281,11 @@ function protectSecretPaths() {
   }
 }
 
-export async function loadRuntimeCredentials({ required = true } = {}) {
+export function loadRuntimeCredentials(key: string) {
   const hasPlaintext = warnPlaintextCredentials();
-  if (!required) return;
   const hasVault = existsSync(join(OptionHolder.resourcesDir, credentialVaultFilename));
   if (!hasVault && !hasPlaintext)
     throw new Error('Encrypted credentials are missing. Run expo-release-it init.');
-  const key = await getEncryptionKey();
   let data: CredentialData = hasVault ? readCredentialVault(key) : { keyholder: {}, files: {} };
   if (hasPlaintext) {
     const legacy = readLegacyCredentials();

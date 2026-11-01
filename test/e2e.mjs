@@ -19,7 +19,12 @@ const artifacts = join(
   `sdk-${sdk}-${platform}-${format ?? 'unsigned'}`,
 );
 const testPassword = 'expo-release-it-e2e-password';
-const env = { ...process.env, CI: '1', EXPO_RELEASE_IT_TEST_PASSWORD: testPassword };
+const env = {
+  ...process.env,
+  CI: '1',
+  EXPO_RELEASE_IT_TEST_PASSWORD: testPassword,
+  EXPO_RELEASE_IT_ENCRYPTION_KEY: randomBytes(32).toString('base64'),
+};
 if (platform === 'android' && !env.ANDROID_HOME && process.platform === 'darwin') {
   env.ANDROID_HOME = join(homedir(), 'Library', 'Android', 'sdk');
 }
@@ -101,7 +106,6 @@ try {
       ?.replaceAll(':', '')
       .toLowerCase();
     assert.ok(expected, 'Test signing certificate must be readable');
-    env.EXPO_RELEASE_IT_ENCRYPTION_KEY = randomBytes(32).toString('base64');
   }
   const removedMarker = join(project, platform, 'prebuild-must-remove.txt');
   const preservedMarker = join(project, platform === 'ios' ? 'android' : 'ios', 'must-remain.txt');

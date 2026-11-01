@@ -17,8 +17,8 @@ import { throwError } from '../util/throwError';
 
 export async function bump({ options }: { options: any }) {
   Object.assign(OptionHolder.input, options);
-  await preCheck();
   await setup({ credentials: false });
+  await preCheck();
 
   const nextVersionName = semver.inc(OptionHolder.versionName, OptionHolder.input.semverIncrement)!;
   const nextVersionCode = (() => {

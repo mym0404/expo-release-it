@@ -28,7 +28,7 @@ For compilation without Apple credentials:
 npx expo-release-it build --platform ios --no-sign
 ```
 
-This creates `expo-release-it/output/ios/app.xcarchive`, without an app signature or IPA export. It cannot be uploaded to App Store Connect as a distribution binary.
+This creates `expo-release-it/output/ios/app.xcarchive`, without an app signature or IPA export. Like every command, it still requires `EXPO_RELEASE_IT_ENCRYPTION_KEY` from your environment or env file. It cannot be uploaded to App Store Connect as a distribution binary.
 
 The CLI discovers the Xcode project, application target, and scheme independently. A single candidate is selected automatically. If discovery is ambiguous, supply the names shown in the error:
 

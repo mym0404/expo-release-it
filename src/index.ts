@@ -51,6 +51,7 @@ export const run = () => {
         .choices(['major', 'minor', 'patch']),
     )
     .addOption(configFileOption)
+    .addOption(envFileOption)
     .action(async (options) =>
       handleError(bump({ options: { ...options, semverIncrement: options.increment } })),
     );

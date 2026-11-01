@@ -24,9 +24,10 @@ Create `expo-release-it/key/` and place the real key files there before running 
 <Callout type={'warning'}>
   You must prepare all required key files in `expo-release-it/key` exactly the same filenames.
 </Callout>
-Prepare `EXPO_RELEASE_IT_ENCRYPTION_KEY` in your environment or `.env`, or enter it in the masked
-`init` prompt. Keep it separately from the encrypted file. See [Credential encryption](/security)
-for a key-generation command and GitHub Actions setup.
+Prepare `EXPO_RELEASE_IT_ENCRYPTION_KEY` in your environment or `.env` before running any command,
+including `init`, `bump`, and unsigned builds. A missing key exits immediately without changing
+files. Keep it separately from the encrypted file. See [Credential encryption](/security) for a
+key-generation command and GitHub Actions setup.
 
 ### `android_play_console_service_account.json`
 
@@ -129,4 +130,4 @@ npx expo-release-it init
 
 This also migrates existing `keyholder.json` and key files. The CLI warns if the old plaintext format remains; signed builds and store commands migrate it automatically when you supply the encryption key. Encryption and temporary decryption happen inside the existing commands. The encrypted `credentials.enc.json` can be versioned while the encryption key stays in your secret manager, ignored env file, or CI secrets.
 
-For an iOS compilation check without Apple credentials, `build --platform ios --no-sign` does not require store/signing keys. Store commands use the managed Fastlane workspace and never regenerate native directories.
+For an iOS compilation check without Apple credentials, `build --platform ios --no-sign` does not require store/signing keys, but still requires `EXPO_RELEASE_IT_ENCRYPTION_KEY`. Store commands use the managed Fastlane workspace and never regenerate native directories.

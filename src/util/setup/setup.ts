@@ -1,4 +1,8 @@
-import { loadRuntimeCredentials } from '../CredentialVault';
+import {
+  getEncryptionKey,
+  loadRuntimeCredentials,
+  warnPlaintextCredentials,
+} from '../CredentialVault';
 import { isDev } from '../EnvUtil';
 import { resolve } from '../FileUtil';
 import { OptionHolder } from '../OptionHolder';
@@ -7,9 +11,12 @@ import { parseBinaryVersions } from './VersionUtil';
 
 export async function setup({ credentials = true } = {}) {
   setupBasicOptions();
+  const key = getEncryptionKey();
   await parseConfigFile();
-  await loadRuntimeCredentials({ required: credentials });
+  if (credentials) loadRuntimeCredentials(key);
+  else warnPlaintextCredentials();
   await parseBinaryVersions();
+  return key;
 }
 
 export function setupBasicOptions() {

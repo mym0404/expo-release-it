@@ -4,7 +4,7 @@ Credentials are encrypted by default in `expo-release-it/credentials.enc.json`. 
 
 ## Supply the encryption key
 
-Set `EXPO_RELEASE_IT_ENCRYPTION_KEY` in the process environment or your project's `.env`. The process environment takes precedence. Use `--env-file <file>` to choose another file. Only this variable is read; other variables from that file are not loaded. Reading env files requires Node.js 20.12 or newer.
+Every command requires `EXPO_RELEASE_IT_ENCRYPTION_KEY`, including `init`, `bump`, and iOS `build --no-sign`. Set it in the process environment or your project's `.env`. The process environment takes precedence. Use `--env-file <file>` to choose another file. Only this variable is read; other variables from that file are not loaded. Reading env files requires Node.js 20.12 or newer.
 
 Use a randomly generated key and store a separate backup in your password manager. For example, this command creates a new `.env` with owner-only permissions without printing the key, and refuses to overwrite an existing file:
 
@@ -14,7 +14,7 @@ node --input-type=module -e 'import { randomBytes } from "node:crypto"; import {
 
 If `.env` already exists, add the variable using your editor or secret manager. Keep that file out of Git. The CLI adds the selected env-file path to `.gitignore` when encrypting credentials, but does not remove already tracked files from Git.
 
-In an interactive terminal, `init` asks for a masked key when no environment key is available and confirms it when creating encrypted storage. Keys must contain at least 16 characters. The CLI does not save the key for you. Later commands need the same key from the environment or env file; losing it makes the encrypted credentials unrecoverable.
+Keys must contain at least 16 characters. If the key is missing or too short, the command exits before reading project configuration, running Git/native tools, changing files, or migrating plaintext credentials. The CLI does not prompt for or generate an encryption key. Keep a separate backup: losing the key makes the encrypted credentials unrecoverable.
 
 ```sh
 npx expo-release-it init
@@ -29,7 +29,7 @@ npx expo-release-it init
 
 Keep using the existing commands. `init` warns about legacy plaintext credentials, keeps their values as prompt defaults, and imports existing key files. Blank password answers keep the stored passwords. If you already supply the encryption key through your environment or env file, the next signed `build`, `upload`, `submit`, or `pull` also imports legacy credentials automatically. No separate encryption or decryption command is required.
 
-The CLI encrypts and verifies the result before removing the imported plaintext `keyholder.json` and key files. The legacy `.temp/app_store_connect_api.json`, if present, is also encrypted and removed. A missing key or an incorrect key for an existing encrypted file leaves credentials unchanged. `bump` and iOS `build --no-sign` warn about legacy files but do not need credentials or an encryption key.
+With the key provided, the CLI encrypts and verifies the result before removing the imported plaintext `keyholder.json` and key files. The legacy `.temp/app_store_connect_api.json`, if present, is also encrypted and removed. A missing key or an incorrect key for an existing encrypted file leaves credentials unchanged. `bump` and iOS `build --no-sign` still require the encryption key; they warn about legacy files but do not load or migrate store/signing credentials.
 
 If credentials were previously committed, encryption does not erase Git history or revoke exposed credentials. Remove tracked plaintext and rotate affected credentials separately.
 

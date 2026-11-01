@@ -1,5 +1,11 @@
 # expo-release-it
 
+## 1.0.2
+
+### Patch Changes
+
+- c101e91: Fix iOS submission metadata and screenshot paths so Fastlane reads files from its workspace.
+
 ## 1.0.1
 
 ### Patch Changes

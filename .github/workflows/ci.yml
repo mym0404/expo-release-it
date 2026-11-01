@@ -7,6 +7,11 @@ on:
     branches:
       - main
   workflow_dispatch:
+    inputs:
+      release_commit:
+        description: Merge commit of the version PR to retry
+        required: false
+        type: string
 
 permissions:
   contents: read
@@ -103,6 +108,7 @@ jobs:
     outputs:
       mode: ${{ steps.mode.outputs.mode }}
       version-pr-merged: ${{ steps.version-pr.outputs.merged }}
+      release-commit: ${{ steps.version-pr.outputs.commit }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -112,10 +118,14 @@ jobs:
         id: version-pr
         env:
           GH_TOKEN: ${{ github.token }}
+          RELEASE_COMMIT: ${{ inputs.release_commit || github.sha }}
         run: |
-          merged=$(gh api "repos/$GITHUB_REPOSITORY/commits/$GITHUB_SHA/pulls" \
-            --jq "any(.[]; .merged_at != null and .merge_commit_sha == \"$GITHUB_SHA\" and .base.ref == \"$GITHUB_REF_NAME\" and .head.ref == (\"changeset-release/\" + .base.ref) and .head.repo.full_name == .base.repo.full_name)")
+          release_commit=$(git rev-parse --verify "${RELEASE_COMMIT}^{commit}")
+          git merge-base --is-ancestor "$release_commit" HEAD
+          merged=$(gh api "repos/$GITHUB_REPOSITORY/commits/$release_commit/pulls" \
+            --jq "any(.[]; .merged_at != null and .merge_commit_sha == \"$release_commit\" and .base.ref == \"$GITHUB_REF_NAME\" and .head.ref == (\"changeset-release/\" + .base.ref) and .head.repo.full_name == .base.repo.full_name)")
           printf 'merged=%s\n' "$merged" >> "$GITHUB_OUTPUT"
+          printf 'commit=%s\n' "$release_commit" >> "$GITHUB_OUTPUT"
       - name: Select Changesets mode
         id: mode
         uses: changesets/action/select-mode@v2.1.2
@@ -155,6 +165,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          ref: ${{ needs.release-plan.outputs.release-commit }}
       - uses: ./.github/actions/setup
       - name: Install npm with trusted publishing support
         run: npm install --global npm@11
@@ -163,11 +174,21 @@ jobs:
       - name: Check release
         run: pnpm run t
       - name: Publish approved versions
-        run: pnpm exec changeset publish
+        run: |
+          package_name=$(node -p "require('./package.json').name")
+          package_version=$(node -p "require('./package.json').version")
+          published_versions=$(npm view "$package_name" versions --json)
+          if ! PUBLISHED_VERSIONS="$published_versions" PACKAGE_VERSION="$package_version" node -e 'process.exit(JSON.parse(process.env.PUBLISHED_VERSIONS).includes(process.env.PACKAGE_VERSION) ? 0 : 1)'; then
+            npm publish --access public --provenance
+          fi
       - name: Create and push release tags
         run: |
-          pnpm exec changeset git-tag
-          git push origin --tags
+          release_tag=$(node -p "const pkg = require('./package.json'); pkg.name + '@' + pkg.version")
+          if ! git rev-parse -q --verify "refs/tags/$release_tag" > /dev/null; then
+            git tag "$release_tag"
+          fi
+          test "$(git rev-parse "refs/tags/$release_tag^{commit}")" = "$(git rev-parse HEAD)"
+          git push origin "refs/tags/$release_tag"
       - name: Create GitHub release
         run: |
           release_tag=$(node -p "const pkg = require('./package.json'); pkg.name + '@' + pkg.version")

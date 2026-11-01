@@ -5,7 +5,6 @@ import chalk from 'chalk';
 
 import {
   credentialVaultFilename,
-  getEncryptionKey,
   readCredentialVault,
   readLegacyCredentials,
   writeCredentialVault,
@@ -19,11 +18,9 @@ import { setup } from '../util/setup/setup';
 export async function init({ options }: { options: any }) {
   Object.assign(OptionHolder.input, options);
 
+  const key = await setup({ credentials: false });
   logger.info(`${chalk.inverse('expo-release-it')} Initialization Get Started`);
-
-  await setup({ credentials: false });
   const hasVault = existsSync(join(OptionHolder.resourcesDir, credentialVaultFilename));
-  const key = await getEncryptionKey({ interactive: true, confirm: !hasVault });
   const existing = hasVault ? readCredentialVault(key) : { keyholder: {}, files: {} };
   const legacy = readLegacyCredentials();
   Object.assign(OptionHolder.keyholderMap, existing.keyholder, legacy.data.keyholder);

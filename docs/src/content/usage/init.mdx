@@ -7,7 +7,7 @@ npx expo-release-it init
 npx expo-release-it init --env-file .env.release
 ```
 
-Supply `EXPO_RELEASE_IT_ENCRYPTION_KEY` through the process environment or `.env`. If it is missing in an interactive terminal, `init` asks for a masked key. Keep the key separately: it is required for subsequent commands and is not saved by the CLI.
+Supply `EXPO_RELEASE_IT_ENCRYPTION_KEY` through the process environment or `.env` before running `init`. Every command requires the key. If it is missing, `init` exits without prompting or changing files. Keep the key separately: the CLI does not generate or save it.
 
 `init` asks for identifiers and passwords, then saves them in `expo-release-it/credentials.enc.json` together with key files. Existing encrypted values are prompt defaults; a blank password answer keeps the stored value. Rerun `init` to update those values.
 

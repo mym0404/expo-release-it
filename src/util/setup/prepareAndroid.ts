@@ -5,7 +5,6 @@ import { OptionHolder } from '../OptionHolder';
 export function androidSigningEnvironment() {
   const keys = OptionHolder.keyholderMap;
   const keystore = credentialKeyPath(credentialFilenames.androidKeystore);
-  if (!exist(keystore)) throw new Error(`Android release keystore is missing: ${keystore}`);
   const values = {
     EXPO_RELEASE_IT_KEYSTORE: keystore,
     EXPO_RELEASE_IT_STORE_PASSWORD: keys.android_keystore_store_password,

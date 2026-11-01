@@ -1,0 +1,78 @@
+# Ruby toolchain
+
+`expo-release-it` uses your installed MRI Ruby. It does not install Ruby, switch your version manager, remove other Bundler versions, or change your global Ruby configuration.
+
+## Supported versions
+
+| Tool      | Version                                                         |
+| --------- | --------------------------------------------------------------- |
+| Ruby      | 3.3, 3.4, or 4.0; Ruby 3.3 with the latest patch is recommended |
+| Bundler   | 2.5.22, selected explicitly from the packaged lockfile          |
+| Fastlane  | 2.227.1                                                         |
+| CocoaPods | 1.16.2, for iOS builds                                          |
+
+The toolchain has been exercised locally with Ruby 3.3.12 and 4.0.7. CI also checks Ruby 3.4. The shipped Gemfile explicitly includes `abbrev`, `csv`, and `ostruct`, which older Fastlane dependencies use and newer Ruby versions no longer provide as default gems. This allows retaining Fastlane rather than updating every dependency to its latest release.
+
+Fastlane 2.227.1 requires Bundler below 3. A default Bundler 4 installation can coexist with the selected Bundler; the CLI invokes the pinned version with the inspected Ruby executable.
+
+## Prepare Ruby and Bundler
+
+Use any Ruby installation method. A version manager is optional. For example, with mise:
+
+```sh
+mise use ruby@3.3
+ruby --version
+gem install bundler -v 2.5.22 --no-document
+```
+
+Or with rbenv:
+
+```sh
+rbenv install 3.3.12
+rbenv local 3.3.12
+gem install bundler -v 2.5.22 --no-document
+```
+
+Run the installation command after activating the Ruby used by your Expo project. Do not remove an existing Bundler 4 installation. The CLI reports the actual Ruby executable, Ruby version, selected Bundler executable, and selected Bundler version. If Ruby is unsupported or the required Bundler is missing, it exits before installing dependencies, overwriting templates, or regenerating native directories.
+
+## Project isolation
+
+Managed files and installed gems live under your project:
+
+```text
+expo-release-it/.ruby/
+├── Gemfile
+├── Gemfile.lock
+├── vendor/
+├── ios/fastlane/
+└── android/fastlane/
+```
+
+The CLI copies the Gemfile and lockfile shipped in its npm package, installs with frozen resolution, and uses the same Ruby, Bundler, and Gemfile for `bundle install`, CocoaPods, and Fastlane. It ignores inherited Bundler configuration and does not modify your project's Gemfile, Gemfile.lock, or `.bundle/config`. Installation paths include the Ruby version and platform. There is no cross-project gem cache managed by the CLI.
+
+The generated `.ruby/.gitignore` excludes this directory's contents. Keep the directory excluded from Git. Native regeneration never deletes it.
+
+`upload`, `submit`, and `pull` use the managed Fastlane workspace without running prebuild, installing Pods, or modifying your native project. CocoaPods gems are needed only for iOS builds.
+
+## Update the managed toolchain
+
+Maintainers should edit `template/ruby/Gemfile`, resolve the lockfile using a supported Ruby, and retain the chosen Bundler version in `BUNDLED WITH`:
+
+```sh
+BUNDLE_GEMFILE="$PWD/template/ruby/Gemfile" bundle _2.5.22_ lock \
+  --add-platform ruby arm64-darwin x86_64-darwin x86_64-linux aarch64-linux
+pnpm build
+pnpm test:ruby
+pnpm test:e2e 57 android apk
+pnpm test:e2e 57 android aab
+pnpm test:e2e 57 ios unsigned
+pnpm test:e2e 58 android apk
+pnpm test:e2e 58 android aab
+pnpm test:e2e 58 ios unsigned
+```
+
+Run the Ruby smoke test with each supported Ruby line on macOS and Linux. It installs into a temporary project's private directory, places an unusable `bundle` earlier on PATH, checks the selected Bundler and actual Fastlane/CocoaPods execution, and verifies that user Gemfiles remain unchanged. Review the platform entries and test installation on the target CPU before adding a new platform.
+
+The native tests package the CLI, install it in standalone minimum CNG apps, invoke its public commands, and verify artifacts. Android uses temporary test signing keys; iOS uses `--no-sign`. These checks do not validate Apple distribution signing, IPA export, or store authentication and submission.
+
+References: [Fastlane installation](https://docs.fastlane.tools/getting-started/ios/setup/), [Bundler configuration](https://bundler.io/man/bundle-config.1.html), [Ruby standard-library changes](https://www.ruby-lang.org/en/news/2024/12/25/ruby-3-4-0-released/).

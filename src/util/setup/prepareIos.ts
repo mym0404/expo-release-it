@@ -1,36 +1,73 @@
-import { copy, iterateDir, remove, resolve } from '../FileUtil';
-import { injectTemplatePlaceHolders } from '../injectTemplatePlaceHolders';
-import { logger } from '../logger';
-import { copyIosMetadata } from '../MetadataSyncUtil';
+import { execa } from 'execa';
+
+import { exist, readdir, remove, resolve } from '../FileUtil';
 import { OptionHolder } from '../OptionHolder';
-import { spinner } from '../spinner';
-import { exe, yesShell } from './execShellScript';
+import type { RubyEnvironment } from './RubyEnvironment';
 
-export async function prepareIos() {
-  const srcDir = resolve(OptionHolder.cli.templateDir, 'ios');
-  const destDir = resolve(OptionHolder.projectDir, 'ios');
+export async function prepareIos({
+  ruby,
+  prebuild,
+}: {
+  ruby: Pick<RubyEnvironment, 'bundle' | 'executable'>;
+  prebuild: () => Promise<void>;
+}) {
+  await prebuild();
+  const iosDir = resolve(OptionHolder.projectDir, 'ios');
+  await ruby.bundle(['exec', 'pod', 'install'], { cwd: iosDir });
+  // Yarn can leave a temporary Node executable path in this generated file.
+  remove(resolve(iosDir, '.xcode.env.local'));
 
-  await yesShell('expo', ['prebuild', '-p', 'ios', '--no-install'], {
-    cwd: OptionHolder.projectDir,
+  const projectName = selectIosCandidate({
+    candidates: readdir(iosDir).filter((name) => name.endsWith('.xcodeproj')),
+    selected: OptionHolder.input.iosProject,
+    option: '--ios-project',
   });
-  logger.success('Expo Prebuild - Done');
-
-  await spinner(
-    'Inject templates',
-    iterateDir(srcDir, async (file) => {
-      const filePath = resolve(srcDir, file);
-      remove(resolve(destDir, file));
-      copy(filePath, resolve(destDir, file));
-    }),
+  const project = resolve(iosDir, projectName);
+  const targets = await ruby.bundle(
+    [
+      'exec',
+      ruby.executable,
+      '-rjson',
+      '-rxcodeproj',
+      '-e',
+      'p = Xcodeproj::Project.open(ARGV.first); puts JSON.generate(p.native_targets.select { |t| t.product_type == "com.apple.product-type.application" }.map(&:name))',
+      project,
+    ],
+    { capture: true },
   );
+  const targetNames: string[] = JSON.parse(targets.stdout);
+  const listing = await execa('xcodebuild', ['-list', '-json', '-project', project], {
+    stdout: 'pipe',
+    stderr: 'pipe',
+  });
+  const info: { project: { schemes: string[] } } = JSON.parse(listing.stdout);
+  OptionHolder.input.iosProject = project;
+  OptionHolder.input.iosTarget = selectIosCandidate({
+    candidates: targetNames,
+    selected: OptionHolder.input.iosTarget,
+    option: '--ios-target',
+  });
+  OptionHolder.input.iosScheme = selectIosCandidate({
+    candidates: info.project.schemes,
+    selected: OptionHolder.input.iosScheme,
+    option: '--ios-scheme',
+  });
+  const workspace = resolve(iosDir, projectName.replace(/\.xcodeproj$/, '.xcworkspace'));
+  OptionHolder.input.iosWorkspace = exist(workspace) ? workspace : undefined;
+}
 
-  await spinner(
-    'Hydrate template placeholders',
-    injectTemplatePlaceHolders(resolve(destDir, 'fastlane')),
+export function selectIosCandidate({
+  candidates,
+  selected,
+  option,
+}: {
+  candidates: string[];
+  selected?: string;
+  option: string;
+}) {
+  if (selected && candidates.includes(selected)) return selected;
+  if (!selected && candidates.length === 1) return candidates[0]!;
+  throw new Error(
+    `Cannot select an iOS build candidate for ${option}${selected ? ` (${selected})` : ''}. Candidates: ${candidates.join(', ') || '(none)'}. Set ${option} explicitly.`,
   );
-
-  await exe('bundle', ['install'], { cwd: destDir });
-  logger.success('Bunder Install - Done');
-
-  copyIosMetadata('native');
 }

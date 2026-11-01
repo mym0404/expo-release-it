@@ -51,7 +51,11 @@ export const run = () => {
 
   program
     .command('build')
-    .description('Build artifacts')
+    .description('Build artifacts from a clean Expo CNG project')
+    .option('--no-sign', 'Build an unsigned iOS archive without Apple credentials')
+    .option('--ios-project <project>', 'Xcode project filename when multiple projects exist')
+    .option('--ios-target <target>', 'App target when multiple app targets exist')
+    .option('--ios-scheme <scheme>', 'Build scheme when multiple schemes exist')
     .addOption(platformOption)
     .addOption(androidBuildOutputOption)
     .addOption(configFileOption)
@@ -92,7 +96,6 @@ async function handleError(promise: Promise<any>) {
     return await promise;
   } catch (e) {
     if (e instanceof ExecaError) {
-      logger.error(`ExecaError: command: ${e.escapedCommand}`);
       logger.error(e.message);
       process.exit(e.exitCode ?? 1);
     } else {

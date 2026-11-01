@@ -1,8 +1,13 @@
 build
 node_modules
 .idea
-example/expo-release-it
+examples/*/expo-release-it
+examples/*/android
+examples/*/ios
+**/expo-release-it/.ruby/
 
 .pnpm-store/
 
 .DS_Store
+
+.e2e-artifacts/

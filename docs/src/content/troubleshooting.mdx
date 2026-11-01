@@ -40,16 +40,13 @@ Check yourself if app can be submitted manually at the app store connect yoursel
 
 ## [iOS] Provisioning profile "..." doesn't include signing certificate "..."
 
-You might need to revoke iOS Certificates & Provisioning Profile and generate again.
+Check that the Apple Distribution certificate and provisioning profile in your configured Match repository belong together. If they need renewal, update them using the [Fastlane Match workflow](https://docs.fastlane.tools/actions/match/), then rerun the signed build:
 
-```shell
-cd ios
-bundle
-bundle exec fastlane match nuke distribution # revoke all certificates
-
-cd ..
-npx expo-release-it built -p ios # command you tried, this generate required certificates automatically
+```sh
+npx expo-release-it build --platform ios
 ```
+
+The CLI uses the managed Ruby/Fastlane workspace. It does not install a Gemfile or Matchfile in `ios/`.
 
 ## [Android] Google Api Error: Invalid request - Package not found: ...
 

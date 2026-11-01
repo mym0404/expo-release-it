@@ -18,6 +18,8 @@ Visit our [Documentation Site](https://expo-release-it.mjstudio.net)
 - 🚀 Upload artifacts to Google Play Console Internal Testing Track and iOS TestFlight
 - ✅ Submit releases for store review
 
+The CLI owns release orchestration, integration with Expo-generated projects, and its managed Ruby toolchain. Prepare a toolchain supported by your project's Expo and React Native versions. Upstream native dependency or compiler incompatibilities are outside this library's scope; it does not patch Expo/RN, Pods source, or Xcode to repair them.
+
 # Licenses
 
 - See [LICENSE](/LICENSE)

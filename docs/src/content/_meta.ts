@@ -8,6 +8,7 @@ const meta: MetaRecord = {
   'getting-started': {
     title: 'Getting Started',
   },
+  ruby: 'Ruby Toolchain',
   usage: 'Usage',
   config: 'Configuration',
   security: 'About Security',

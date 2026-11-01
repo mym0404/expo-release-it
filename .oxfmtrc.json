@@ -25,8 +25,8 @@
     "**/web-build/**",
     "**/coverage/**",
     "**/_pagefind/**",
-    "example/android/**",
-    "example/ios/**",
+    "examples/*/android/**",
+    "examples/*/ios/**",
     "pnpm-lock.yaml"
   ]
 }

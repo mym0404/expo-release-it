@@ -25,7 +25,9 @@
     "format": "oxfmt --write .",
     "format:check": "oxfmt --check .",
     "changeset": "changeset",
-    "version-packages": "changeset version && pnpm install --lockfile-only --ignore-scripts"
+    "version-packages": "changeset version && pnpm install --lockfile-only --ignore-scripts",
+    "test:e2e": "node test/e2e.mjs",
+    "test:ruby": "node test/ruby.mjs"
   },
   "dependencies": {
     "@inquirer/prompts": "^7.4.1",
@@ -47,8 +49,6 @@
     "lefthook": "^1.11.11",
     "oxfmt": "0.75.0",
     "oxlint": "1.90.0",
-    "react": "catalog:native",
-    "react-native": "catalog:native",
     "tiny-glob": "^0.2.9",
     "tsdown": "^0.12.7",
     "typescript": "catalog:",

@@ -19,19 +19,6 @@ export const InqueryInputs = {
       });
     }
   },
-  podinstall: async () => {
-    if (OptionHolder.input.platform === 'ios' && !is.boolean(OptionHolder.input.pod)) {
-      OptionHolder.input.pod = await select({
-        message: constructInquirerFormattedMessage({
-          name: 'Install CocoaPods?',
-        }),
-        choices: [
-          { name: 'yes', value: true, description: 'Install pods before release' },
-          { name: 'no', value: false, description: 'Skip pods install' },
-        ],
-      });
-    }
-  },
   androidBuildOutput: async () => {
     if (OptionHolder.input.platform === 'android') {
       if (!OptionHolder.input.androidOutput) {

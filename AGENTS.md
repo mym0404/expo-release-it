@@ -8,7 +8,7 @@
 
 - TypeScript ESM on Node.js, managed as a pnpm workspace. Runtime and package-manager versions are defined by `.nvmrc` and the root `package.json`.
 - Native automation uses Expo prebuild, Ruby/Bundler and Fastlane, with Gradle for Android and Xcode for iOS.
-- The documentation site uses Next.js, Nextra, React, Tailwind CSS, and Pagefind. The example app uses Expo and React Native; their dependencies use separate `web` and `native` catalogs.
+- The documentation site uses Next.js, Nextra, React, Tailwind CSS, and Pagefind. The minimum CNG examples pin SDK-specific Expo, React, and React Native versions independently; the docs use the `web` catalog.
 - tsdown builds the CLI; Vitest, TypeScript, Oxlint, Oxfmt, and Lefthook provide local checks. Changesets manages package releases.
 
 ## Project Tree
@@ -20,7 +20,7 @@
 | `src/util/`            | Project setup, configuration, credentials, versions, native preparation, and metadata synchronization. |
 | `template/`            | Platform automation and key templates shipped with the CLI.                                            |
 | `docs/`                | Documentation application and MDX content.                                                             |
-| `example/`             | Consumer Expo app used by CLI development mode.                                                        |
+| `examples/`            | Minimum SDK 57 and 58 CNG apps; development mode targets SDK 57.                                       |
 
 ## Verification
 

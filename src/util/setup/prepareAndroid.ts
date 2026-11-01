@@ -1,71 +1,35 @@
-import { copy, iterateDir, read, relativePath, remove, resolve, write } from '../FileUtil';
-import { injectTemplatePlaceHolders } from '../injectTemplatePlaceHolders';
-import { logger } from '../logger';
-import { copyAndroidMetadata } from '../MetadataSyncUtil';
+import { copy, exist, read, resolve, write } from '../FileUtil';
 import { OptionHolder } from '../OptionHolder';
-import { replaceStringIfNotContain } from '../replaceStringIfNotContain';
-import { spinner } from '../spinner';
-import { exe, yesShell } from './execShellScript';
 
-export async function prepareAndroid() {
-  const srcDir = resolve(OptionHolder.cli.templateDir, 'android');
-  const destDir = resolve(OptionHolder.projectDir, 'android');
-
-  await yesShell('expo', ['prebuild', '-p', 'android', '--no-install'], {
-    cwd: OptionHolder.projectDir,
-  });
-  logger.success('Expo Prebuild - Done');
-
-  await spinner(
-    'Inject Templates',
-    iterateDir(srcDir, async (file) => {
-      const filePath = resolve(srcDir, file);
-      remove(resolve(destDir, file));
-      copy(filePath, resolve(destDir, file));
-    }),
-  );
-
-  await spinner('Overwrite Android Release Signing Config', replaceAndroidSigningConfig(destDir));
-
-  await spinner(
-    'Hydrate template placeholders',
-    injectTemplatePlaceHolders(resolve(destDir, 'fastlane')),
-  );
-
-  await exe('bundle', ['install'], { cwd: destDir });
-  logger.success('Bunder Install - Done');
-
-  copyAndroidMetadata('native');
+export function androidSigningEnvironment() {
+  const keys = OptionHolder.keyholderMap;
+  const keystore = resolve(OptionHolder.keyDir, 'android_release.keystore');
+  if (!exist(keystore)) throw new Error(`Android release keystore is missing: ${keystore}`);
+  const values = {
+    EXPO_RELEASE_IT_KEYSTORE: keystore,
+    EXPO_RELEASE_IT_STORE_PASSWORD: keys.android_keystore_store_password,
+    EXPO_RELEASE_IT_KEY_ALIAS: keys.android_keystore_key_alias,
+    EXPO_RELEASE_IT_KEY_PASSWORD: keys.android_keystore_key_password,
+  };
+  if (Object.values(values).some((value) => !value)) {
+    throw new Error(
+      'Android release signing requires the keystore store password, key alias, and key password in keyholder.json.',
+    );
+  }
+  return values;
 }
 
-async function replaceAndroidSigningConfig(destDir: string) {
-  const buildGradleDirPath = resolve(destDir, 'app');
-  const buildGradlePath = resolve(destDir, 'app', 'build.gradle');
-  const {
-    android_keystore_store_password,
-    android_keystore_key_alias,
-    android_keystore_key_password,
-  } = OptionHolder.keyholderMap;
-
-  const injectedNewDebugSigningConfig = `
-signingConfigs {
-    debug {
-        storeFile file('${relativePath(buildGradleDirPath, resolve(OptionHolder.resourcesDir, 'key', 'android_release.keystore'))}')
-        storePassword '${android_keystore_store_password}'
-        keyAlias '${android_keystore_key_alias}'
-        keyPassword '${android_keystore_key_password}'
-    }
-  }
-`.trim();
-
-  let content = read(buildGradlePath);
-
-  content = replaceStringIfNotContain(
-    content,
-    /signingConfigs.*?{.*?debug.*?{.*?}.*?}/s,
-    injectedNewDebugSigningConfig,
-    false,
+export async function prepareAndroid(prebuild: () => Promise<void>) {
+  await prebuild();
+  const appDir = resolve(OptionHolder.projectDir, 'android', 'app');
+  const buildGradle = resolve(appDir, 'build.gradle');
+  if (!exist(buildGradle))
+    throw new Error(
+      'Generated android/app/build.gradle was not found. This Expo template needs a signing integration update.',
+    );
+  copy(
+    resolve(OptionHolder.cli.templateDir, 'android', 'release-signing.gradle'),
+    resolve(appDir, 'expo-release-it-signing.gradle'),
   );
-
-  write(buildGradlePath, content);
+  write(buildGradle, `${read(buildGradle)}\napply from: file("expo-release-it-signing.gradle")\n`);
 }

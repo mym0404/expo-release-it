@@ -1,3 +1,5 @@
+require "json"
+
 default_platform(:android)
 
 def to_b(str)
@@ -8,8 +10,10 @@ platform :android do
   before_all do
     ENV['SUPPLY_UPLOAD_MAX_RETRIES']='3'
   end
-  lane :upload do |options|
+  lane :upload do
+    options = JSON.parse(ENV.fetch("EXPO_RELEASE_IT_OPTIONS"), symbolize_names: true)
     supply(
+        metadata_path: File.join(__dir__, "metadata", "android"),
     	root_url: "https://androidpublisher.googleapis.com/",
     	json_key: options[:json_key],
     	package_name: options[:android_package_name],
@@ -27,8 +31,10 @@ platform :android do
     	skip_upload_apk: to_b(options[:skip_upload_apk]),
     )
   end
-  lane :submit do |options|
+  lane :submit do
+    options = JSON.parse(ENV.fetch("EXPO_RELEASE_IT_OPTIONS"), symbolize_names: true)
     supply(
+        metadata_path: File.join(__dir__, "metadata", "android"),
     	root_url: "https://androidpublisher.googleapis.com/",
     	json_key: options[:json_key],
     	package_name: options[:android_package_name],

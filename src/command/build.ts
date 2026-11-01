@@ -1,94 +1,75 @@
+import { dirname } from 'node:path';
+
 import chalk from 'chalk';
 
 import { calculateElapsed } from '../util/calculateElapsed';
-import { isWin } from '../util/EnvUtil';
-import { getIosFastlaneOptions } from '../util/FastlaneOption';
-import { copy, relativePath, remove, resolve } from '../util/FileUtil';
+import { runFastlane } from '../util/FastlaneOption';
+import { copy, exist, relativePath, remove, resolve } from '../util/FileUtil';
 import { InqueryInputs } from '../util/input/InqueryInputs';
 import { logger } from '../util/logger';
 import { OptionHolder } from '../util/OptionHolder';
 import { exe } from '../util/setup/execShellScript';
-import { prepareAndroid } from '../util/setup/prepareAndroid';
+import { inspectNativeEnvironment } from '../util/setup/NativeEnvironment';
+import { androidSigningEnvironment, prepareAndroid } from '../util/setup/prepareAndroid';
+import { prepareFastlane } from '../util/setup/prepareFastlane';
 import { prepareIos } from '../util/setup/prepareIos';
+import { inspectRubyEnvironment } from '../util/setup/RubyEnvironment';
 import { setup } from '../util/setup/setup';
 
 export async function build({ options }: { options: any }) {
   Object.assign(OptionHolder.input, options);
   const startTime = Date.now();
   await setup();
-  await promptInputs();
-
-  logger.info('Build Started');
-
-  if (OptionHolder.input.platform === 'ios') {
-    await buildIos();
-    logger.success(`iOS Build ${chalk.bold.inverse(calculateElapsed(startTime))}`);
-  } else {
-    await buildAndroid();
-    logger.success(`Android Build ${chalk.bold.inverse(calculateElapsed(startTime))}`);
-  }
-}
-
-async function promptInputs() {
   await InqueryInputs.platform();
-  await InqueryInputs.podinstall();
   await InqueryInputs.androidBuildOutput();
-}
-
-async function buildIos() {
-  const iosDir = resolve(OptionHolder.projectDir, 'ios');
-  const exeEnv = exe({
-    cwd: iosDir,
-    env: {
-      MATCH_PASSWORD: OptionHolder.keyholderMap.ios_match_password,
-    },
-  });
-  await prepareIos();
-  await fastlane();
-
-  async function fastlane() {
-    if (OptionHolder.input.pod) {
-      await exeEnv('bundle', ['exec', 'pod', 'install']);
-      logger.done('Pod Install');
-    }
-    remove(resolve(iosDir, '.xcode.env.local'));
-
-    await exeEnv('bundle', ['exec', 'fastlane', 'build', ...getIosFastlaneOptions()]);
-
-    logger.success(
-      `artifact generated: ${relativePath(OptionHolder.projectDir, resolve(OptionHolder.resourcesDir, 'output', 'ios', 'app.ipa'))}`,
+  const isIos = OptionHolder.input.platform === 'ios';
+  if (!isIos && OptionHolder.input.sign === false)
+    throw new Error(
+      '--no-sign is only supported for iOS. Android release builds require a signing key.',
     );
-  }
-}
-async function buildAndroid() {
-  const androidDir = resolve(OptionHolder.projectDir, 'android');
-  const exeEnv = exe({
-    cwd: androidDir,
-  });
-  await prepareAndroid();
-  await fastlane();
-
-  async function fastlane() {
-    let buildOutputDir: string;
-    let outputDir: string;
-
-    if (OptionHolder.input.androidOutput === 'aab') {
-      // aab: app/build/outputs/bundle/release/app-release.aab
-      await exeEnv(isWin ? 'gradle.bat' : './gradlew', ['app:bundleRelease']);
-      logger.done('Bundle AAB');
-      buildOutputDir = resolve(androidDir, 'app', 'build', 'outputs', 'bundle', 'release');
-      outputDir = resolve(OptionHolder.resourcesDir, 'output', 'android', 'aab');
-    } else {
-      // apk: app/build/outputs/apk/release/app-release.apk
-      await exeEnv(isWin ? 'gradle.bat' : './gradlew', ['app:assembleRelease']);
-      logger.done('Assemble APK');
-      buildOutputDir = resolve(androidDir, 'app', 'build', 'outputs', 'apk', 'release');
-      outputDir = resolve(OptionHolder.resourcesDir, 'output', 'android', 'apk');
-    }
-
+  const ruby = await inspectRubyEnvironment({ needsPods: isIos });
+  const signingEnv = isIos ? {} : androidSigningEnvironment();
+  const prebuild = await inspectNativeEnvironment();
+  await prepareFastlane(ruby);
+  let artifact: string;
+  if (isIos) {
+    await prepareIos({ ruby, prebuild });
+    await runFastlane(ruby, 'build');
+    artifact = resolve(
+      OptionHolder.resourcesDir,
+      'output',
+      'ios',
+      OptionHolder.input.sign === false ? 'app.xcarchive' : 'app.ipa',
+    );
+  } else {
+    await prepareAndroid(prebuild);
+    const isAab = OptionHolder.input.androidOutput === 'aab';
+    await exe('./gradlew', [isAab ? 'app:bundleRelease' : 'app:assembleRelease'], {
+      cwd: resolve(OptionHolder.projectDir, 'android'),
+      env: { ...signingEnv, PATH: `${dirname(process.execPath)}:${process.env.PATH ?? ''}` },
+    });
+    // aab: app/build/outputs/bundle/release/app-release.aab
+    // apk: app/build/outputs/apk/release/app-release.apk
+    const output = isAab ? 'aab' : 'apk';
+    const outputDir = resolve(OptionHolder.resourcesDir, 'output', 'android', output);
+    const buildOutput = resolve(
+      OptionHolder.projectDir,
+      'android',
+      'app',
+      'build',
+      'outputs',
+      isAab ? 'bundle' : 'apk',
+      'release',
+    );
+    const binary = resolve(buildOutput, `app-release.${output}`);
+    if (!exist(binary)) throw new Error(`Release build output is missing: ${binary}`);
     remove(outputDir);
-    copy(buildOutputDir, outputDir);
-
-    logger.success(`artifact generated: ${relativePath(OptionHolder.projectDir, outputDir)}`);
+    copy(buildOutput, outputDir);
+    artifact = resolve(outputDir, `app-release.${output}`);
   }
+  if (!exist(artifact)) throw new Error(`Expected build artifact was not generated: ${artifact}`);
+  logger.success(`artifact generated: ${relativePath(OptionHolder.projectDir, artifact)}`);
+  logger.success(
+    `${isIos ? 'iOS' : 'Android'} Build ${chalk.bold.inverse(calculateElapsed(startTime))}`,
+  );
 }

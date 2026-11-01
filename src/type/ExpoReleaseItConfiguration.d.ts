@@ -29,7 +29,21 @@ export interface ExpoReleaseItConfiguration {
    */
   build?: {
     androidBuildOutput?: 'aab' | 'apk';
-    iosPodInstall?: boolean;
+    ios?: {
+      /**
+       * Xcode project filename, required only when discovery is ambiguous
+       */
+      project?: string;
+      /**
+       * App target, required only when discovery is ambiguous
+       */
+      target?: string;
+      /**
+       * Build scheme, required only when discovery is ambiguous
+       */
+      scheme?: string;
+      [k: string]: unknown;
+    };
     [k: string]: unknown;
   };
   /**

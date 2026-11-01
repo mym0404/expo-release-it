@@ -42,8 +42,7 @@ Or you can provide config file path with `--config` cli option in any command.
     }
   },
   "build": {
-    "androidBuildOutput": "aab",
-    "iosPodInstall": false
+    "androidBuildOutput": "aab"
   },
   "submit": {
     "androidBuildOutput": "aab",
@@ -56,3 +55,19 @@ Or you can provide config file path with `--config` cli option in any command.
   }
 }
 ```
+
+For ambiguous Xcode discovery, configure the independent names under `build.ios`:
+
+```json
+{
+  "build": {
+    "ios": {
+      "project": "MyApp.xcodeproj",
+      "target": "MyApp",
+      "scheme": "MyAppProduction"
+    }
+  }
+}
+```
+
+Omit these values when each has a single candidate. CocoaPods installation is mandatory. `--no-sign` selects an unsigned iOS archive; CocoaPods installation still runs.

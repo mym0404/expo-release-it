@@ -11,7 +11,7 @@
 | Fastlane  | 2.227.1                                                         |
 | CocoaPods | 1.16.2, for iOS builds                                          |
 
-The toolchain has been exercised locally with Ruby 3.3.12 and 4.0.7. CI also checks Ruby 3.4. The shipped Gemfile explicitly includes `abbrev`, `csv`, and `ostruct`, which older Fastlane dependencies use and newer Ruby versions no longer provide as default gems. This allows retaining Fastlane rather than updating every dependency to its latest release.
+The toolchain has been exercised locally with Ruby 3.3.12 and 4.0.7. CI checks Ruby 3.3 and 4.0 on macOS and Linux; Ruby 3.4 remains supported for manual verification. The shipped Gemfile explicitly includes `abbrev`, `csv`, and `ostruct`, which older Fastlane dependencies use and newer Ruby versions no longer provide as default gems. This allows retaining Fastlane rather than updating every dependency to its latest release.
 
 Fastlane 2.227.1 requires Bundler below 3. A default Bundler 4 installation can coexist with the selected Bundler; the CLI invokes the pinned version with the inspected Ruby executable.
 
@@ -73,6 +73,6 @@ pnpm test:e2e 58 ios unsigned
 
 Run the Ruby smoke test with each supported Ruby line on macOS and Linux. It installs into a temporary project's private directory, places an unusable `bundle` earlier on PATH, checks the selected Bundler and actual Fastlane/CocoaPods execution, and verifies that user Gemfiles remain unchanged. Review the platform entries and test installation on the target CPU before adding a new platform.
 
-The native tests package the CLI, install it in standalone minimum CNG apps, invoke its public commands, and verify artifacts. Android uses temporary test signing keys; iOS uses `--no-sign`. These checks do not validate Apple distribution signing, IPA export, or store authentication and submission.
+The native tests package the CLI, install it in standalone minimum CNG apps, invoke its public commands, and verify artifacts. CI runs only the SDK 58 Android AAB and unsigned iOS paths with Xcode 27.0; SDK 57 and APK commands above remain available for manual verification. Android uses temporary test signing keys; iOS uses `--no-sign`. These checks do not validate Apple distribution signing, IPA export, or store authentication and submission.
 
 References: [Fastlane installation](https://docs.fastlane.tools/getting-started/ios/setup/), [Bundler configuration](https://bundler.io/man/bundle-config.1.html), [Ruby standard-library changes](https://www.ruby-lang.org/en/news/2024/12/25/ruby-3-4-0-released/).

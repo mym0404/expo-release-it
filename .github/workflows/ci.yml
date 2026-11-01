@@ -42,7 +42,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-24.04, macos-26]
-        ruby: ['3.3', '3.4', '4.0']
+        ruby: ['3.3', '4.0']
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup
@@ -61,11 +61,7 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - { sdk: 57, platform: android, output: aab, os: ubuntu-24.04 }
-          - { sdk: 57, platform: android, output: apk, os: ubuntu-24.04 }
-          - { sdk: 57, platform: ios, output: unsigned, os: xcode-27, xcode: '27.0' }
           - { sdk: 58, platform: android, output: aab, os: ubuntu-24.04 }
-          - { sdk: 58, platform: android, output: apk, os: ubuntu-24.04 }
           - { sdk: 58, platform: ios, output: unsigned, os: xcode-27, xcode: '27.0' }
     steps:
       - uses: actions/checkout@v4

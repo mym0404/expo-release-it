@@ -141,8 +141,8 @@ platform :ios do
       api_key: lane_context[:API_KEY],
       app_identifier: options[:ios_app_identifier],
       app_version: options[:version_name],
-      metadata_path: File.join(__dir__, "metadata"),
-      screenshots_path: File.join(__dir__, "screenshots"),
+      metadata_path: File.expand_path("metadata", __dir__),
+      screenshots_path: File.expand_path("screenshots", __dir__),
       force: true, # Set to true to skip verification of HTML preview
       skip_binary_upload: true,
       submit_for_review: true,

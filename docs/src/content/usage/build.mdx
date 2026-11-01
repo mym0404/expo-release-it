@@ -22,6 +22,8 @@ Local iOS builds require macOS and Xcode. CocoaPods installation always runs; th
 
 A normal build prepares Match signing and exports `expo-release-it/output/ios/app.ipa`.
 
+Match renews an expired distribution certificate during a signed build and updates its encrypted Git repository. It also replaces the provisioning profile when it does not contain the selected certificate. Local and CI builds require an App Store Connect API key with certificate and profile management permission, the Match repository passphrase, and Git access with write permission. `setup_ci` prepares a temporary keychain; Match runs in write mode. If Apple or Git rejects access, or the Apple certificate limit is reached, the build fails with the underlying error. App Store Connect API keys are not renewed by Match.
+
 For compilation without Apple credentials:
 
 ```sh

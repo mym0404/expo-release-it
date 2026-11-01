@@ -7,6 +7,7 @@ import { init } from './command/init';
 import { pull } from './command/pull';
 import { submit } from './command/submit';
 import { upload } from './command/upload';
+import { cleanupCredentials } from './util/CredentialVault';
 import { logger } from './util/logger';
 import { OptionHolder } from './util/OptionHolder';
 import { throwError } from './util/throwError';
@@ -20,6 +21,10 @@ const androidBuildOutputOption = new Option(
   'Android Build Output',
 ).choices(['aab', 'apk']);
 const configFileOption = new Option('--config <filePath>', 'expo-release-it.config.json path');
+const envFileOption = new Option(
+  '--env-file <file>',
+  'Read the encryption key from this env file (default: .env)',
+);
 
 export const run = () => {
   const program = new Command();
@@ -34,6 +39,7 @@ export const run = () => {
     .command('init')
     .description('Configure resources and environment')
     .addOption(configFileOption)
+    .addOption(envFileOption)
     .action(async (options) => handleError(init({ options })));
 
   program
@@ -59,6 +65,7 @@ export const run = () => {
     .addOption(platformOption)
     .addOption(androidBuildOutputOption)
     .addOption(configFileOption)
+    .addOption(envFileOption)
     .action(async (options) => handleError(build({ options })));
 
   program
@@ -69,6 +76,7 @@ export const run = () => {
     .option('-m --uploadMetadata', 'Upload store text metadatas')
     .option('-s --uploadScreenshot', 'Upload store screenshots')
     .addOption(configFileOption)
+    .addOption(envFileOption)
     .action(async (options) => handleError(upload({ options })));
 
   program
@@ -78,6 +86,7 @@ export const run = () => {
     .option('-m --uploadMetadata', 'Upload store text metadatas')
     .option('-s --uploadScreenshot', 'Upload store screenshots')
     .addOption(configFileOption)
+    .addOption(envFileOption)
     .action(async (options) => handleError(submit({ options })));
 
   program
@@ -86,6 +95,7 @@ export const run = () => {
     .addOption(platformOption)
     .option('-l --useLiveVersionIos', 'Download metadatas from live version rather than draft')
     .addOption(configFileOption)
+    .addOption(envFileOption)
     .action(async (options) => handleError(pull({ options })));
 
   program.parse();
@@ -101,5 +111,7 @@ async function handleError(promise: Promise<any>) {
     } else {
       throwError(`Command Failed: ${e}`);
     }
+  } finally {
+    cleanupCredentials();
   }
 }

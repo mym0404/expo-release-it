@@ -1,7 +1,16 @@
+import { existsSync, readFileSync, readdirSync } from 'node:fs';
+
 import { input, password } from '@inquirer/prompts';
 import chalk from 'chalk';
 
-import { copy, join, writeJson } from '../util/FileUtil';
+import {
+  credentialVaultFilename,
+  getEncryptionKey,
+  readCredentialVault,
+  readLegacyCredentials,
+  writeCredentialVault,
+} from '../util/CredentialVault';
+import { join } from '../util/FileUtil';
 import { constructInquirerFormattedMessage } from '../util/input/InqueryInputs';
 import { logger } from '../util/logger';
 import { OptionHolder } from '../util/OptionHolder';
@@ -12,12 +21,23 @@ export async function init({ options }: { options: any }) {
 
   logger.info(`${chalk.inverse('expo-release-it')} Initialization Get Started`);
 
-  await setup();
+  await setup({ credentials: false });
+  const hasVault = existsSync(join(OptionHolder.resourcesDir, credentialVaultFilename));
+  const key = await getEncryptionKey({ interactive: true, confirm: !hasVault });
+  const existing = hasVault ? readCredentialVault(key) : { keyholder: {}, files: {} };
+  const legacy = readLegacyCredentials();
+  Object.assign(OptionHolder.keyholderMap, existing.keyholder, legacy.data.keyholder);
   await promptInputs();
-  await copyTemplates();
+  const files = { ...existing.files, ...legacy.data.files };
+  copyTemplates(files);
+  writeCredentialVault(
+    { keyholder: { ...OptionHolder.keyholderMap }, files },
+    key,
+    legacy.originals,
+  );
 
   logger.success(
-    `${chalk.inverse('expo-release-it')} Initialization Done. Check out generated 'expo-release-it' directory.`,
+    `${chalk.inverse('expo-release-it')} Initialization Done. Credentials saved in ${credentialVaultFilename}. Keep your encryption key separately.`,
   );
 }
 
@@ -46,7 +66,7 @@ async function promptInputs() {
     default: OptionHolder.keyholderMap.ios_developer_team_id,
   });
 
-  OptionHolder.keyholderMap.ios_match_git_url = await input({
+  OptionHolder.keyholderMap.ios_match_git_url = await inputSecret({
     message: constructInquirerFormattedMessage({
       name: 'iOS Fastlane Match Github URL',
       explanation:
@@ -54,8 +74,7 @@ async function promptInputs() {
       example: 'https://github.com/yourname/your-certificates-repo.git',
       referUrl: 'https://docs.fastlane.tools/actions/match/',
     }),
-    required: true,
-    default: OptionHolder.keyholderMap.ios_match_git_url,
+    previous: OptionHolder.keyholderMap.ios_match_git_url,
   });
 
   OptionHolder.keyholderMap.ios_match_password = await inputSecret({
@@ -137,8 +156,6 @@ Or, you can do same thing with CLI: ${chalk.underline.blue('https://gist.github.
     previous: OptionHolder.keyholderMap.android_keystore_key_password,
   });
 
-  writeJson(OptionHolder.keyholderFilePath, OptionHolder.keyholderMap);
-
   async function inputSecret({ message, previous }: { message: string; previous?: string }) {
     const stored = previous ?? '';
     const value = await password({
@@ -150,15 +167,10 @@ Or, you can do same thing with CLI: ${chalk.underline.blue('https://gist.github.
   }
 }
 
-async function copyTemplates() {
-  for (const dir of OptionHolder.templateDirNames) {
-    await copyDirRecursively(dir);
-  }
-
-  async function copyDirRecursively(dir: string) {
-    const sourceDirPath = join(OptionHolder.cli.templateDir, dir);
-    const destDirPath = join(OptionHolder.resourcesDir, dir);
-    // don't overwirte key
-    copy(sourceDirPath, destDirPath, { overwrite: dir !== 'key' });
+function copyTemplates(files: Record<string, string>) {
+  const sourceDirPath = join(OptionHolder.cli.templateDir, 'key');
+  // don't overwirte key
+  for (const file of readdirSync(sourceDirPath)) {
+    files[file] ??= readFileSync(join(sourceDirPath, file)).toString('base64');
   }
 }

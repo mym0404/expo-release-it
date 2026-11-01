@@ -1,3 +1,4 @@
+import { credentialFilenames, credentialKeyPath } from '../util/CredentialVault';
 import { resolve } from '../util/FileUtil';
 import { generateAppStoreConnectApiKeyFile } from '../util/generateAppStoreConnectApiKeyFile';
 import { InqueryInputs } from '../util/input/InqueryInputs';
@@ -27,6 +28,7 @@ async function pullIosMetadata() {
   const ruby = await prepareFastlane();
   const metadataPath = resolve(ruby.workspace, 'fastlane', 'metadata');
   const screenshotsPath = resolve(ruby.workspace, 'fastlane', 'screenshots');
+  const apiKeyPath = generateAppStoreConnectApiKeyFile();
   await ruby.bundle([
     'exec',
     'fastlane',
@@ -38,7 +40,7 @@ async function pullIosMetadata() {
     '--app_identifier',
     OptionHolder.keyholderMap.ios_app_identifier,
     '--api_key_path',
-    generateAppStoreConnectApiKeyFile(),
+    apiKeyPath,
   ]);
 
   await ruby.bundle([
@@ -52,7 +54,7 @@ async function pullIosMetadata() {
     '--app_identifier',
     OptionHolder.keyholderMap.ios_app_identifier,
     '--api_key_path',
-    generateAppStoreConnectApiKeyFile(),
+    apiKeyPath,
     '--use_live_version',
     `${OptionHolder.input.useLiveVersionIos}`,
   ]);
@@ -71,7 +73,7 @@ async function pullAndroidMetadata() {
     '--metadata_path',
     resolve(ruby.workspace, 'fastlane', 'metadata', 'android'),
     '--json_key',
-    resolve(OptionHolder.keyDir, 'android_play_console_service_account.json'),
+    credentialKeyPath(credentialFilenames.androidServiceAccount),
     '--package_name',
     OptionHolder.keyholderMap.android_package_name,
   ]);

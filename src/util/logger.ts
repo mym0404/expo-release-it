@@ -2,11 +2,22 @@ import chalk from 'chalk';
 
 import { OptionHolder } from './OptionHolder';
 
+const registeredSecrets = new Set<string>();
+
+export function registerSecrets(values: Iterable<string>) {
+  for (const value of values)
+    if (value) {
+      registeredSecrets.add(value);
+      registeredSecrets.add(JSON.stringify(value).slice(1, -1));
+    }
+}
+
 export function redact(message: string) {
   const secrets = [
+    ...registeredSecrets,
     ...Object.values(OptionHolder.keyholderMap),
     ...Object.entries(process.env)
-      .filter(([key]) => /password|token|secret|credential/i.test(key))
+      .filter(([key]) => /password|token|secret|credential|encryption.?key/i.test(key))
       .map(([, value]) => value),
   ]
     .filter((value): value is string => typeof value === 'string' && value.length > 0)

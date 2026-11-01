@@ -2,6 +2,7 @@ import { createInterface } from 'node:readline';
 
 import { execa, type Options } from 'execa';
 
+import { credentialProcessEnvironment } from '../CredentialVault';
 import { redact } from '../logger';
 
 export async function printRedactedOutput(stream: NodeJS.ReadableStream) {
@@ -26,6 +27,11 @@ export async function exe(
 ) {
   const child = execa(command, args, {
     ...options,
+    env: credentialProcessEnvironment({
+      ...(options.extendEnv === false ? {} : process.env),
+      ...options.env,
+    }),
+    extendEnv: false,
     stdin: 'pipe',
     stdout: 'pipe',
     stderr: 'pipe',

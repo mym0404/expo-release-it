@@ -32,6 +32,8 @@ CI currently checks Ruby 3.3 and 4.0 on macOS/Linux, plus SDK 58 Android AAB and
 
 Prepare Ruby and the pinned Bundler yourself; the CLI installs its managed gems in `expo-release-it/.ruby`. See [Ruby setup and dependency maintenance](https://expo-release-it.mjstudio.net/ruby).
 
+Credentials are encrypted by default in `expo-release-it/credentials.enc.json`. Supply `EXPO_RELEASE_IT_ENCRYPTION_KEY` through your environment, `.env`, or GitHub Actions secrets. Existing commands handle encryption, legacy migration, and temporary decryption automatically; `init` can also ask for the key interactively. The CLI warns when it finds the old plaintext format. See [Credential encryption and migration](https://expo-release-it.mjstudio.net/security).
+
 The CLI owns release orchestration, integration with Expo-generated projects, and its managed Ruby toolchain. Prepare a toolchain supported by your project's Expo and React Native versions. Upstream native dependency or compiler incompatibilities are outside this library's scope; it does not patch Expo/RN, Pods source, or Xcode to repair them.
 
 # Development

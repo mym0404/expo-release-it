@@ -1,5 +1,6 @@
 import { execa } from 'execa';
 
+import { credentialProcessEnvironment } from '../CredentialVault';
 import { exist, readdir, remove, resolve } from '../FileUtil';
 import { OptionHolder } from '../OptionHolder';
 import type { RubyEnvironment } from './RubyEnvironment';
@@ -37,6 +38,8 @@ export async function prepareIos({
   );
   const targetNames: string[] = JSON.parse(targets.stdout);
   const listing = await execa('xcodebuild', ['-list', '-json', '-project', project], {
+    env: credentialProcessEnvironment(),
+    extendEnv: false,
     stdout: 'pipe',
     stderr: 'pipe',
   });

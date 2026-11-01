@@ -1,9 +1,10 @@
+import { credentialFilenames, credentialKeyPath } from './CredentialVault';
 import { resolve } from './FileUtil';
 import { OptionHolder } from './OptionHolder';
 import type { RubyEnvironment } from './setup/RubyEnvironment';
 
 export async function runFastlane(ruby: RubyEnvironment, lane: 'build' | 'upload' | 'submit') {
-  const { keyholderMap: keys, input, resourcesDir, keyDir } = OptionHolder;
+  const { keyholderMap: keys, input, resourcesDir } = OptionHolder;
   const options = {
     version_name: OptionHolder.versionName,
     version_code: OptionHolder.versionCode,
@@ -16,7 +17,8 @@ export async function runFastlane(ruby: RubyEnvironment, lane: 'build' | 'upload
           ios_match_git_url: keys.ios_match_git_url,
           ios_app_store_connect_api_key_id: keys.ios_app_store_connect_api_key_id,
           ios_app_store_connect_api_key_issuer_id: keys.ios_app_store_connect_api_key_issuer_id,
-          api_key_filepath: resolve(keyDir, 'ios_app_store_connect_api_key.p8'),
+          api_key_filepath:
+            input.sign === false ? undefined : credentialKeyPath(credentialFilenames.iosApiKey),
           project: input.iosProject,
           target: input.iosTarget,
           scheme: input.iosScheme,
@@ -29,7 +31,7 @@ export async function runFastlane(ruby: RubyEnvironment, lane: 'build' | 'upload
         }
       : {
           android_package_name: keys.android_package_name,
-          json_key: resolve(keyDir, 'android_play_console_service_account.json'),
+          json_key: credentialKeyPath(credentialFilenames.androidServiceAccount),
           aab_path: resolve(resourcesDir, 'output', 'android', 'aab', 'app-release.aab'),
           apk_path: resolve(resourcesDir, 'output', 'android', 'apk', 'app-release.apk'),
           skip_upload_apk: input.androidOutput !== 'apk',

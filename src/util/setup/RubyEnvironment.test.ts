@@ -8,6 +8,7 @@ import { build } from '../../command/build';
 import { pull } from '../../command/pull';
 import { submit } from '../../command/submit';
 import { upload } from '../../command/upload';
+import { cleanupCredentials } from '../CredentialVault';
 import { exist, write } from '../FileUtil';
 import { OptionHolder } from '../OptionHolder';
 import { inspectRubyEnvironment } from './RubyEnvironment';
@@ -15,6 +16,11 @@ import { inspectRubyEnvironment } from './RubyEnvironment';
 const { execute } = vi.hoisted(() => ({ execute: vi.fn() }));
 vi.mock('execa', () => ({ execa: execute }));
 vi.mock('./setup', () => ({ setup: vi.fn() }));
+vi.mock('../CredentialVault', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('../CredentialVault')>()),
+  credentialKeyPath: vi.fn((name: string) => `/test/credentials/${name}`),
+  readCredentialFile: vi.fn(() => Buffer.from('test-private-key')),
+}));
 
 let directory: string;
 const bundler = /BUNDLED WITH\s+([\d.]+)/.exec(
@@ -54,6 +60,7 @@ beforeEach(() => {
 });
 
 afterEach(() => {
+  cleanupCredentials();
   rmSync(directory, { recursive: true, force: true });
   vi.restoreAllMocks();
   vi.unstubAllEnvs();
@@ -167,7 +174,6 @@ it.each([upload, submit, pull])(
 
 it('provides the app identifier for both iOS metadata downloads without Appfile or native preparation', async () => {
   OptionHolder.keyholderMap.ios_app_identifier = 'net.example.app';
-  write(join(OptionHolder.keyDir, 'ios_app_store_connect_api_key.p8'), 'test-private-key');
   const marker = join(directory, 'ios', 'keep.txt');
   write(marker, 'keep native project');
   execute.mockImplementation((_file, args: string[]) =>

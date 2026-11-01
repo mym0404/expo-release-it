@@ -19,7 +19,7 @@ import { setup } from '../util/setup/setup';
 export async function build({ options }: { options: any }) {
   Object.assign(OptionHolder.input, options);
   const startTime = Date.now();
-  await setup();
+  await setup({ credentials: OptionHolder.input.sign !== false });
   await InqueryInputs.platform();
   await InqueryInputs.androidBuildOutput();
   const isIos = OptionHolder.input.platform === 'ios';
@@ -28,7 +28,6 @@ export async function build({ options }: { options: any }) {
       '--no-sign is only supported for iOS. Android release builds require a signing key.',
     );
   const ruby = await inspectRubyEnvironment({ needsPods: isIos });
-  const signingEnv = isIos ? {} : androidSigningEnvironment();
   const prebuild = await inspectNativeEnvironment();
   await prepareFastlane(ruby);
   let artifact: string;
@@ -46,7 +45,10 @@ export async function build({ options }: { options: any }) {
     const isAab = OptionHolder.input.androidOutput === 'aab';
     await exe('./gradlew', [isAab ? 'app:bundleRelease' : 'app:assembleRelease'], {
       cwd: resolve(OptionHolder.projectDir, 'android'),
-      env: { ...signingEnv, PATH: `${dirname(process.execPath)}:${process.env.PATH ?? ''}` },
+      env: {
+        ...androidSigningEnvironment(),
+        PATH: `${dirname(process.execPath)}:${process.env.PATH ?? ''}`,
+      },
     });
     // aab: app/build/outputs/bundle/release/app-release.aab
     // apk: app/build/outputs/apk/release/app-release.apk

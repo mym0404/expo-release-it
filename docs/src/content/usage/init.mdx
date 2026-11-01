@@ -1,28 +1,33 @@
 # init
 
-**Configure resources and environment**
+Configure encrypted release credentials or migrate an existing plaintext project:
 
 ```shell
 npx expo-release-it init
+npx expo-release-it init --env-file .env.release
 ```
 
-The `init` command asks you for many form fields, and the information is saved in `expo-release-it/keyholder.json` in your project.
+Supply `EXPO_RELEASE_IT_ENCRYPTION_KEY` through the process environment or `.env`. If it is missing in an interactive terminal, `init` asks for a masked key. Keep the key separately: it is required for subsequent commands and is not saved by the CLI.
 
-Even after running `init`, you can manually edit `keyholder.json`, and all subsequent commands will use the updated values.
+`init` asks for identifiers and passwords, then saves them in `expo-release-it/credentials.enc.json` together with key files. Existing encrypted values are prompt defaults; a blank password answer keeps the stored value. Rerun `init` to update those values.
 
-The resources & output directory structure is the following.
+Prepare actual key files under `expo-release-it/key/` before initialization. Existing files are imported without changing their contents. Missing files use sample templates inside the encrypted file; replace them with real files before the corresponding build or store operation.
+
+For legacy projects, `init` warns about plaintext credentials and uses their values as defaults. After encryption and read-back verification, it removes the imported plaintext files. A wrong key for an existing encrypted file fails before changing credentials. Signed builds and store commands also import legacy credentials or replacement key files automatically when the encryption key is available in the environment or env file.
 
 ```text
-📁 expo-release-it/
-├── .ruby/         # managed Ruby gems and Fastlane workspace, excluded from Git
-├── 📁 key/         # key & certificate files
-├── 📁 metadata/    # result of `pull`
-│   ├── 📁 android/  # android store metadatas
-│   └── 📁 ios/      # ios store metadatas
-├── 📁 output/      # result of `build`
-│   ├── 📁 android/  # android build output
-│   └── 📁 ios/      # ios build output
-└── keyholder.json
+expo-release-it/
+├── credentials.enc.json  # encrypted identifiers, passwords, and key files
+├── .gitignore           # excludes plaintext imports and local tool files
+├── .ruby/               # managed Ruby gems and Fastlane workspace; ignored
+├── metadata/            # result of pull
+│   ├── android/
+│   └── ios/
+└── output/              # result of build
+    ├── android/
+    └── ios/
 ```
 
 Xcode project, app target, and scheme are discovered at build time. They are not credentials requested by `init`.
+
+See [Credential encryption](/security) for key preparation, automatic migration, key replacement, and GitHub Actions configuration.

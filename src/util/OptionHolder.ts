@@ -30,6 +30,7 @@ export const OptionHolder: {
     useLiveVersionIos: boolean;
     semverIncrement: 'major' | 'minor' | 'patch';
     config?: string;
+    envFile?: string;
     git: {
       commit?: boolean;
       commitMessage?: string;
@@ -51,7 +52,6 @@ export const OptionHolder: {
     android_keystore_key_password: string;
     android_package_name: string;
   };
-  templateDirNames: string[];
   // dest project root directory
   projectDir: string;
   // dest project output of init command direcotry
@@ -71,7 +71,6 @@ export const OptionHolder: {
     git: {},
   } as any,
   keyholderMap: {} as any,
-  templateDirNames: ['key'],
   projectDir: '',
   resourcesDir: '',
   keyDir: '',

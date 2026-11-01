@@ -1,13 +1,57 @@
-# About Security
+# Credential encryption
 
-That’s right. You might be wondering whether storing files like `.p8`, keystore files, or key values in version control is truly secure.
-In conclusion, if you’re using a private repository, you can consider it to be somewhat safe.
+Credentials are encrypted by default in `expo-release-it/credentials.enc.json`. The file contains identifiers, signing passwords, and the files imported from `expo-release-it/key/`. Encryption uses AES-256-GCM with a fresh salt and nonce on every save and a key derived using scrypt. Ruby dependencies and store metadata are separate from credentials.
 
-Whereas, you can exclude those key files from the VCS and share it to your teamates.
+## Supply the encryption key
 
-For example, Fastlane Match also uses OpenSSL encryption, but it still stores certificates and profiles in a private Git repository.
+Set `EXPO_RELEASE_IT_ENCRYPTION_KEY` in the process environment or your project's `.env`. The process environment takes precedence. Use `--env-file <file>` to choose another file. Only this variable is read; other variables from that file are not loaded. Reading env files requires Node.js 20.12 or newer.
 
-While you could implement additional security policies, I haven’t taken any extra measures for now.
-If you need further encryption, you can build middleware in your pipeline that runs `expo-release-it` so that everything in the `expo-release-it` directory goes through encryption and decryption processes.
+Use a randomly generated key and store a separate backup in your password manager. For example, this command creates a new `.env` with owner-only permissions without printing the key, and refuses to overwrite an existing file:
 
-Any suggestions are welcome.
+```sh
+node --input-type=module -e 'import { randomBytes } from "node:crypto"; import { writeFileSync } from "node:fs"; writeFileSync(".env", "EXPO_RELEASE_IT_ENCRYPTION_KEY=" + randomBytes(32).toString("base64") + "\n", { mode: 0o600, flag: "wx" })'
+```
+
+If `.env` already exists, add the variable using your editor or secret manager. Keep that file out of Git. The CLI adds the selected env-file path to `.gitignore` when encrypting credentials, but does not remove already tracked files from Git.
+
+In an interactive terminal, `init` asks for a masked key when no environment key is available and confirms it when creating encrypted storage. Keys must contain at least 16 characters. The CLI does not save the key for you. Later commands need the same key from the environment or env file; losing it makes the encrypted credentials unrecoverable.
+
+```sh
+npx expo-release-it init
+npx expo-release-it build --platform android --androidOutput aab --env-file .env.release
+```
+
+## Migrate an existing project
+
+```sh
+npx expo-release-it init
+```
+
+Keep using the existing commands. `init` warns about legacy plaintext credentials, keeps their values as prompt defaults, and imports existing key files. Blank password answers keep the stored passwords. If you already supply the encryption key through your environment or env file, the next signed `build`, `upload`, `submit`, or `pull` also imports legacy credentials automatically. No separate encryption or decryption command is required.
+
+The CLI encrypts and verifies the result before removing the imported plaintext `keyholder.json` and key files. The legacy `.temp/app_store_connect_api.json`, if present, is also encrypted and removed. A missing key or an incorrect key for an existing encrypted file leaves credentials unchanged. `bump` and iOS `build --no-sign` warn about legacy files but do not need credentials or an encryption key.
+
+If credentials were previously committed, encryption does not erase Git history or revoke exposed credentials. Remove tracked plaintext and rotate affected credentials separately.
+
+## Update credentials
+
+Rerun `init` to change identifiers or passwords. To replace a key file, put the replacement under `expo-release-it/key/` with its original filename and run your usual release command. It imports and encrypts the replacement automatically. Imported fields/files override their encrypted counterparts; other encrypted credentials are preserved.
+
+## GitHub Actions
+
+Store the same encryption key as a repository or environment secret named `EXPO_RELEASE_IT_ENCRYPTION_KEY`. Commit the encrypted credential file, then provide the secret only to the steps that need it:
+
+```yaml
+- name: Build Android release
+  env:
+    EXPO_RELEASE_IT_ENCRYPTION_KEY: ${{ secrets.EXPO_RELEASE_IT_ENCRYPTION_KEY }}
+  run: npx expo-release-it build --platform android --androidOutput aab
+```
+
+Prepare Node, Ruby/Bundler, and the platform toolchain as described in [Getting started](/getting-started). This example only shows how to supply the encryption key.
+
+## Runtime plaintext
+
+The CLI decrypts values in memory and creates key files only when required by Gradle or Fastlane. Those files live in an OS temporary directory with `0700` directory and `0600` file permissions. They are deleted after command completion, command failure, and handled SIGINT/SIGTERM signals. Forced termination such as SIGKILL, a machine crash, or power loss can leave temporary files; remove leftover `expo-release-it-credentials-*` directories from your OS temp directory before sharing the machine.
+
+Signing passwords still reach the native tools through environment variables. The encryption key is blanked in child-process environments, and known credential values are redacted from CLI logs. Encryption protects stored credentials; it does not isolate native build tools from the signing material they must use. Protect the machine and run trusted project code.

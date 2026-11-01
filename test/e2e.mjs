@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
+import { randomBytes } from 'node:crypto';
 import { access, cp, mkdir, mkdtemp, readFile, readdir, rm, writeFile } from 'node:fs/promises';
 import { homedir, tmpdir } from 'node:os';
 import { join, relative, resolve, sep } from 'node:path';
@@ -60,6 +61,8 @@ try {
   await writeFile(join(project, 'Gemfile.lock'), lockfile);
   await mkdir(join(resources, 'key'), { recursive: true });
   const keystore = join(resources, 'key', 'android_release.keystore');
+  const cli = join(project, 'node_modules', 'expo-release-it', 'bin', 'expo-release-it.mjs');
+  let expected;
   if (platform === 'android') {
     run('keytool', [
       '-genkeypair',
@@ -89,6 +92,16 @@ try {
         android_keystore_key_alias: 'release-test',
       }),
     );
+    expected = run(
+      'keytool',
+      ['-list', '-v', '-keystore', keystore, '-storepass:env', 'EXPO_RELEASE_IT_TEST_PASSWORD'],
+      { capture: true },
+    )
+      .match(/SHA256:\s*([A-Fa-f0-9:]+)/)?.[1]
+      ?.replaceAll(':', '')
+      .toLowerCase();
+    assert.ok(expected, 'Test signing certificate must be readable');
+    env.EXPO_RELEASE_IT_ENCRYPTION_KEY = randomBytes(32).toString('base64');
   }
   const removedMarker = join(project, platform, 'prebuild-must-remove.txt');
   const preservedMarker = join(project, platform === 'ios' ? 'android' : 'ios', 'must-remain.txt');
@@ -96,7 +109,6 @@ try {
   await mkdir(join(preservedMarker, '..'), { recursive: true });
   await writeFile(removedMarker, 'old generated project');
   await writeFile(preservedMarker, 'other platform');
-  const cli = join(project, 'node_modules', 'expo-release-it', 'bin', 'expo-release-it.mjs');
   run(process.execPath, [
     cli,
     'build',
@@ -114,16 +126,12 @@ try {
     await readFile(join(repository, 'template', 'ruby', 'Gemfile.lock'), 'utf8'),
   );
   if (platform === 'android') {
+    await assert.rejects(access(keystore));
+    await assert.rejects(access(join(resources, 'keyholder.json')));
+    assert.ok(
+      !(await readFile(join(resources, 'credentials.enc.json'), 'utf8')).includes(testPassword),
+    );
     const artifact = join(resources, 'output', 'android', format, `app-release.${format}`);
-    const expected = run(
-      'keytool',
-      ['-list', '-v', '-keystore', keystore, '-storepass:env', 'EXPO_RELEASE_IT_TEST_PASSWORD'],
-      { capture: true },
-    )
-      .match(/SHA256:\s*([A-Fa-f0-9:]+)/)?.[1]
-      ?.replaceAll(':', '')
-      .toLowerCase();
-    assert.ok(expected, 'Test signing certificate must be readable');
     let certificate;
     if (format === 'aab') {
       run('jarsigner', ['-verify', artifact]);

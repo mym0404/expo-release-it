@@ -3,6 +3,7 @@ import { dirname } from 'node:path';
 import { execa } from 'execa';
 import semver from 'semver';
 
+import { credentialProcessEnvironment } from '../CredentialVault';
 import { copy, read, resolve, write } from '../FileUtil';
 import { logger, redact } from '../logger';
 import { OptionHolder } from '../OptionHolder';
@@ -16,7 +17,7 @@ const bundleLauncher =
 
 export function rubyProcessEnvironment() {
   return Object.fromEntries(
-    Object.entries(process.env).filter(
+    Object.entries(credentialProcessEnvironment()).filter(
       ([key]) => !key.startsWith('BUNDLE_') && !['RUBYOPT', 'RUBYLIB'].includes(key),
     ),
   );

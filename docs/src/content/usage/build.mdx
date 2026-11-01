@@ -41,6 +41,6 @@ npx expo-release-it build --platform ios --no-sign \
 
 Local Android builds are maintained on macOS and Linux. Prepare the Android SDK and the JDK required by your Expo/RN version. Windows may work but is outside the maintenance scope.
 
-Provide `expo-release-it/key/android_release.keystore` and its store password, key alias, and key password in `keyholder.json`. The CLI preserves the generated debug signing configuration and applies a separate release signing configuration. Passwords are passed through the build process environment, not written into generated Gradle source.
+Import `expo-release-it/key/android_release.keystore` and configure its store password, key alias, and key password with `init`. Credentials are encrypted by default; supply `EXPO_RELEASE_IT_ENCRYPTION_KEY` through your environment or env file when building. See [Credential encryption](/security) for migration and key replacement. The CLI preserves the generated debug signing configuration and applies a separate release signing configuration. Passwords are passed through the build process environment, not written into generated Gradle source.
 
 Outputs are stored under `expo-release-it/output/android/apk/` or `expo-release-it/output/android/aab/`.

@@ -1,9 +1,10 @@
+import { credentialFilenames, credentialKeyPath } from '../CredentialVault';
 import { copy, exist, read, resolve, write } from '../FileUtil';
 import { OptionHolder } from '../OptionHolder';
 
 export function androidSigningEnvironment() {
   const keys = OptionHolder.keyholderMap;
-  const keystore = resolve(OptionHolder.keyDir, 'android_release.keystore');
+  const keystore = credentialKeyPath(credentialFilenames.androidKeystore);
   if (!exist(keystore)) throw new Error(`Android release keystore is missing: ${keystore}`);
   const values = {
     EXPO_RELEASE_IT_KEYSTORE: keystore,
@@ -13,7 +14,7 @@ export function androidSigningEnvironment() {
   };
   if (Object.values(values).some((value) => !value)) {
     throw new Error(
-      'Android release signing requires the keystore store password, key alias, and key password in keyholder.json.',
+      'Android release signing requires the keystore store password, key alias, and key password. Run init to configure encrypted credentials.',
     );
   }
   return values;

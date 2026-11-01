@@ -19,15 +19,14 @@ See [Ruby toolchain](/ruby) for mise/rbenv examples, supported versions, isolati
 
 ## 2. Prepare Keys & Credentials
 
-`init` command generates sample key files structure in `expo-release-it/key`. They are **noob files** and you must replace file contents.
+Create `expo-release-it/key/` and place the real key files there before running `init`. Initialization imports them into encrypted storage and removes the plaintext copies after verifying encryption.
 
 <Callout type={'warning'}>
   You must prepare all required key files in `expo-release-it/key` exactly the same filenames.
 </Callout>
-<Callout type={'info'}>
-  You can add the following files in `.gitignore` if you aren't sure about security issues. Treat
-  them as `.env` and share it to your teammates.
-</Callout>
+Prepare `EXPO_RELEASE_IT_ENCRYPTION_KEY` in your environment or `.env`, or enter it in the masked
+`init` prompt. Keep it separately from the encrypted file. See [Credential encryption](/security)
+for a key-generation command and GitHub Actions setup.
 
 ### `android_play_console_service_account.json`
 
@@ -43,16 +42,16 @@ and prepare `json` file.
 
 Prepare your android release keystore file for **uploading** and **signing** Android build artifacts.
 
-Additional passwords, alias will be prompted during the `init` command and be stored in `keyholder.json`.
+Additional passwords and the alias are prompted during `init` and stored in `credentials.enc.json`.
 
 - [Keystore generation with Android Studio](https://developer.android.com/studio/publish/app-signing.html#generate-key)
 - [Keystore generation with CLI](https://gist.github.com/henriquemenezes/70feb8fff20a19a65346e48786bedb8f)
 
-### `ios_app_store_connect_api_key`
+### `ios_app_store_connect_api_key.p8`
 
 App Store Connect actions require authentication using App Store Connect Api Key(.p8)
 
-Additional `issuer_id`, `key_id` values will be prompted during the `init` command and be stored in `keyholder.json`
+Additional `issuer_id` and `key_id` values are prompted during `init` and stored in `credentials.enc.json`.
 
 - [Guide](https://www.revenuecat.com/docs/service-credentials/itunesconnect-app-specific-shared-secret/app-store-connect-api-key-configuration)
 - [Apple Docs Guide](https://developer.apple.com/documentation/appstoreconnectapi/creating-api-keys-for-app-store-connect-api)
@@ -113,13 +112,13 @@ export default ({ config }: ConfigContext): ExpoConfig => {
 
 expo-release-it/.temp
 expo-release-it/.ruby/
+expo-release-it/keyholder.json
+expo-release-it/key/
+.env
 ios/
 android/
-# Persistent metadata and keys live outside generated native directories
+# Persistent metadata lives outside generated native directories
 !expo-release-it/metadata/*
-# if you aren't sure about security issues, feel free to exclude these files from the VCS.
-!expo-release-it/key/*.p8
-!expo-release-it/key/*.keystore
 ```
 
 ## 6. Run `expo-release-it init`
@@ -127,5 +126,7 @@ android/
 ```sh
 npx expo-release-it init
 ```
+
+This also migrates existing `keyholder.json` and key files. The CLI warns if the old plaintext format remains; signed builds and store commands migrate it automatically when you supply the encryption key. Encryption and temporary decryption happen inside the existing commands. The encrypted `credentials.enc.json` can be versioned while the encryption key stays in your secret manager, ignored env file, or CI secrets.
 
 For an iOS compilation check without Apple credentials, `build --platform ios --no-sign` does not require store/signing keys. Store commands use the managed Fastlane workspace and never regenerate native directories.

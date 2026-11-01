@@ -2,15 +2,15 @@
 
 ## Domain Glossary
 
-| Term                | Meaning                                                                                                                                                                       |
-| ------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Project root        | The consumer Expo project targeted by the CLI: the current directory in normal execution, or this repository's example app in development mode.                               |
-| Resources directory | `<project>/expo-release-it`, the persistent home for release configuration, keys, output artifacts, and store metadata.                                                       |
-| Native workspace    | The consumer project's `ios/` or `android/` directory, regenerated through clean Expo prebuild only by `build`.                                                               |
-| Keyholder           | `keyholder.json` in the resources directory: identifiers and passwords used by native release automation. Signing and service-account key files live separately under `key/`. |
-| Version name        | The semver app version used by the CLI and store workflows.                                                                                                                   |
-| Version code        | The shared build identifier represented by iOS `buildNumber` and Android `versionCode`.                                                                                       |
-| Store metadata      | Listing text and visual assets persisted under the resources directory and synchronized with native Fastlane workspaces.                                                      |
+| Term                | Meaning                                                                                                                                                              |
+| ------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Project root        | The consumer Expo project targeted by the CLI: the current directory in normal execution, or this repository's example app in development mode.                      |
+| Resources directory | `<project>/expo-release-it`, the persistent home for release configuration, keys, output artifacts, and store metadata.                                              |
+| Native workspace    | The consumer project's `ios/` or `android/` directory, regenerated through clean Expo prebuild only by `build`.                                                      |
+| Credentials         | Identifiers, passwords, and key files encrypted together in `credentials.enc.json` in the resources directory. `keyholder.json` and `key/` are legacy/import inputs. |
+| Version name        | The semver app version used by the CLI and store workflows.                                                                                                          |
+| Version code        | The shared build identifier represented by iOS `buildNumber` and Android `versionCode`.                                                                              |
+| Store metadata      | Listing text and visual assets persisted under the resources directory and synchronized with native Fastlane workspaces.                                             |
 
 ## Persistent Resources and Native Preparation
 
@@ -20,7 +20,11 @@ Only `build` runs project-local Expo prebuild with `--clean --no-install` for th
 
 `<resources>/.ruby` owns the tool Gemfile/lockfile, private gem installations, and platform Fastlane workspaces. Ruby/Bundler preflight precedes dependency installation, template writes, and native regeneration. `RubyEnvironment.ts` selects a specific Bundler from the packaged lockfile using the inspected Ruby, ignoring inherited Bundler configuration. The consumer's Gemfiles and global settings are not modified. Only iOS builds install the CocoaPods group.
 
-Store commands prepare this persistent Fastlane workspace and do not generate or mutate native projects. Metadata synchronization copies between that workspace and persistent `metadata/`. Signing keys and output artifacts remain in resources. `init` retains existing key files.
+Store commands prepare this persistent Fastlane workspace and do not generate or mutate native projects. Metadata synchronization copies between that workspace and persistent `metadata/`. Encrypted credentials and output artifacts remain in resources.
+
+Credential encryption is the default and stays inside the existing commands; there are no separate encrypt/decrypt commands. `CredentialVault.ts` owns the AES-256-GCM/scrypt format, key selection, legacy detection/import, and runtime plaintext lifecycle. `EXPO_RELEASE_IT_ENCRYPTION_KEY` comes from the process environment first, then `--env-file` or project `.env`; `init` can request a masked key interactively and imports legacy values as prompt defaults. Signed builds and store commands automatically import legacy credentials or replacement key files when present, warning about plaintext and verifying the encrypted result before deleting imported sources, including the old `.temp/app_store_connect_api.json`. `bump` and unsigned iOS builds warn but do not load credentials.
+
+Key files needed by native tools are materialized under an OS temp directory with owner-only permissions and removed on completion, failure, exit, and handled SIGINT/SIGTERM. SIGKILL or machine failure can leave plaintext temporary files. Child processes receive an empty encryption-key variable; signing passwords still travel through the native tools' environment. Known secrets are registered for log redaction. Encryption never rewrites Git history or removes already tracked files from the index.
 
 Android release signing uses a separate generated Gradle script with environment-provided keys; generated debug signing is preserved. iOS project, application target, and scheme are discovered independently, with explicit configuration required for ambiguous choices. `build --no-sign` skips Apple authentication/signing/export and produces an unsigned archive rather than an IPA.
 

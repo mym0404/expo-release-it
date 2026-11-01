@@ -34,6 +34,19 @@ Prepare Ruby and the pinned Bundler yourself; the CLI installs its managed gems 
 
 The CLI owns release orchestration, integration with Expo-generated projects, and its managed Ruby toolchain. Prepare a toolchain supported by your project's Expo and React Native versions. Upstream native dependency or compiler incompatibilities are outside this library's scope; it does not patch Expo/RN, Pods source, or Xcode to repair them.
 
+# Development
+
+Install [mise](https://mise.jdx.dev/getting-started.html), then run from the repository root:
+
+```sh
+mise trust
+mise install node pnpm
+mise exec -- pnpm install --frozen-lockfile
+mise exec -- pnpm run t
+```
+
+Local development and CI use the Node.js and pnpm versions pinned in `mise.toml`.
+
 # Licenses
 
 - See [LICENSE](/LICENSE)

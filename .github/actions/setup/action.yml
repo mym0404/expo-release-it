@@ -1,19 +1,26 @@
 name: Setup
-description: Setup Node.js and install dependencies
+description: Setup Node.js and pnpm with mise and install dependencies
 
 runs:
   using: composite
   steps:
-    - uses: pnpm/action-setup@v4
-      name: Install pnpm
+    - name: Install Node.js and pnpm
+      uses: jdx/mise-action@v5
       with:
-        run_install: false
+        install_args: node pnpm
 
-    - name: Install Node.js
-      uses: actions/setup-node@v4
+    - name: Locate pnpm store
+      id: pnpm-store
+      run: echo "path=$(pnpm store path --silent)" >> "$GITHUB_OUTPUT"
+      shell: bash
+
+    - name: Cache pnpm store
+      uses: actions/cache@v4
       with:
-        node-version-file: .nvmrc
-        cache: 'pnpm'
+        path: ${{ steps.pnpm-store.outputs.path }}
+        key: pnpm-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('mise.toml', 'pnpm-lock.yaml') }}
+        restore-keys: |
+          pnpm-${{ runner.os }}-${{ runner.arch }}-
 
     - name: Install dependencies
       run: pnpm install --frozen-lockfile

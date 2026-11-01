@@ -6,7 +6,7 @@
 
 ## Tech Stack
 
-- TypeScript ESM on Node.js, managed as a pnpm workspace. Runtime and package-manager versions are defined by `.nvmrc` and the root `package.json`.
+- TypeScript ESM on Node.js, managed as a pnpm workspace. `mise.toml` pins Node.js and pnpm for local development and CI; keep the root `package.json`'s `packageManager` version aligned with the pnpm pin.
 - Native automation uses Expo prebuild, Ruby/Bundler and Fastlane, with Gradle for Android and Xcode for iOS.
 - The documentation site uses Next.js, Nextra, React, Tailwind CSS, and Pagefind. The minimum CNG examples pin SDK-specific Expo, React, and React Native versions independently; the docs use the `web` catalog.
 - tsdown builds the CLI; Vitest, TypeScript, Oxlint, Oxfmt, and Lefthook provide local checks. Changesets manages package releases.

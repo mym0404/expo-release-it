@@ -31,6 +31,7 @@ jobs:
         run: pnpm run t
 
       - name: Check changesets
+        if: github.event_name != 'pull_request' || github.head_ref != 'changeset-release/main' || github.event.pull_request.head.repo.full_name != github.repository
         run: pnpm changeset status --since=origin/main
 
       - name: Build
@@ -92,9 +93,57 @@ jobs:
           include-hidden-files: true
           if-no-files-found: error
 
-  release:
+  release-plan:
     if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
     needs: [lint, ruby, native]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
+    outputs:
+      mode: ${{ steps.mode.outputs.mode }}
+      version-pr-merged: ${{ steps.version-pr.outputs.merged }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: ./.github/actions/setup
+      - name: Identify merged version PR
+        id: version-pr
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          merged=$(gh api "repos/$GITHUB_REPOSITORY/commits/$GITHUB_SHA/pulls" \
+            --jq "any(.[]; .merged_at != null and .merge_commit_sha == \"$GITHUB_SHA\" and .base.ref == \"$GITHUB_REF_NAME\" and .head.ref == (\"changeset-release/\" + .base.ref) and .head.repo.full_name == .base.repo.full_name)")
+          printf 'merged=%s\n' "$merged" >> "$GITHUB_OUTPUT"
+      - name: Select Changesets mode
+        id: mode
+        uses: changesets/action/select-mode@v2.1.2
+
+  version:
+    if: needs.release-plan.outputs.mode == 'version'
+    needs: release-plan
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    env:
+      RELEASE_TITLE: 'chore(release): version packages'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: ./.github/actions/setup
+      - name: Create or update version PR
+        uses: changesets/action/version@v2.1.2
+        with:
+          script: pnpm version-packages
+          commit-message: ${{ env.RELEASE_TITLE }}
+          pr-title: ${{ env.RELEASE_TITLE }}
+
+  publish:
+    if: needs.release-plan.outputs.version-pr-merged == 'true' && needs.release-plan.outputs.mode != 'version'
+    needs: release-plan
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -103,67 +152,22 @@ jobs:
       GH_TOKEN: ${{ github.token }}
       NPM_CONFIG_PROVENANCE: 'true'
     steps:
-      - name: Checkout release commit
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
-          ref: ${{ github.sha }}
           fetch-depth: 0
-
-      - name: Verify main has not advanced
-        run: |
-          git fetch origin main
-          test "$(git rev-parse HEAD)" = "$(git rev-parse origin/main)"
-          git branch main HEAD
-
-      - name: Setup
-        uses: ./.github/actions/setup
-
+      - uses: ./.github/actions/setup
       - name: Install npm with trusted publishing support
         run: npm install --global npm@11
-
-      - name: Configure release author
-        run: |
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-
-      - name: Read release plan
-        id: changesets
-        run: |
-          pnpm changeset status --output="$RUNNER_TEMP/changeset-status.json"
-          node --input-type=module <<'JS'
-          import { appendFileSync, readFileSync } from 'node:fs';
-          import { join } from 'node:path';
-          const plan = JSON.parse(readFileSync(join(process.env.RUNNER_TEMP, 'changeset-status.json'), 'utf8'));
-          appendFileSync(process.env.GITHUB_OUTPUT, `hasChangesets=${plan.changesets.length > 0}\n`);
-          JS
-
-      - name: Version packages
-        if: steps.changesets.outputs.hasChangesets == 'true'
-        run: pnpm version-packages
-
       - name: Build release
         run: pnpm build
-
       - name: Check release
         run: pnpm run t
-
-      - name: Commit versions and changelog
-        if: steps.changesets.outputs.hasChangesets == 'true'
-        run: |
-          git add --all
-          if ! git diff --cached --quiet; then
-            git commit -m 'chore(release): version packages [skip ci]'
-            git push origin HEAD:main
-          fi
-
-      - name: Publish unpublished versions
+      - name: Publish approved versions
         run: pnpm exec changeset publish
-
       - name: Create and push release tags
         run: |
           pnpm exec changeset git-tag
           git push origin --tags
-
       - name: Create GitHub release
         run: |
           release_tag=$(node -p "const pkg = require('./package.json'); pkg.name + '@' + pkg.version")

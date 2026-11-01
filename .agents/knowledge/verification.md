@@ -8,7 +8,7 @@ The root TypeScript check includes `src` and `package.json`; it does not type-ch
 
 Oxlint checks supported JS/TS files, not MDX rendering. The generated configuration declaration is excluded from lint but remains covered by formatting and the root type check. Generated build, Expo, native, and search output are excluded from lint/format checks; pnpm manages the lockfile without Oxfmt formatting.
 
-CI validates changesets and runs the root check and CLI build; it also checks the Ruby toolchain on macOS/Linux for Ruby 3.3/4.0 and runs two native E2E paths on SDK 58: Android AAB and unsigned iOS. Ruby 3.4, SDK 57 examples, and APK E2E remain available for manual verification. It does not build docs. Pull requests are validated against `origin/main`, so release-affecting changes need a changeset and non-release changes can use an empty changeset.
+CI validates changesets and runs the root check and CLI build; it also checks the Ruby toolchain on macOS/Linux for Ruby 3.3/4.0 and runs two native E2E paths on SDK 58: Android AAB and unsigned iOS. Ruby 3.4, SDK 57 examples, and APK E2E remain available for manual verification. It does not build docs. Pull requests are validated against `origin/main`, so release-affecting changes need a changeset and non-release changes can use an empty changeset. The repository's own `changeset-release/main` PR skips only the new-changeset requirement because versioning consumes the pending files; the remaining checks still run. After main checks pass, separate version and publish jobs follow the release-PR approval boundary documented in `releasing.md`.
 
 ## Conditional Checks
 
